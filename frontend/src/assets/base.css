@@ -1,0 +1,12 @@
+:root {
+  --color-bg-white: #fff;
+  --color-text-grey: #808080;
+  --color-bg-blue1: #050c9c;
+  --color-bg-blue2: #3572ef;
+  --color-bg-blue3: #3abef9;
+  --color-bg-blue4: #a7e6ff;
+}
+
+#app {
+  font-family: Gothic A1;
+}
