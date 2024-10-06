@@ -17,17 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lx.finalproject.service.ExampleService;
 import com.lx.finalproject.vo.ExampleVo;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/example")
 public class ExampleController {
 	
 	@Autowired
 	private ExampleService exampleService;
-    
+	
 	// 전체 조회
 	@GetMapping
-    public List<ExampleVo> getAllExamples() {		
+    public List<ExampleVo> getAllExamples() {
+		System.out.println("하이");
     	return exampleService.getAllExamples();
     }
 	
