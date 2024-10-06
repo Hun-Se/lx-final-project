@@ -1,4 +1,6 @@
 <template>
+  <component :is="renderHeader()" />
+
   <h1 class="display-1" style="text-align: center; margin-top: 2ex">
     LX가 만든 부동산 데이터 플랫폼
   </h1>
@@ -10,42 +12,22 @@
   <div class="nanum-pen-script-regular" style="margin-top: 6ex">
     <div class="carousel" style="margin-bottom: 2ex">
       <div class="group">
-        <div class="Scard">
-          <img
-            src="/assets/img/sales01.png"
-            alt="이미지 1"
-            class="card-image"
-          />
+        <div class="Scard card-ai">
           <p
             class="slider-text"
-            style="
-              margin-top: 3ex;
-              font-size: 1.6em;
-              color: white;
-              font-weight: bold;
-            "
+            style="font-size: 1.2em; color: white; font-weight: bold"
           >
             가격 예측 AI
           </p>
         </div>
       </div>
       <div class="group">
-        <div class="Scard">
-          <img
-            src="/assets/img/sales01.png"
-            alt="이미지 2"
-            class="card-image"
-          />
+        <div class="Scard card-map">
           <p
             class="slider-text"
-            style="
-              margin-top: 3ex;
-              font-size: 1.6em;
-              color: white;
-              font-weight: bold;
-            "
+            style="font-size: 1.2em; color: white; font-weight: bold"
           >
-            가격 예측 AI
+            매물지도
           </p>
         </div>
       </div>
@@ -143,7 +125,27 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import Header from "@/components/Header.vue";
+import MobileHeader from "@/components/MobileHeader.vue";
+import { useMobileStore } from "@/stores/mobile";
+import { storeToRefs } from "pinia";
+import { postTest } from "@/api/sales";
+
+const store = useMobileStore();
+const { isMobile } = storeToRefs(store);
+function init() {
+  postTest();
+}
+init();
+const renderHeader = () => {
+  if (isMobile.value) {
+    return MobileHeader;
+  } else {
+    return Header;
+  }
+};
+</script>
 
 <style>
 /*가을룩*/
@@ -165,20 +167,30 @@
   min-height: 350px; /* 카드 최소 높이 */
   margin-right: 20px; /* 카드 간격 */
   margin-bottom: 20px;
-  background: #457fca; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
+  background-image: url("/assets/img/bg_card_ai.webp"),
+    linear-gradient(#837af0, #d2a2ff, #d2a2ff, #e1b0ff);
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* background-color: #457fca; */
+  /* background: #457fca; fallback for old browsers */
+  /* background: -webkit-linear-gradient(
     to bottom,
     #5691c8,
     #4684d4
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
+  ); Chrome 10-25, Safari 5.1-6 */
+  /* background: linear-gradient(
     to bottom,
     #5691c8,
     #4684d4
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  ); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   padding: 15px;
   border-radius: 15px;
   font-size: 16px;
+}
+
+.card-map {
+  background-image: url("/assets/img/bg_card_map.webp"),
+    linear-gradient(#ffbe7b, #ff9999);
 }
 
 .Scard img {
@@ -190,7 +202,6 @@
 }
 
 .slider-text {
-  margin-top: 10px; /* 이미지와 텍스트 사이 간격 조정 */
   color: #000; /* 텍스트 색상 (검정) */
   text-align: center; /* 텍스트 중앙 정렬 */
   font-size: 16px; /* 글씨 크기 조정 */
@@ -213,5 +224,73 @@
 
 .carousel:hover .group {
   animation-play-state: paused; /* 마우스 오버 시 애니메이션 일시 정지 */
+}
+
+@media (max-width: 1100px) {
+  .group {
+    will-change: none;
+    animation: none;
+  }
+
+  .carousel {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+
+  .carousel .group {
+    display: flex;
+    justify-content: center;
+    flex: 1 1 calc(33.333% - 20px);
+    text-align: center;
+  }
+
+  .carousel .Scard {
+    min-height: 140px; /* 카드 최소 높이 */
+    margin-right: 0; /* 카드 간격 */
+  }
+
+  .display-1 {
+    font-size: 2em;
+    padding: 10px;
+  }
+
+  .display-5 {
+    font-size: 1.2em;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .group {
+    will-change: none;
+    animation: none;
+  }
+
+  .carousel {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    flex: 1;
+    padding: 10px;
+  }
+
+  .carousel .Scard {
+    width: 140px;
+    height: 30px;
+    min-height: 140px; /* 카드 최소 높이 */
+    margin-right: 0; /* 카드 간격 */
+  }
+
+  .display-1 {
+    font-size: 2em;
+    padding: 10px;
+  }
+
+  .display-5 {
+    font-size: 1.2em;
+    padding: 10px;
+  }
 }
 </style>

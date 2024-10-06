@@ -15,6 +15,7 @@ export default defineConfig({
     outDir: "../backend/src/main/resources/static",
   },
   server: {
+    host: "172.168.10.125",
     proxy: {
       "/api": {
         target: "http://localhost:9000",
