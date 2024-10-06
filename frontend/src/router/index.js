@@ -14,6 +14,16 @@ const router = createRouter({
       name: "example",
       component: () => import("../views/ExampleView.vue"),
     },
+    {
+      path: "/map",
+      name: "map",
+      component: () => import("../views/MapView.vue"),
+    },
+    {
+      path: "/broker-auction",
+      name: "broker-acution",
+      component: () => import("../views/BrokerAuctionView.vue"),
+    },
   ],
 });
 
