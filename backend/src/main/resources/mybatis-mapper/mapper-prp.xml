@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.PrpDAO">
+
+    <!-- 모든 매물 조회 -->
+
+    <!-- resultMap을 사용하여 SQL 결과를 PrpDetailsResponseDTO에 매핑 -->
+    <resultMap id="PrpDetailsResponseMap" type="com.lx.finalproject.dto.PrpDetailsResponseDTO">
+        <!-- prp 객체 매핑 -->
+        <association property="prp" javaType="com.lx.finalproject.vo.PrpVO">
+            <id property="prpPk" column="prp_pk"/>
+            <result property="prpName" column="prp_name"/>
+            <result property="prpImg" column="prp_img"/>
+            <result property="prpType" column="prp_type"/>
+            <result property="prpSuppArea" column="prp_supp_area"/>
+            <result property="prpExclArea" column="prp_excl_area"/>
+            <result property="prpBlock" column="prp_block"/>
+            <result property="prpFloor" column="prp_floor"/>
+            <result property="prpUnit" column="prp_unit"/>
+            <result property="prpAddrDetail" column="prp_addr_detail"/>
+            <result property="prpTransType" column="prp_trans_type"/>
+            <result property="prpDeposit" column="prp_deposit"/>
+            <result property="prpPrice" column="prp_price"/>
+            <result property="prpMaintFee" column="prp_maint_fee"/>
+            <result property="prpParkingAvail" column="prp_parking_avail"/>
+            <result property="prpConstr" column="prp_constr"/>
+            <result property="prpStrucType" column="prp_struc_type"/>
+            <result property="prpDesc" column="prp_desc"/>
+            <result property="prpStatus" column="prp_status"/>
+            <result property="prpRegTime" column="prp_reg_time"/>
+        </association>
+
+        <!-- user 객체 매핑 -->
+        <association property="user" javaType="com.lx.finalproject.vo.UserVO">
+            <id property="userPk" column="user_pk"/>
+            <result property="userImg" column="user_img"/>
+            <result property="userId" column="user_id"/>
+            <result property="userPw" column="user_pw"/>
+            <result property="userPerm" column="user_perm"/>
+            <result property="userName" column="user_name"/>
+            <result property="userSsn" column="user_ssn"/>
+            <result property="userMobile" column="user_mobile"/>
+            <result property="userEmail" column="user_email"/>
+        </association>
+
+        <!-- region 객체 매핑 -->
+        <association property="region" javaType="com.lx.finalproject.vo.RegionVO">
+            <id property="regionPk" column="region_pk"/>
+            <result property="regionCode" column="region_code"/>
+            <result property="regionSiDo" column="region_si_do"/>
+            <result property="regionSiGunGu" column="region_si_gun_gu"/>
+            <result property="regionEupMyeonDong" column="region_eup_myeon_dong"/>
+            <result property="regionRi" column="region_ri"/>
+        </association>
+
+        <!-- coord 객체 매핑 -->
+        <association property="coord" javaType="com.lx.finalproject.vo.CoordVO">
+            <id property="coordPk" column="coord_pk"/>
+            <result property="coordLat" column="coord_lat"/>
+            <result property="coordLong" column="coord_long"/>
+        </association>
+    </resultMap>
+
+    <!-- 모든 매물 리스트 조회 -->
+    <select id="getPrpList" resultMap="PrpDetailsResponseMap">
+        SELECT 
+            prp.prp_pk AS prp_pk, prp.prp_name AS prp_name, prp.prp_img AS prp_img, 
+            prp.prp_type AS prp_type, prp.prp_supp_area AS prp_supp_area, 
+            prp.prp_excl_area AS prp_excl_area, prp.prp_block AS prp_block, 
+            prp.prp_floor AS prp_floor, prp.prp_unit AS prp_unit, prp.prp_addr_detail AS prp_addr_detail, 
+            prp.prp_trans_type AS prp_trans_type, prp.prp_deposit AS prp_deposit, 
+            prp.prp_price AS prp_price, prp.prp_maint_fee AS prp_maint_fee, 
+            prp.prp_parking_avail AS prp_parking_avail, prp.prp_constr AS prp_constr, 
+            prp.prp_struc_type AS prp_struc_type, prp.prp_desc AS prp_desc, 
+            prp.prp_status AS prp_status, prp.prp_reg_time AS prp_reg_time, 
+            user.user_pk AS user_pk, user.user_img AS user_img, user.user_id AS user_id, 
+            user.user_pw AS user_pw, user.user_perm AS user_perm, user.user_name AS user_name, 
+            user.user_ssn AS user_ssn, user.user_mobile AS user_mobile, user.user_email AS user_email, 
+            region.region_pk AS region_pk, region.region_code AS region_code, 
+            region.region_si_do AS region_si_do, region.region_si_gun_gu AS region_si_gun_gu, 
+            region.region_eup_myeon_dong AS region_eup_myeon_dong, region.region_ri AS region_ri, 
+            coord.coord_pk AS coord_pk, coord.coord_lat AS coord_lat, coord.coord_long AS coord_long
+        FROM prp
+        LEFT JOIN user ON prp.user_pk = user.user_pk
+        LEFT JOIN region ON prp.region_pk = region.region_pk
+        LEFT JOIN coord ON prp.coord_pk = coord.coord_pk
+    </select>
+    
+    
+    
+
+
+
+
+
+
+
+
+
+    <!-- 요청 받은 부동산 필터 조건으로 매물을 조회 -->
+    <select id="getPrpListByFilter" parameterType="com.lx.finalproject.dto.PrpFilterRequestDTO" resultType="com.lx.finalproject.dto.PrpDetailsResponseDTO">
+        SELECT * FROM prp
+        
+        <!--  xml 파일에서 <> 부등호 사용 불가능, <는 &lt; >는 &gt;  -->
+        
+         WHERE property_type = #{propertyType}        <!-- 거래 대상 (주택, 오피스텔 등) -->
+         
+          AND transaction_type = #{transactionType}   <!-- 거래 유형 (매매, 전세, 월세 등) -->
+          
+          AND sale_price &gt;= #{salePriceMin}        <!-- 매매 금액 최소값 -->
+          AND sale_price &lt;= #{salePriceMax}        <!-- 매매 금액 최대값 -->
+          
+          AND deposit_price &gt;= #{jeonseMin}        <!-- 전세 금액 최소값 -->
+          AND deposit_price &lt;= #{jeonseMax}        <!-- 전세 금액 최대값 -->
+          
+          AND monthly_rent &gt;= #{monthlyRentMin}    <!-- 월세 금액 최소값 -->
+          AND monthly_rent &lt;= #{monthlyRentMax}    <!-- 월세 금액 최대값 -->
+          
+          AND structure_type = #{structureType}       <!-- 구조 유형 (복층, 오픈형, 분리형 등) -->
+          
+          AND floor_type = #{floor}                   <!-- 층수 유형 (옥탑방, 반지하, 지상층 등) -->
+          
+          AND area &gt;= #{areaMin}                   <!-- 전용 면적 최소값 -->
+          
+          AND area &lt;= #{areaMax}                   <!-- 전용 면적 최대값 -->
+         
+    </select>
+
+</mapper>

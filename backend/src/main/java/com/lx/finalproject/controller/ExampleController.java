@@ -25,10 +25,10 @@ public class ExampleController {
 	private ExampleService exampleService;
 	
 	// 전체 조회
-	@GetMapping
-    public List<ExampleVo> getAllExamples() {
+	@PostMapping
+    public String getAllExamples() {
 		System.out.println("하이");
-    	return exampleService.getAllExamples();
+    	return "하이";
     }
 	
 	// id별 조회
@@ -38,10 +38,7 @@ public class ExampleController {
     }
 	
 	// 등록
-	@PostMapping
-	public ExampleVo createExample(@RequestBody ExampleVo exampleVo) {
-		return exampleService.createExample(exampleVo);
-	}
+	
 	
 	// 수정
 	@PutMapping("/{id}")

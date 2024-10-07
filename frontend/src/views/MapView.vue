@@ -679,8 +679,21 @@
 import { ref, computed, reactive } from "vue";
 import { useRouter } from "vue-router";
 import NaverMap from "@/components/NaverMap.vue";
+import { usePrpStore } from "@/stores/sales";
+import { storeToRefs } from "pinia";
+import { requestSalesListGlobal} from "@/api/sales";
 
 const router = useRouter();
+const store = usePrpStore();
+function init() {
+  // store.fetchSalesList();
+  // const { sales } = storeToRefs(store);
+  // console.log(sales);
+
+  requestSalesListGlobal();
+}
+
+init();
 
 const goHome = () => {
   router.push({ path: "/home" });
@@ -745,22 +758,22 @@ const toggleSidebar = () => {
 };
 
 // 매물리스트 보여주기
-const sales = ref([
-  {
-    sales_id: 1,
-    sales_image: "/assets/img/sales01.png",
-    sales_name: "신사동 4층 매물",
-    sales_price: "46억",
-    sales_content: "신사역 6번 출구 도보 15분 대도로 위치",
-  },
-  {
-    sales_id: 2,
-    sales_image: "/assets/img/sales01.png",
-    sales_name: "신사동 4층 매물",
-    sales_price: "46억",
-    sales_content: "신사역 6번 출구 도보 15분 대도로 위치",
-  },
-]);
+// const sales = ref([
+//   {
+//     sales_id: 1,
+//     sales_image: "/assets/img/sales01.png",
+//     sales_name: "신사동 4층 매물",
+//     sales_price: "46억",
+//     sales_content: "신사역 6번 출구 도보 15분 대도로 위치",
+//   },
+//   {
+//     sales_id: 2,
+//     sales_image: "/assets/img/sales01.png",
+//     sales_name: "신사동 4층 매물",
+//     sales_price: "46억",
+//     sales_content: "신사역 6번 출구 도보 15분 대도로 위치",
+//   },
+// ]);
 
 const salesDetails = ref([
   {

@@ -5,32 +5,4 @@
 
 <mapper namespace="com.lx.finalproject.dao.ExampleDao">
 
-    <!-- 조회 -->
-    <select id="getAllExamples" resultType="com.lx.finalproject.vo.ExampleVo">
-        SELECT * FROM example
-    </select>
-
-    <!-- id별 조회 -->
-    <select id="getExampleById" parameterType="Long" resultType="com.lx.finalproject.vo.ExampleVo">
-        SELECT * FROM example WHERE id = #{id}
-    </select>
-
-    <!-- 등록 -->
-    <insert id="createExample" parameterType="com.lx.finalproject.vo.ExampleVo">
-        INSERT INTO example (name, description) 
-        VALUES (#{name}, #{description})
-    </insert>
-
-    <!-- 수정 -->
-    <update id="updateExample" parameterType="com.lx.finalproject.vo.ExampleVo">
-        UPDATE example
-        SET name = #{name}, description = #{description}
-        WHERE id = #{id}
-    </update>
-
-    <!-- 삭제 -->
-    <delete id="deleteExample" parameterType="Long">
-        DELETE FROM example WHERE id = #{id}
-    </delete>
-
 </mapper>
