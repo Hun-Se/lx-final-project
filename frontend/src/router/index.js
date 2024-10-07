@@ -24,6 +24,16 @@ const router = createRouter({
       name: "broker-acution",
       component: () => import("../views/BrokerAuctionView.vue"),
     },
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("../views/Login.vue"),
+    },
+    {
+      path: "/create_account",
+      name: "create_account",
+      component: () => import("../views/Create_account.vue"),
+    },
   ],
 });
 
