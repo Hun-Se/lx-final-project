@@ -10,7 +10,7 @@ public interface UserDao {
 
     void createUser(UserVo exampleVo);
 
-    UserVo getUserById(int id);
+    int getUserByUserId(String userId);
     
-    UserVo loginUser(@Param("userId") String userId, @Param("password") String password);
+    UserVo loginUser(@Param("userId") String userId, @Param("userPassword") String password);
 }

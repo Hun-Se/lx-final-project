@@ -19,8 +19,8 @@ public class UserService {
     }
 
     // ID로 사용자 조회
-    public UserVo getUserById(int id) {
-        return userDao.getUserById(id);
+    public int getUserByUserId(String userId) {
+        return userDao.getUserByUserId(userId);
     }
 
     // 로그인 처리
