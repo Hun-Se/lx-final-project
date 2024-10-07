@@ -32,5 +32,4 @@
     <delete id="deleteExample" parameterType="Long">
         DELETE FROM example WHERE id = #{id}
     </delete>
-
 </mapper>
