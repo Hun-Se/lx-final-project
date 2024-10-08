@@ -50,12 +50,15 @@ const userNameInput = ref("");
 // 채팅 입장 처리
 const enterChat = (name) => {
   if (chatStore.isInChat) return; // 이미 채팅에 입장한 경우 처리
-  chatStore.enterChat(name); 
+  
+  // 채팅 입장 상태 설정
+  chatStore.enterChat(name);
   initializeWebSocket(name, chatStore); 
-  router.push('/chatting'); // 채팅 페이지로 이동
+
+  // 라우터를 통해 채팅 페이지로 이동
+  router.push('/chat/input'); // 경로를 '/chat/input'으로 변경
 };
 </script>
-
 <style scoped>
 #conversation {
   border: 1px solid #ccc;
