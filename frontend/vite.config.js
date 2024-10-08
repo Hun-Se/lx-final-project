@@ -15,7 +15,7 @@ export default defineConfig({
     outDir: "../backend/src/main/resources/static",
   },
   server: {
-    host: '172.168.10.86', 
+    host: '0.0.0.0', 
     proxy: {
       "/ws/chat": {
           target: "http://localhost:9000", // 이 부분을 수정
