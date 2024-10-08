@@ -34,6 +34,16 @@ const router = createRouter({
       name: "create_account",
       component: () => import("../views/Create_account.vue"),
     },
+    {
+      path: '/chatting', // 채팅 화면 경로
+      name: 'chatting',
+      component: () => import('../views/ChattingView.vue'), 
+    },
+    {
+      path: '/chat/input', // 입력 페이지 경로
+      name: 'chatInput', // 이름 설정
+      component: () => import('../views/ChattingInputView.vue'),
+    }
   ],
 });
 
