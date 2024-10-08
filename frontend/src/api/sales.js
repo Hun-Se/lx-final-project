@@ -2,10 +2,10 @@ import { apiInstance } from "./index.js";
 
 const api = apiInstance();
 
-export const requestSalesListGlobal = async () => {
-  const url = "api/sales/sales-list";
+export const requestSalesList = async () => {
+  const url = "api/properties";
   try {
-    const response = await api.post(url, {});
+    const response = await api.get(url);
     return response.data;
   } catch (err) {
     console.error(`서버 요청 시 에러 : ${err}`);
@@ -13,11 +13,10 @@ export const requestSalesListGlobal = async () => {
   }
 };
 
-export const postTest = async () => {
-  const url = "api/prp";
+export const requestSaleById = async (pk) => {
+  const url = `api/properties/${pk}`;
   try {
-    const response = await api.post(url, {});
-    console.log(response);
+    const response = await api.get(url);
     return response.data;
   } catch (err) {
     console.error(`서버 요청 시 에러 : ${err}`);

@@ -22,4 +22,7 @@ public interface PropertyDAO {
 
     // 매물 삭제
     void deleteProperty(@Param("prpPk") int prpPk);
+
+    // 매물 전체가저오기
+	List<PrpVO> getAllProperties();
 }

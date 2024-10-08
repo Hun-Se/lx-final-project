@@ -1,5 +1,4 @@
 <template>
-  
   <div id="mainPage">
     <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
       <!--begin::사이드바-->
@@ -543,12 +542,12 @@
                   <ul class="property-items">
                     <li
                       v-for="(item, index) in sales"
-                      :key="item.sales_id"
+                      :key="item.prpPk"
                       class="property-item"
-                      @click="toggleSalesDetail(item.sales_id)"
+                      @click="toggleSalesDetail(item.prpPk)"
                     >
                       <img
-                        :src="item.sales_image"
+                        :src="'/assets/img/' + item.prpImg"
                         alt="매물 이미지"
                         class="property-image"
                         :style="{ width: '250px', height: 'auto' }"
@@ -562,10 +561,10 @@
                             margin-top: 1ex;
                           "
                         >
-                          {{ item.sales_name }}
+                          {{ item.prpName }}
                         </p>
-                        <p class="property-price">{{ item.sales_price }}</p>
-                        <p class="property-content">{{ item.sales_content }}</p>
+                        <p class="property-price">{{ item.prpPrice }}</p>
+                        <p class="property-content">{{ item.prpDesc }}</p>
                       </div>
                     </li>
                   </ul>
@@ -574,16 +573,19 @@
                 <!-- 매물 상세 정보 -->
                 <div v-if="selectedSalesId" class="property-detail">
                   <img
-                    :src="selectedSalesDetails.salesDetails_image"
+                    :src="'/assets/img/' + selectedSalesDetails.prpImg"
                     alt="매물 이미지"
                     class="property-image"
                     :style="{ width: '290px', height: 'auto' }"
                   />
                   <h3 style="margin-top: 2ex"><strong>상세 정보</strong></h3>
-                  <p>{{ selectedSalesDetails.sales_name }}</p>
-                  <p>{{ selectedSalesDetails.sales_price }}</p>
-                  <p>{{ selectedSalesDetails.salesDetails_size }}</p>
-                  <p>{{ selectedSalesDetails.salesDetails_content }}</p>
+                  <p>{{ selectedSalesDetails.prpName }}</p>
+                  <p>{{ selectedSalesDetails.prpPrice }}</p>
+                  <p>{{ selectedSalesDetails.prpExclArea }}</p>
+                  <p>{{ selectedSalesDetails.prpDesc }}</p>
+                  <p>{{ selectedSalesDetails.prpDesc }}</p>
+                  <p>{{ selectedSalesDetails.prpAddrDetail }}</p>
+
                   <button
                     type="button"
                     class="btn btn-outline-secondary btn-sm"
@@ -606,82 +608,24 @@
 </template>
 
 <script setup>
-/*
-  import { ref, onMounted } from 'vue';
-  import { useSalesStore } from "@/stores/sales";
-  import { useSalesDetailsStore } from '@/stores/salesDetails';
-  import { useUserStore } from '@/stores/user'; 
-  import { storeToRefs } from 'pinia';
-  import axios from 'axios';
-  
-  
-  // 매물 스토어 가져오기
-  const salesStore = useSalesStore();
-  const { sales } = storeToRefs(salesStore);
-  
-  // 매물 리스트 불러오기 함수
-  async function fetchSalesList() {
-  try {
-    const response = await axios.post('http://localhost:3000/sales/sales-list');
-    sales.value = response.data.data; 
-    console.log('Fetched sales data:', sales.value);
-  } catch (error) {
-    console.error('Error fetching sales list:', error); 
-  }
-  }
-  
-  // 매물 상세 정보 스토어 가져오기
-  const salesDetailsStore = useSalesDetailsStore();
-  const { salesDetails, selectedSalesDetailsId, selectedSalesDetails } = storeToRefs(salesDetailsStore);
-  
-  
-  function toggleSalesDetail(salesId) {
-  if (selectedSalesDetailsId.value === salesId) {
-    salesDetailsStore.clearSelectedSalesDetails(); 
-  } else {
-    salesDetailsStore.selectSalesDetails(salesId); 
-    salesDetailsStore.fetchSalesDetails(salesId); 
-  }
-  }
-  
-  
-  function clearSelectedSalesDetail() {
-  salesDetailsStore.clearSelectedSalesDetails();
-  }
-  
-  // 사용자 스토어 가져오기
-  const userStore = useUserStore();
-  const { user } = storeToRefs(userStore);
-  
-  // 사용자 프로필 불러오기 함수
-  async function fetchUserProfile() {
-  try {
-    const response = await axios.get('/api/user/profile');  
-    user.value = response.data;  
-    console.log('Fetched user profile:', user.value);
-  } catch (error) {
-    console.error('Error fetching user profile:', error); 
-  }
-  }
-  
-  // 컴포넌트가 마운트될 때 매물 리스트와 사용자 프로필을 불러오기
-  onMounted(() => {
-  fetchSalesList();       
-  fetchUserProfile();      
-  });
-  
-  // 매물 클릭 시 상세 정보 가져오기
-  function handleSalesClick(salesId) {
-  fetchSalesDetails(salesId);  
-  }
-  
-  */
-
-import { ref, computed, reactive } from "vue";
+import { ref, computed, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { useSaleStore } from "@/stores/sales";
 import NaverMap from "@/components/NaverMap.vue";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
+const store = useSaleStore();
+const { sales, selectedSalesDetails } = storeToRefs(store);
+
+onMounted(() => {
+  init();
+});
+
+const init = () => {
+  store.fetchSalesList();
+  console.log(sales.value);
+};
 
 const goHome = () => {
   router.push({ path: "/" });
@@ -745,63 +689,14 @@ const toggleSidebar = () => {
   isOpen.value = !isOpen.value;
 };
 
-// 매물리스트 보여주기
-const sales = ref([
-  {
-    sales_id: 1,
-    sales_image: "/assets/img/sales01.png",
-    sales_name: "신사동 4층 매물",
-    sales_price: "46억",
-    sales_content: "신사역 6번 출구 도보 15분 대도로 위치",
-  },
-  {
-    sales_id: 2,
-    sales_image: "/assets/img/sales01.png",
-    sales_name: "신사동 4층 매물",
-    sales_price: "46억",
-    sales_content: "신사역 6번 출구 도보 15분 대도로 위치",
-  },
-]);
-
-const salesDetails = ref([
-  {
-    salesDetails_id: 1,
-    salesDetails_image: "/assets/img/sales01.png",
-    salesDetails_name: "신사동 4층 매물",
-    salesDetails_price: "46억",
-    salesDetails_size: "156평",
-    salesDetails_content: "신사역 6번 출구 도보 15분 대도로 위치",
-  },
-  {
-    salesDetails_id: 2,
-    salesDetails_image: "/assets/img/sales01.png",
-    salesDetails_name: "신사동 4층 매물",
-    salesDetails_price: "46억",
-    salesDetails_size: "156평",
-    salesDetails_content: "신사역 6번 출구 도보 15분 대도로 위치",
-  },
-]);
-
 // 선택된 매물 ID
 const selectedSalesId = ref(null);
 
 // 매물 클릭 시 상세 정보 토글
 function toggleSalesDetail(salesId) {
   selectedSalesId.value = salesId;
+  store.fetchSalesDetails(salesId);
 }
-
-// 선택된 매물의 상세 정보를 반환하는 함수
-function getSalesDetails(salesId) {
-  return (
-    salesDetails.value.find((detail) => detail.salesDetails_id === salesId) ||
-    {}
-  );
-}
-
-// 선택된 매물 상세 정보
-const selectedSalesDetails = computed(() => {
-  return getSalesDetails(selectedSalesId.value);
-});
 
 //프로필 불러오기
 const user = ref({
