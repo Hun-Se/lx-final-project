@@ -1,4 +1,5 @@
 <template>
+  
   <div id="mainPage">
     <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
       <!--begin::사이드바-->
@@ -26,7 +27,7 @@
           class="app-sidebar-logo px-6 d-flex align-items-center"
           id="kt_app_sidebar_logo"
         >
-          <span class="me-3" @click="goHome">
+          <span class="me-3" @click="goHome()">
             <img
               alt="Logo"
               src="/assets/media/framework-logos/go.png"
@@ -683,7 +684,7 @@ import NaverMap from "@/components/NaverMap.vue";
 const router = useRouter();
 
 const goHome = () => {
-  router.push({ path: "/home" });
+  router.push({ path: "/" });
 };
 
 // 필터 상태를 관리할 reactive 객체

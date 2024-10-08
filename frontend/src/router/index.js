@@ -20,16 +20,21 @@ const router = createRouter({
       component: () => import("../views/MapView.vue"),
     },
     {
-      path: "/broker-auction",
-      name: "broker-acution",
+      path: "/broker_auction",
+      name: "broker_acution",
       component: () => import("../views/BrokerAuctionView.vue"),
+    },
+    {
+      path: "/user_auction",
+      name: "user_acution",
+      component: () => import("../views/UserAuctionView.vue"),
     },
     {
       path: "/login",
       name: "login",
       component: () => import("../views/Login.vue"),
-    },
-    {
+      },
+      {
       path: "/create_account",
       name: "create_account",
       component: () => import("../views/Create_account.vue"),
@@ -43,6 +48,16 @@ const router = createRouter({
       path: '/chat/input', // 입력 페이지 경로
       name: 'chatInput', // 이름 설정
       component: () => import('../views/ChattingInputView.vue'),
+    },
+    {
+      path: "/ai_real_estate",
+      name: "ai_real_estate",
+      component: () => import("../views/AI_real_estate.vue"),
+    },
+    {
+      path: "/board",
+      name: "board",
+      component: () => import("../views/BoardView.vue"),
     }
   ],
 });

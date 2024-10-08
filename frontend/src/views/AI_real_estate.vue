@@ -1,4 +1,5 @@
 <template>
+  <component :is="renderHeader()" />
   <div class="m-20">
     <h1>매물 가격 예측</h1>
     <div class="prediction">
@@ -29,10 +30,26 @@
 <script>
 import { onMounted, ref } from 'vue';
 import Chart from 'chart.js/auto';
+import Header from "@/components/Header.vue";
+import MobileHeader from "@/components/MobileHeader.vue";
+import { useMobileStore } from "@/stores/mobile";
+import { storeToRefs } from "pinia";
+
 
 export default {
   name: 'PricePrediction',
   setup() {
+    const store = useMobileStore();
+    const { isMobile } = storeToRefs(store);
+
+    const renderHeader = () => {
+      if (isMobile.value) {
+        return MobileHeader;
+      } else {
+        return Header;
+      }
+};
+
     const predictedPrice1 = ref(476000); // 예측 가격 데이터
     const predictedPrice2 = ref(2250);
     const buildingName = ref('XI 아파트'); // 빌딩 이름 데이터
@@ -161,7 +178,8 @@ export default {
       buildingName,
       region,
       chart1,
-      chart2
+      chart2,
+      renderHeader 
     };
   },
 };
