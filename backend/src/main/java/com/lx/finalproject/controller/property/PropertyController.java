@@ -12,6 +12,12 @@ public class PropertyController {
 
     @Autowired
     private PropertyService service;
+    
+    @GetMapping
+    public List<PrpVO> getPropertiesAll() {
+        return service.getAllProperties();
+    }
+    
 
     // 매물 리스트 가져오기
     @GetMapping("/agent")

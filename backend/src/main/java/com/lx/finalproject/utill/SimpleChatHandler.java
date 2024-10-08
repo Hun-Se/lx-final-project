@@ -30,9 +30,6 @@ public class SimpleChatHandler extends TextWebSocketHandler {
 
     private final List<WebSocketSession> sessions = new ArrayList<>();
     private final Gson gson; 
-    public SimpleChatHandler(Gson gson) {
-        this.gson = gson;
-    }
 
     public void broadcast(String message) throws Exception {
         for (WebSocketSession connected : sessions) {

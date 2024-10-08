@@ -31,4 +31,9 @@ public class PropertyService {
     public void deleteProperty(int prpPk) {
     	dao.deleteProperty(prpPk);
     }
+
+	public List<PrpVO> getAllProperties() {
+	
+		return dao.getAllProperties();
+	}
 }

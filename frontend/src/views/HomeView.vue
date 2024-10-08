@@ -1,9 +1,7 @@
 <template>
   <component :is="renderHeader()" />
 
-  <div v-if="userName" class="d-flex">
-    {{ userName }}님 안녕하세요.
-  </div>
+  <div v-if="userName" class="d-flex">{{ userName }}님 안녕하세요.</div>
   <h1 class="display-1" style="text-align: center; margin-top: 2ex">
     LX가 만든 부동산 데이터 플랫폼
   </h1>
@@ -16,64 +14,100 @@
     <div class="carousel" style="margin-bottom: 2ex">
       <div class="group">
         <div class="Scard card-ai cursor-pointer" @click="goToAiRealEstate()">
-          <p class="slider-text" style="margin-top: 2ex; font-size: 1.2em; color: white; font-weight: bold">
+          <p
+            class="slider-text"
+            style="
+              margin-top: 2ex;
+              font-size: 1.2em;
+              color: white;
+              font-weight: bold;
+            "
+          >
             가격 예측 AI
           </p>
         </div>
       </div>
       <div class="group">
         <div class="Scard card-map cursor-pointer" @click="goToMap()">
-          <p class="slider-text" style="margin-top: 2ex; font-size: 1.2em; color: white; font-weight: bold">
+          <p
+            class="slider-text"
+            style="
+              margin-top: 2ex;
+              font-size: 1.2em;
+              color: white;
+              font-weight: bold;
+            "
+          >
             매물지도
           </p>
         </div>
       </div>
       <div class="group">
         <div class="Scard card-auction cursor-pointer" @click="goToAuction()">
-          <p class="slider-text" style="
+          <p
+            class="slider-text"
+            style="
               margin-top: 2ex;
               font-size: 1.2em;
               color: white;
               font-weight: bold;
-            ">
+            "
+          >
             중개 수수료 경매
           </p>
         </div>
       </div>
       <div class="group">
         <div class="Scard card-board cursor-pointer" @click="goToBoard()">
-          <p class="slider-text" style="
+          <p
+            class="slider-text"
+            style="
               margin-top: 2ex;
               font-size: 1.2em;
               color: white;
               font-weight: bold;
-            ">
+            "
+          >
             지역게시판
           </p>
         </div>
       </div>
       <div class="group">
         <div class="Scard">
-          <img src="/assets/img/sales01.png" alt="이미지 5" class="card-image" />
-          <p class="slider-text" style="
+          <img
+            src="/assets/img/sales01.png"
+            alt="이미지 5"
+            class="card-image"
+          />
+          <p
+            class="slider-text"
+            style="
               margin-top: 3ex;
               font-size: 1.6em;
               color: white;
               font-weight: bold;
-            ">
+            "
+          >
             가격 예측 AI
           </p>
         </div>
       </div>
       <div class="group">
         <div class="Scard">
-          <img src="/assets/img/sales01.png" alt="이미지 5" class="card-image" />
-          <p class="slider-text" style="
+          <img
+            src="/assets/img/sales01.png"
+            alt="이미지 5"
+            class="card-image"
+          />
+          <p
+            class="slider-text"
+            style="
               margin-top: 3ex;
               font-size: 1.6em;
               color: white;
               font-weight: bold;
-            ">
+            "
+          >
             가격 예측 AI
           </p>
         </div>
@@ -85,7 +119,8 @@
         type="button"
         class="btn btn-secondary"
         style="border-radius: 10ex; font-weight: bold"
-        @click="goToLogin">
+        @click="goToLogin"
+      >
         로그인하고 더 많은 기능보기
       </button>
     </div>
@@ -93,21 +128,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
-import axios from 'axios'
+import { ref, onMounted, nextTick } from "vue";
+import axios from "axios";
 import { useRouter } from "vue-router";
 import Header from "@/components/Header.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import { useMobileStore } from "@/stores/mobile";
 import { storeToRefs } from "pinia";
-import { postTest } from "@/api/sales";
 
 const store = useMobileStore();
 const { isMobile } = storeToRefs(store);
-function init() {
-  postTest();
-}
-init();
 
 const renderHeader = () => {
   if (isMobile.value) {
@@ -120,46 +150,44 @@ const renderHeader = () => {
 // AI 가격 예측 페이지로 이동
 
 function goToAiRealEstate() {
-  router.replace({ path: '/ai_real_estate' })
+  router.replace({ path: "/ai_real_estate" });
 }
 
 // 매물지도 페이지로 이동
 function goToMap() {
-  router.replace({ path: '/map' })
+  router.replace({ path: "/map" });
 }
 
 // 중개 수수료 경매 페이지로 이동
 function goToAuction() {
-  router.replace({ path: '/user_auction' })
+  router.replace({ path: "/user_auction" });
 }
 
 // 게시판 페이지로 이동
 function goToBoard() {
-  router.replace({ path: '/board' })
+  router.replace({ path: "/board" });
 }
 
-
-
-const userName = ref('');
+const userName = ref("");
 const userPk = ref(null);
 const router = useRouter();
 
 const goToLogin = () => {
-  router.push({ name: 'login' });
+  router.push({ name: "login" });
 };
 
 onMounted(async () => {
-  const storedUserPk = sessionStorage.getItem('userPk');
+  const storedUserPk = sessionStorage.getItem("userPk");
   if (storedUserPk) {
     try {
       const response = await axios.get(`/api/users/userName/${storedUserPk}`);
       userName.value = response.data;
       await nextTick(); // DOM 업데이트 후 v-if 평가
     } catch (error) {
-      console.error('Failed to load user name:', error);
+      console.error("Failed to load user name:", error);
     }
   } else {
-    console.log('User is not logged in');
+    console.log("User is not logged in");
   }
 });
 </script>
