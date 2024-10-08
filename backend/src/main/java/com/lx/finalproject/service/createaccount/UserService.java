@@ -13,9 +13,9 @@ public class UserService {
     private UserDao userDao;
 
     // 회원가입
-    public void createUser(UserVo user) {
+    public void createUser(UserVo userVo) {
         // 중복 확인, 기타 검증 로직 추가 가능
-        userDao.createUser(user);
+        userDao.createUser(userVo);
     }
 
     // ID로 사용자 조회
@@ -28,4 +28,15 @@ public class UserService {
         UserVo user = userDao.loginUser(userId, password);
         return user != null;  // 사용자가 존재하면 true, 없으면 false
     }
+    
+    // 웹브라우저에 저장할 pk 추출 로직
+    public String getUserNameByUserPk(int userPk) {
+    	return userDao.getUserNameByUserPk(userPk);
+    }
+    
+    // 아이디 중복 체크 로직
+	public boolean checkUserId(String userId) {
+		// TODO Auto-generated method stub
+		return userDao.checkUserId(userId) > 0;
+	}
 }

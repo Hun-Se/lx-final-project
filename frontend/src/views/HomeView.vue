@@ -1,4 +1,7 @@
 <template>
+  <div v-if="userName" class="d-flex">
+    {{ userName }}님 안녕하세요.
+  </div>
   <h1 class="display-1" style="text-align: center; margin-top: 2ex">
     LX가 만든 부동산 데이터 플랫폼
   </h1>
@@ -131,7 +134,7 @@
       </div>
     </div>
 
-    <div class="d-grid gap-2 col-5 mx-auto">
+    <div v-if="!userName" class="d-grid gap-2 col-5 mx-auto">
       <button
         type="button"
         class="btn btn-secondary"
@@ -144,15 +147,32 @@
 </template>
 
 <script setup>
+import { ref, onMounted, nextTick } from 'vue';
+import axios from 'axios';
 import { useRouter } from 'vue-router';
 
-// useRouter 훅 사용하여 router 객체 가져오기
+const userName = ref('');
+const userPk = ref(null);
 const router = useRouter();
 
-// 로그인 버튼 클릭 시 호출되는 함수
 const goToLogin = () => {
-  router.push({ name: 'login' }); // 로그인 페이지로 이동
+  router.push({ name: 'login' });
 };
+
+onMounted(async () => {
+  const storedUserPk = sessionStorage.getItem('userPk');
+  if (storedUserPk) {
+    try {
+      const response = await axios.get(`/api/users/userName/${storedUserPk}`);
+      userName.value = response.data;
+      await nextTick(); // DOM 업데이트 후 v-if 평가
+    } catch (error) {
+      console.error('Failed to load user name:', error);
+    }
+  } else {
+    console.log('User is not logged in');
+  }
+});
 </script>
 
 <style>

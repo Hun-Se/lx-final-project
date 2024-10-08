@@ -22,22 +22,43 @@ public class LoginController {
 
     // 회원가입 처리 (POST 요청)
     @PostMapping("/create_account")
-    public String createUser(@ModelAttribute UserVo user, @RequestParam("userImg") MultipartFile userImg) {
+    public String createUser(
+        @RequestParam("userId") String userId,
+        @RequestParam("userPw") String userPw,
+        @RequestParam("userName") String userName,
+        @RequestParam("userSsn") String userSsn,
+        @RequestParam("userMobile") String userMobile,
+        @RequestParam("userEmail") String userEmail,
+        @RequestParam("userPerm") Integer userPerm,
+        @RequestParam("regionPk") Integer regionPk,
+        @RequestParam("regionPk2") Integer regionPk2,
+        @RequestParam("userImg") MultipartFile userImg
+    ) {
         try {
             // 이미지 저장 로직
+            String userImgPath = null;
             if (!userImg.isEmpty()) {
-                // 고유한 파일명을 생성하여 저장
                 String uniqueFileName = UUID.randomUUID().toString() + "_" + userImg.getOriginalFilename();
-                Path uploadPath = Paths.get("uploads/"); // 파일이 저장될 경로
-                Files.createDirectories(uploadPath); // 디렉토리 생성
+                Path uploadPath = Paths.get("C:/lx/final_project/lx-final-project/backend/src/uploads/");
+                Files.createDirectories(uploadPath);
                 Path filePath = uploadPath.resolve(uniqueFileName);
-                userImg.transferTo(filePath.toFile()); // 파일 저장
-
-                // 파일 경로를 UserVo에 설정
-                user.setUserImg(filePath.toString()); // 파일 경로를 설정
+                userImg.transferTo(filePath.toFile());
+                userImgPath = filePath.toString();
             }
 
-            // 사용자 정보 저장
+            // 사용자 객체 생성 및 저장
+            UserVo user = new UserVo();
+            user.setUserId(userId);
+            user.setUserPw(userPw);
+            user.setUserName(userName);
+            user.setUserSsn(userSsn);
+            user.setUserMobile(userMobile);
+            user.setUserEmail(userEmail);
+            user.setUserPerm(userPerm);
+            user.setRegionPk(regionPk);
+            user.setRegionPk2(regionPk2);
+            user.setUserImg(userImgPath);
+
             userService.createUser(user);
             return "User registered successfully!";
         } catch (IOException e) {
@@ -46,6 +67,7 @@ public class LoginController {
             return "Registration failed: " + e.getMessage();
         }
     }
+
 
     // 로그인 처리 (POST 요청)
     @PostMapping("/login")
@@ -56,5 +78,22 @@ public class LoginController {
         } else {
             return 700;
         }
+    }
+    
+    // 유저 이름 조회 (GET 요청)
+    @GetMapping("/userName/{userPk}")
+    public String getUserName(@PathVariable int userPk) {
+        try {
+            return userService.getUserNameByUserPk(userPk); // userName 리턴
+        } catch (Exception e) {
+            e.printStackTrace(); // 서버에서 발생한 예외 로그 출력
+            return "Error fetching user name";
+        }
+    }
+    
+    // 아이디 중복 확인 API
+    @GetMapping("/check_userId")
+    public boolean checkUserId(@RequestParam("userId") String userId) {
+        return userService.checkUserId(userId);
     }
 }
