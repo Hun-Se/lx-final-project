@@ -1,4 +1,4 @@
-// chatStore.js
+
 import { defineStore } from 'pinia';
 import { sendMessage as sendMessageToServer } from '@/api/chat';
 

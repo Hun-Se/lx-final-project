@@ -11,10 +11,10 @@
           <strong>{{ msg.userName }}</strong>: {{ msg.message }} <em>({{ msg.time }})</em>
         </div>
       </div>
-      <!-- 메시지 입력 필드 -->
-      <div>
+      
+      <div class="input-container">
         <input type="text" v-model="newMessage" placeholder="메세지를 입력해주세요." required />
-        <button @click="submitMessage" class="btn btn-primary btn-lg btn-block">전송하기</button>
+        <button @click="submitMessage" class="btn btn-primary">전송하기</button>
       </div>
     </div>
   </div>
@@ -74,7 +74,6 @@ const submitMessage = () => {
 
 }
 
-
 .my-message {
   background-color: #e7f4fe;
   align-self: flex-end;
@@ -91,25 +90,31 @@ const submitMessage = () => {
   /* 상대방 메시지 왼쪽 정렬 */
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  margin: 20px;
-}
 
-label {
-  margin-bottom: 10px;
+.input-container {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 10px; 
 }
 
 input {
-  margin-bottom: 10px;
-  padding: 5px;
+  flex-grow: 1;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
 
 button {
-  padding: 5px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
   border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
 </style>
