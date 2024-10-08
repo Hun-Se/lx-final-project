@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.property.PropertyDAO">
+
+    <!-- 매물 리스트 가져오기 -->
+    <select id="getAllPropertiesByAgent" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
+        SELECT * FROM prp
+        WHERE user_pk = #{agentPk}
+    </select>
+
+    <!-- 특정 매물 가져오기 -->
+    <select id="getPropertyById" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
+        SELECT * FROM prp
+        WHERE prp_pk = #{prpPk}
+    </select>
+
+    <!-- 매물 저장 -->
+    <insert id="saveProperty" parameterType="com.lx.finalproject.vo.PrpVO">
+        INSERT INTO prp (prp_name, prp_img, prp_type, prp_supp_area, prp_excl_area, prp_block, prp_floor, prp_unit, prp_addr_detail, prp_trans_type, prp_deposit, prp_price, prp_maint_fee, prp_parking_avail, prp_constr, prp_struc_type, prp_desc, prp_status, prp_reg_time, region_pk, user_pk)
+        VALUES (#{prpName}, #{prpImg}, #{prpType}, #{prpSuppArea}, #{prpExclArea}, #{prpBlock}, #{prpFloor}, #{prpUnit}, #{prpAddrDetail}, #{prpTransType}, #{prpDeposit}, #{prpPrice}, #{prpMaintFee}, #{prpParkingAvail}, #{prpConstr}, #{prpStrucType}, #{prpDesc}, #{prpStatus}, #{prpRegTime}, #{regionPk}, #{userPk});
+    </insert>
+
+    <!-- 매물 업데이트 -->
+    <update id="updateProperty" parameterType="com.lx.finalproject.vo.PrpVO">
+        UPDATE prp SET
+            prp_name = #{prpName},
+            prp_img = #{prpImg},
+            prp_type = #{prpType},
+            prp_supp_area = #{prpSuppArea},
+            prp_excl_area = #{prpExclArea},
+            prp_block = #{prpBlock},
+            prp_floor = #{prpFloor},
+            prp_unit = #{prpUnit},
+            prp_addr_detail = #{prpAddrDetail},
+            prp_trans_type = #{prpTransType},
+            prp_deposit = #{prpDeposit},
+            prp_price = #{prpPrice},
+            prp_maint_fee = #{prpMaintFee},
+            prp_parking_avail = #{prpParkingAvail},
+            prp_constr = #{prpConstr},
+            prp_struc_type = #{prpStrucType},
+            prp_desc = #{prpDesc},
+            prp_status = #{prpStatus},
+            prp_reg_time = #{prpRegTime},
+            region_pk = #{regionPk},
+            user_pk = #{userPk}
+        WHERE prp_pk = #{prpPk};
+    </update>
+
+    <!-- 매물 삭제 -->
+    <delete id="deleteProperty" parameterType="int">
+        DELETE FROM prp WHERE prp_pk = #{prpPk};
+    </delete>
+</mapper>
