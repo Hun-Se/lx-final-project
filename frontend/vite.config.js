@@ -15,12 +15,22 @@ export default defineConfig({
     outDir: "../backend/src/main/resources/static",
   },
   server: {
+    host: '172.168.10.86', 
     proxy: {
-      "/api": {
-        target: "http://localhost:9000",
-        changeOrigin: true,
-        secure: false,
+      "/ws/chat": {
+          target: "http://localhost:9000", // 이 부분을 수정
+          changeOrigin: true,
+          secure: false,
+          ws: true, // WebSocket 프록시 활성화
       },
-    },
+      "/api": {
+          target: "http://localhost:9000", 
+          changeOrigin: true,
+          secure: false,
+          ws: false, // 일반 HTTP API
+      },
   },
+  
+}
+
 });

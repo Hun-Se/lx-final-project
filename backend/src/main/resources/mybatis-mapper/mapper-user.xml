@@ -6,7 +6,7 @@
 <mapper namespace="com.lx.finalproject.dao.user.UserDao">
 
     <!-- 조회 예시 -->
-    <select id="getAllExamples1" resultType="com.lx.finalproject.vo.ExampleVo">
+    <select id="getAllExamples1" resultType="com.lx.finalproject.vo.UserVo">
         SELECT * FROM example
     </select>
     <!-- 사용자 정보 조회 -->
@@ -30,7 +30,7 @@
 
 
     <!-- 등록 예시 -->
-    <insert id="createExample1" parameterType="com.lx.finalproject.vo.ExampleVo">
+    <insert id="createExample1" parameterType="com.lx.finalproject.vo.UserVo">
         INSERT INTO example (name, description) 
         VALUES (#{name}, #{description})
     </insert>
@@ -48,7 +48,7 @@
 
 
     <!-- 수정 -->
-    <update id="updateExample1" parameterType="com.lx.finalproject.vo.ExampleVo">
+    <update id="updateExample1" parameterType="com.lx.finalproject.vo.UserVo">
         UPDATE example
         SET name = #{name}, description = #{description}
         WHERE id = #{id}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.PropertyDao">
+	<!-- 매물 정보와 좌표 정보 조회 -->
+	<select id="getAllProperties"
+		resultType="com.lx.finalproject.vo.PropertyVo">
+		SELECT p.prp_pk, p.prp_name AS name, p.prp_price AS price, c.coord_lat AS
+		latitude, c.coord_long AS longitude
+		FROM prp p
+		JOIN coord c ON p.coord_pk = c.coord_pk
+	</select>
+
+	<!-- 특정 매물 정보와 좌표 정보 조회 -->
+	<select id="getPropertyById" parameterType="Long"
+		resultType="com.lx.finalproject.vo.PropertyVo">
+		SELECT p.prp_pk, p.prp_name AS name, p.prp_price AS price, c.coord_lat AS
+		latitude, c.coord_long AS longitude
+		FROM prp p
+		JOIN coord c ON p.coord_pk = c.coord_pk
+		WHERE p.prp_pk = #{prp_pk}
+	</select>
+</mapper>

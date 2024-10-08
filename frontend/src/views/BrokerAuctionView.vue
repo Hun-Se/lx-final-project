@@ -1,15 +1,24 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Header from "@/components/Header.vue";
+import axios from "axios";
 
-// 모달 상태
-const isModalVisible = ref(false);
+// 상태 관리
+const isModalVisible = ref(false); // 모달 열기/닫기 상태
+const isAgentListVisible = ref(false); // 중개사 리스트 열기/닫기 상태
+const properties = ref([]); // 매물 리스트
+const feeEstimate = ref(null); // 중개 수수료 계산 결과
+const auctionDetails = ref([]); // 경매 현황 정보
+const userBidAmount = ref(0); // 사용자가 입력한 중개수수료
+const selectedPropertyId = ref(null); // 선택된 매물 ID
 
-// 접이식 상태 관리
-const isAgentListVisible = ref(false);
+// 로그인된 사용자와 중개사 타입 정보 (임시 지정)
+const brokerId = 2; // 중개사 ID
+const userId = 1; // 사용자 ID
 
 // 모달 열기/닫기 함수
-function openModal() {
+function openModal(propertyId) {
+  selectedPropertyId.value = propertyId;
   isModalVisible.value = true;
 }
 
@@ -21,6 +30,57 @@ function closeModal() {
 function toggleAgentList() {
   isAgentListVisible.value = !isAgentListVisible.value;
 }
+
+// 매물 리스트, 중개 수수료, 경매 현황 데이터 가져오기
+async function fetchProperties() {
+  try {
+    const response = await axios.get('/api/properties/agent');
+    properties.value = response.data;
+
+    if (properties.value.length > 0) {
+      const propertyId = properties.value[0].prp_pk;
+
+      // 예상 수수료 정보 호출
+      const feeResponse = await axios.get(`/api/calculate`, {
+        params: {
+          deposit: properties.value[0].deposit, // 보증금
+          price: properties.value[0].price, // 매매가
+          transactionType: properties.value[0].transactionType // 거래유형
+        }
+      });
+      feeEstimate.value = feeResponse.data;
+
+      // 경매 현황 정보 호출
+      const auctionResponse = await axios.get(`/api/auction/agent-auctions/${propertyId}`);
+      auctionDetails.value = auctionResponse.data;
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    alert("데이터를 불러오는데 문제가 발생했습니다.");
+  }
+}
+
+// 입찰 참여 함수
+async function submitBid(bidAmount) {
+  try {
+    const response = await axios.post('/api/auction/submit-bid', {
+      bidAmount: bidAmount,
+      propertyId: selectedPropertyId.value,
+      userId: userId,
+      brokerId: brokerId
+    });
+    console.log('입찰 완료:', response.data);
+    closeModal();
+  } catch (error) {
+    console.error("입찰 실패:", error);
+    alert("입찰에 실패했습니다.");
+  }
+}
+
+// 컴포넌트가 마운트될 때 데이터 불러오기
+onMounted(() => {
+  fetchProperties();
+});
 </script>
 
 <template>
@@ -37,21 +97,23 @@ function toggleAgentList() {
         class="app-container container-xxl d-flex justify-content-center align-items-center flex-grow-1 p-5"
       >
         <div
-          class="d-flex flex-column flex-xl-row justify-content-center align-items-center flex-grow-1"
+          class="d-flex flex-column justify-content-center align-items-center flex-grow-1"
         >
+          <!-- 여기에 타이틀 추가 -->
+          <h2 class="auction-title">경매낙찰 화면</h2>
           <div class="property-list">
-            <div class="property-item">
+            <div class="property-item" v-for="property in properties" :key="property.prp_pk">
               <div class="property-info">
                 <img src="/assets/img/home.jpg" alt="home image" />
                 <div class="property-details">
-                  <div>신사동 힐스테이트 뉴포레</div>
-                  <div class="property-price">매매 13억 5,000</div>
+                  <div>{{ property.prp_name }}</div>
+                  <div class="property-price">매매 {{ property.prp_price }}원</div>
                   <button class="toggle-button" @click="toggleAgentList">
                     경매 현황 보기
                   </button>
                 </div>
               </div>
-              <button class="join-button" @click="openModal">참여</button>
+              <button class="join-button" @click="openModal(property.prp_pk)">참여</button>
             </div>
 
             <!-- 접이식 공인중개사 리스트 -->
@@ -72,7 +134,7 @@ function toggleAgentList() {
                   <tr>
                     <td>1</td>
                     <td>매매가</td>
-                    <td>1,350,000,000</td>
+                    <td>{{ feeEstimate.price }}</td>
                     <td></td>
                   </tr>
                   <tr>
@@ -84,37 +146,23 @@ function toggleAgentList() {
                   <tr class="highlight">
                     <td>3</td>
                     <td>중개 수수료</td>
-                    <td>8,100,000</td>
+                    <td>{{ feeEstimate.brokerageFee }}</td>
                     <td>기준 금액 × 요율</td>
                   </tr>
                   <tr>
                     <td>4</td>
                     <td>부가세 포함</td>
-                    <td>8,910,000</td>
-                    <td>VAT 10%(810,000) 포함</td>
+                    <td>{{ feeEstimate.vat }}</td>
+                    <td>VAT 10%</td>
                   </tr>
                 </tbody>
               </table>
 
               <h3>중개수수료 경매 현황</h3>
-              <div class="agent-item">
-                <img
-                  src="/assets/img/home.jpg"
-                  alt="공인중개사 아이콘"
-                  class="agent-icon"
-                />
-                <span>뚜벅뚜벅 걷는 퀴카 공인중개사</span>
-                <span class="agent-price">5,940,000원</span>
-                <button class="agent-bid-button">낙찰</button>
-              </div>
-              <div class="agent-item">
-                <img
-                  src="/assets/img/home.jpg"
-                  alt="공인중개사 아이콘"
-                  class="agent-icon"
-                />
-                <span>에어컨 씻는 친칠라 공인중개사</span>
-                <span class="agent-price">7,510,000원</span>
+              <div class="agent-item" v-for="auction in auctionDetails" :key="auction.agentName">
+                <img src="/assets/img/home.jpg" alt="공인중개사 아이콘" class="agent-icon" />
+                <span>{{ auction.agentName }}</span>
+                <span class="agent-price">{{ auction.bidAmount }}원</span>
                 <button class="agent-bid-button">낙찰</button>
               </div>
             </div>
@@ -122,11 +170,10 @@ function toggleAgentList() {
 
           <!-- 모달 창 -->
           <div v-if="isModalVisible" class="modal" id="modal">
-            <div>예상 중개수수료: 8,100,000원</div>
-            <div>가장 낮은 중개수수료: 5,940,000원</div>
-            <input type="number" placeholder="중개수수료를 입력하세요!" />
+            <div>예상 중개수수료: {{ feeEstimate ? feeEstimate.brokerageFee : '' }}원</div>
+            <input type="number" v-model="userBidAmount" placeholder="중개수수료를 입력하세요!" />
             <div>
-              <button class="modal-button" @click="closeModal">참여</button>
+              <button class="modal-button" @click="submitBid(userBidAmount)">참여</button>
               <button class="modal-button" @click="closeModal">취소</button>
             </div>
           </div>
@@ -140,10 +187,7 @@ function toggleAgentList() {
 </template>
 
 <style scoped>
-body {
-  font-family: Arial, sans-serif;
-}
-
+/* 스타일 */
 .property-list {
   margin: 20px;
 }
@@ -205,8 +249,7 @@ body {
   border-radius: 8px;
   margin-top: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%; /* 리스트 너비 지정 */
-  box-sizing: border-box; /* 패딩과 함께 너비 계산 */
+  width: 100%;
 }
 
 .fee-table {
@@ -273,10 +316,10 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   z-index: 1000;
-  width: 50%; /* 모달의 너비를 80%로 설정 */
-  max-width: 1000px; /* 모달의 최대 너비 설정 */
-  height: auto; /* 높이를 자동으로 설정 */
-  overflow-y: auto; /* 콘텐츠가 넘칠 경우 스크롤 가능하도록 설정 */
+  width: 50%;
+  max-width: 1000px;
+  height: auto;
+  overflow-y: auto;
 }
 
 .modal input {
@@ -285,7 +328,7 @@ body {
   margin: 10px 0;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-sizing: border-box; /* 패딩과 함께 너비 계산 */
+  box-sizing: border-box;
 }
 
 .modal-button {
@@ -306,5 +349,12 @@ body {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
+}
+
+.auction-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
 }
 </style>
