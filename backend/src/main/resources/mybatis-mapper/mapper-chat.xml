@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.ExampleDao">
+
+   <!-- 채팅 -->
+	<insert id="createChat"
+		parameterType="com.lx.finalproject.vo.ChatMessageVo">
+		INSERT INTO chat user_name, message, room_id
+		time)
+		VALUES (#{userName}, #{message}, #{roomId}, #{time});
+	</insert>
+  
+</mapper>

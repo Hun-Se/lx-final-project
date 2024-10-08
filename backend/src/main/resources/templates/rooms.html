@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Rooms</title>
+</head>
+<body>
+    <form id="enter-form">
+      <label for="userName">
+        이름:
+        <input id="userName" type="text">
+      </label>
+      <button id="enter-button" type="submit">입장</button>
+    </form>
+    <script>
+      document.getElementById("enter-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const userName = document.getElementById("userName").value;
+        location.href = `/chat/enter?userName=${userName}`;
+      });
+    </script>
+</body>
+</html>

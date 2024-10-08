@@ -10,6 +10,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { onMounted } from "vue";
 import { useExampleStore } from "@/stores/example";
@@ -24,6 +25,7 @@ async function init() {
 }
 const { data } = storeToRefs(store);
 </script>
+
 <style scoped>
 li {
   color: var(--color-bg-blue1);
