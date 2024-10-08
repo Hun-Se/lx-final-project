@@ -118,6 +118,7 @@
         type="button"
         class="btn btn-secondary"
         style="border-radius: 10ex; font-weight: bold"
+        @click="goToLogin"
       >
         로그인하고 더 많은 기능보기
       </button>
@@ -126,6 +127,7 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import Header from "@/components/Header.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import { useMobileStore } from "@/stores/mobile";
@@ -138,12 +140,21 @@ function init() {
   postTest();
 }
 init();
+
 const renderHeader = () => {
   if (isMobile.value) {
     return MobileHeader;
   } else {
     return Header;
   }
+};
+
+// useRouter 훅 사용하여 router 객체 가져오기
+const router = useRouter();
+
+// 로그인 버튼 클릭 시 호출되는 함수
+const goToLogin = () => {
+  router.push({ name: "login" }); // 로그인 페이지로 이동
 };
 </script>
 
