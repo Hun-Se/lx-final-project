@@ -1,15 +1,12 @@
 <template>
+  <component :is="renderHeader()" />
   <div id="app">
     <div id="conversation" style="margin-top: 10ex;" v-if="!chatStore.isInChat">
       <label for="userName" style="font-weight: bold; font-size: 1.2em;">
         이름:
         <input id="userName" v-model="userNameInput" type="text" required />
       </label>
-      <button
-        id="enter-button"
-        @click="enterChat(userNameInput)"
-        class="btn btn-primary btn-lg btn-block"
-      >
+      <button id="enter-button" @click="enterChat(userNameInput)" class="btn btn-primary btn-lg btn-block">
         입장
       </button>
     </div>
@@ -20,19 +17,35 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useChatStore } from '@/stores/chat'; 
-import { useRouter } from 'vue-router'; 
+import { useChatStore } from '@/stores/chat';
+import { useRouter } from 'vue-router';
 import ChattingInputView from './ChattingInputView.vue'; // 채팅방 컴포넌트 불러오기
 import { initializeWebSocket } from '@/api/chat';
 
-const chatStore = useChatStore(); 
-const router = useRouter(); 
+import Header from "@/components/Header.vue";
+import MobileHeader from "@/components/MobileHeader.vue";
+import { useMobileStore } from "@/stores/mobile";
+import { storeToRefs } from "pinia";
+
+const store = useMobileStore();
+const { isMobile } = storeToRefs(store);
+
+const renderHeader = () => {
+  if (isMobile.value) {
+    return MobileHeader;
+  } else {
+    return Header;
+  }
+};
+
+const chatStore = useChatStore();
+const router = useRouter();
 const userNameInput = ref("");
 
 // 채팅 입장 처리
 const enterChat = (name) => {
   if (chatStore.isInChat) return; // 이미 채팅에 입장한 경우 처리
-  chatStore.enterChat(name); 
+  chatStore.enterChat(name);
   initializeWebSocket(name, chatStore); // 사용자 이름과 chatStore를 인자로 전달
   router.push('/chatting'); // 채팅 페이지로 이동
 };
@@ -44,10 +57,10 @@ const enterChat = (name) => {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   width: 180ex;
-  margin: 0 auto; 
-  max-width: 100%; 
+  margin: 0 auto;
+  max-width: 100%;
 }
 
 #response {
@@ -60,20 +73,24 @@ const enterChat = (name) => {
   margin-bottom: 5px;
   padding: 8px;
   border-radius: 5px;
-  
+
 }
 
 
 .my-message {
-  background-color: #e7f4fe; 
-  align-self: flex-end; /* 사용자 메시지 오른쪽 정렬 */
-  text-align: right; /* 사용자 메시지 오른쪽 정렬 */
+  background-color: #e7f4fe;
+  align-self: flex-end;
+  /* 사용자 메시지 오른쪽 정렬 */
+  text-align: right;
+  /* 사용자 메시지 오른쪽 정렬 */
 }
 
 .other-message {
-  background-color: #fdecf8; 
-  align-self: flex-start; /* 상대방 메시지 왼쪽 정렬 */
-  text-align: left; /* 상대방 메시지 왼쪽 정렬 */
+  background-color: #fdecf8;
+  align-self: flex-start;
+  /* 상대방 메시지 왼쪽 정렬 */
+  text-align: left;
+  /* 상대방 메시지 왼쪽 정렬 */
 }
 
 form {
@@ -90,11 +107,11 @@ input {
   margin-bottom: 10px;
   padding: 5px;
   border: 1px solid #ccc;
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 
 button {
   padding: 5px;
-  border-radius: 5px; 
+  border-radius: 5px;
 }
 </style>

@@ -1,6 +1,20 @@
 <script setup>
 import { ref } from "vue";
 import Header from "@/components/Header.vue";
+import MobileHeader from "@/components/MobileHeader.vue";
+import { useMobileStore } from "@/stores/mobile";
+import { storeToRefs } from "pinia";
+
+const store = useMobileStore();
+const { isMobile } = storeToRefs(store);
+
+const renderHeader = () => {
+  if (isMobile.value) {
+    return MobileHeader;
+  } else {
+    return Header;
+  }
+};
 
 // 모달 상태
 const isModalVisible = ref(false);
@@ -24,23 +38,14 @@ function toggleAgentList() {
 </script>
 
 <template>
-  <Header />
-  <div
-    class="d-flex flex-column flex-column-fluid justify-content-center align-items-center flex-grow-1"
-  >
-    <div
-      id="kt_app_content"
-      class="app-content flex-column-fluid d-flex flex-grow-1 flex-column"
-    >
-      <div
-        id="kt_app_content_container"
-        class="app-container container-xxl d-flex justify-content-center align-items-center flex-grow-1 p-5"
-      >
-        <div
-          class="d-flex flex-column justify-content-center align-items-center flex-grow-1"
-        >
-        <!-- 여기에 타이틀 추가 -->
-        <h2 class="auction-title">경매낙찰 화면</h2>
+  <component :is="renderHeader()" />
+  <div class="d-flex flex-column flex-column-fluid justify-content-center align-items-center flex-grow-1">
+    <div id="kt_app_content" class="app-content flex-column-fluid d-flex flex-grow-1 flex-column">
+      <div id="kt_app_content_container"
+        class="app-container container-xxl d-flex justify-content-center align-items-center flex-grow-1 p-5">
+        <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1">
+          <!-- 여기에 타이틀 추가 -->
+          <h2 class="auction-title">경매낙찰 화면</h2>
           <div class="property-list">
             <div class="property-item">
               <div class="property-info">
@@ -100,21 +105,13 @@ function toggleAgentList() {
 
               <h3>중개수수료 경매 현황</h3>
               <div class="agent-item">
-                <img
-                  src="/assets/img/home.jpg"
-                  alt="공인중개사 아이콘"
-                  class="agent-icon"
-                />
+                <img src="/assets/img/home.jpg" alt="공인중개사 아이콘" class="agent-icon" />
                 <span>뚜벅뚜벅 걷는 퀴카 공인중개사</span>
                 <span class="agent-price">5,940,000원</span>
                 <button class="agent-bid-button">낙찰</button>
               </div>
               <div class="agent-item">
-                <img
-                  src="/assets/img/home.jpg"
-                  alt="공인중개사 아이콘"
-                  class="agent-icon"
-                />
+                <img src="/assets/img/home.jpg" alt="공인중개사 아이콘" class="agent-icon" />
                 <span>에어컨 씻는 친칠라 공인중개사</span>
                 <span class="agent-price">7,510,000원</span>
                 <button class="agent-bid-button">낙찰</button>
@@ -207,8 +204,10 @@ body {
   border-radius: 8px;
   margin-top: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100%; /* 리스트 너비 지정 */
-  box-sizing: border-box; /* 패딩과 함께 너비 계산 */
+  width: 100%;
+  /* 리스트 너비 지정 */
+  box-sizing: border-box;
+  /* 패딩과 함께 너비 계산 */
 }
 
 .fee-table {
@@ -275,10 +274,14 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   z-index: 1000;
-  width: 50%; /* 모달의 너비를 80%로 설정 */
-  max-width: 1000px; /* 모달의 최대 너비 설정 */
-  height: auto; /* 높이를 자동으로 설정 */
-  overflow-y: auto; /* 콘텐츠가 넘칠 경우 스크롤 가능하도록 설정 */
+  width: 50%;
+  /* 모달의 너비를 80%로 설정 */
+  max-width: 1000px;
+  /* 모달의 최대 너비 설정 */
+  height: auto;
+  /* 높이를 자동으로 설정 */
+  overflow-y: auto;
+  /* 콘텐츠가 넘칠 경우 스크롤 가능하도록 설정 */
 }
 
 .modal input {
@@ -287,7 +290,8 @@ body {
   margin: 10px 0;
   border: 1px solid #ddd;
   border-radius: 5px;
-  box-sizing: border-box; /* 패딩과 함께 너비 계산 */
+  box-sizing: border-box;
+  /* 패딩과 함께 너비 계산 */
 }
 
 .modal-button {
@@ -320,11 +324,16 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   z-index: 1000;
-  width: 80%; /* 모달의 너비를 80%로 설정 */
-  max-width: 500px; /* 모달의 최대 너비를 500px로 설정 */
-  height: auto; /* 높이를 자동으로 설정 */
-  overflow-y: auto; /* 콘텐츠가 넘칠 경우 스크롤 가능하도록 설정 */
-  display: block; /* 모달이 보이도록 설정 */
+  width: 80%;
+  /* 모달의 너비를 80%로 설정 */
+  max-width: 500px;
+  /* 모달의 최대 너비를 500px로 설정 */
+  height: auto;
+  /* 높이를 자동으로 설정 */
+  overflow-y: auto;
+  /* 콘텐츠가 넘칠 경우 스크롤 가능하도록 설정 */
+  display: block;
+  /* 모달이 보이도록 설정 */
 }
 
 /* 타이틀 스타일 */
