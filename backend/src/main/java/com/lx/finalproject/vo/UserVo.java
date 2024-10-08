@@ -11,8 +11,8 @@ public class UserVo {
     private String userSsn;     // user_ssn
     private String userMobile;  // user_mobile
     private String userEmail;   // user_email
-    private Integer regionPk;       // region_pk (지역 외래키)
-    private Integer regionPk2;      // region_pk2 (추가 지역 외래키)
+    private Integer regionPk;       // region_pk (거주지역 외래키)
+    private Integer regionPk2;      // region_pk2 (관심지역 외래키)
     
     // Getters and Setters
 	public Integer getUserPk() {

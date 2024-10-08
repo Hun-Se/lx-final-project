@@ -8,9 +8,13 @@ import com.lx.finalproject.vo.UserVo;
 @Mapper
 public interface UserDao {
 
-    void createUser(UserVo exampleVo);
+    void createUser(UserVo userVo);
 
     int getUserByUserId(String userId);
     
     UserVo loginUser(@Param("userId") String userId, @Param("userPassword") String password);
+
+	String getUserNameByUserPk(int userPk);
+
+	int checkUserId(String userId);
 }

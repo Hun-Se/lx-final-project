@@ -41,7 +41,17 @@
         userId: userId.value,
         userPw: userPw.value,
       });
-      console.log('Login Success', response.data);
+
+      // 로그인 성공 시 메인 페이지로 이동
+      if (response.data !== 700) { // 로그인 성공
+        console.log('Login Success', response.data);
+        sessionStorage.setItem('userPk', response.data)
+
+        router.push('/'); // 홈 페이지로 이동
+      } else {
+        console.error('Invalid credentials');
+      }
+
     } catch (error) {
       console.error('Login Failed', error.response?.data || error.message);
     }
