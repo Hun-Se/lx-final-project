@@ -19,6 +19,7 @@ const userId = 1; // 사용자 ID
 // 모달 열기/닫기 함수
 function openModal(propertyId) {
   selectedPropertyId.value = propertyId;
+  fetchFeeEstimateByPropertyId(propertyId);  // 해당 매물의 수수료 정보 불러오기
   isModalVisible.value = true;
 }
 
@@ -34,29 +35,28 @@ function toggleAgentList() {
 // 매물 리스트, 중개 수수료, 경매 현황 데이터 가져오기
 async function fetchProperties() {
   try {
-    const response = await axios.get('/api/properties/agent');
+    const response = await axios.get('/api/properties/agent', { params: { agentId: brokerId } });
     properties.value = response.data;
 
+    // 첫 번째 매물에 대해 중개수수료 계산
     if (properties.value.length > 0) {
       const propertyId = properties.value[0].prp_pk;
-
-      // 예상 수수료 정보 호출
-      const feeResponse = await axios.get(`/api/calculate`, {
-        params: {
-          deposit: properties.value[0].deposit, // 보증금
-          price: properties.value[0].price, // 매매가
-          transactionType: properties.value[0].transactionType // 거래유형
-        }
-      });
-      feeEstimate.value = feeResponse.data;
-
-      // 경매 현황 정보 호출
-      const auctionResponse = await axios.get(`/api/auction/agent-auctions/${propertyId}`);
-      auctionDetails.value = auctionResponse.data;
+      fetchFeeEstimateByPropertyId(propertyId);
     }
   } catch (error) {
-    console.error("Error fetching data:", error);
-    alert("데이터를 불러오는데 문제가 발생했습니다.");
+    console.error("Error fetching properties:", error);
+    alert("매물 데이터를 불러오는데 문제가 발생했습니다.");
+  }
+}
+
+// 매물 ID를 이용한 중개수수료 계산
+async function fetchFeeEstimateByPropertyId(propertyId) {
+  try {
+    const feeResponse = await axios.get(`/api/auction/calculate/${propertyId}`);
+    feeEstimate.value = feeResponse.data;
+  } catch (error) {
+    console.error("Error calculating fee:", error);
+    alert("중개수수료 계산에 문제가 발생했습니다.");
   }
 }
 
@@ -79,7 +79,7 @@ async function submitBid(bidAmount) {
 
 // 컴포넌트가 마운트될 때 데이터 불러오기
 onMounted(() => {
-  fetchProperties();
+  fetchProperties(); // 매물 리스트 가져오기
 });
 </script>
 

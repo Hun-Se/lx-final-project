@@ -28,7 +28,7 @@ const router = createRouter({
     {
       path: "/user_auction",
       name: "user_acution",
-      component: () => import("../views/UserAuctionView.vue"),
+      component: () => import("../views/userAuctionView.vue"),
     },
     {
       path: "/login",

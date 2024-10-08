@@ -45,42 +45,61 @@ public class AuctionService {
 		}
 		return transactionAmount;
 	}
+	
+	 // 매물유형과 거래금액에 따른 중개수수료 계산
+    // - prpType = 매물유형 (0: 주택, 1: 오피스텔, 2: 그외)
+    // - transactionType = 거래유형
+    // - transactionAmount = 거래금액
+    public double calculateBrokerageFee(Integer prpType, Integer transactionType, double transactionAmount, double prpExclArea) {
+        double feeRate = 0.0;
+        double maxFee = 0.0;
 
-	// 거래금액과 면적을 기반으로 중개수수료 계산
-	// - transactionType = 거래유형
-	// - transactionAmount = 거래금액
-	public double calculateBrokerageFee(Integer transactionType, double transactionAmount) {
-		double feeRate = 0.0;
-		double maxFee = 0.0;
-
-		// 1. 거래유형에 따른 기본 수수료율 계산
-		if (transactionType == 0) { // 매매
-			if (transactionAmount < 50000000) {
-				feeRate = 0.006;
-				maxFee = 250000;
-			} else if (transactionAmount < 200000000) {
-				feeRate = 0.005;
-				maxFee = 800000;
-			} else if (transactionAmount < 900000000) {
-				feeRate = 0.004;
-			} else if (transactionAmount < 1200000000) {
-				feeRate = 0.005;
-			} else if (transactionAmount < 1500000000) {
-				feeRate = 0.006;
-			} else {
-				feeRate = 0.007;
-			}
-		} else if (transactionType == 1 || transactionType == 2) { // 전세 또는 월세
-			if (transactionAmount < 50000000) {
-				feeRate = 0.005;
-				maxFee = 200000;
-			} else if (transactionAmount < 100000000) {
-				feeRate = 0.004;
-				maxFee = 300000;
-			} else {
-				feeRate = (transactionType == 1) ? 0.003 : 0.004; // 전세와 월세의 기본 상한 요율 차이 반영
-			}
-		}
+        if (prpType == 0) { // 주택 유형
+            if (transactionType == 0) { // 매매
+                if (transactionAmount < 50000000) {
+                    feeRate = 0.006;
+                    maxFee = 250000;
+                } else if (transactionAmount < 200000000) {
+                    feeRate = 0.005;
+                    maxFee = 800000;
+                } else if (transactionAmount < 900000000) {
+                    feeRate = 0.004;
+                } else if (transactionAmount < 1200000000) {
+                    feeRate = 0.005;
+                } else if (transactionAmount < 1500000000) {
+                    feeRate = 0.006;
+                } else {
+                    feeRate = 0.007;
+                }
+            } else if (transactionType == 1 || transactionType == 2) { // 전세 또는 월세
+                if (transactionAmount < 50000000) {
+                    feeRate = 0.005;
+                    maxFee = 200000;
+                } else if (transactionAmount < 100000000) {
+                    feeRate = 0.004;
+                    maxFee = 300000;
+                } else {
+                    feeRate = (transactionType == 1) ? 0.003 : 0.004; // 전세와 월세의 기본 상한 요율 차이 반영
+                }
+            }
+        } else if (prpType == 1) { // 오피스텔 유형
+            if (transactionType == 0) { // 매매
+                if (prpExclArea <= 85) { // 전용면적 85㎡ 이하인 경우
+                    feeRate = 0.005; // 상한요율 5%
+                } else {
+                    feeRate = 0.009; // 그 외 경우 상한요율 9%
+                }
+            } else if (transactionType == 1) { // 임대차
+                if (prpExclArea <= 85) { // 전용면적 85㎡ 이하인 경우
+                    feeRate = 0.004; // 상한요율 4%
+                } else {
+                    feeRate = 0.009; // 그 외 경우 상한요율 9%
+                }
+            }
+        } else { // 그 외 유형 (토지, 상가 등)
+            feeRate = 0.009; // 상한요율 9%
+        }
+	
 
 //		// 0. 건축물 면적과 주택 면적의 비율에 따른 수수료율 조정
 //        if (area >= (buildingArea / 2)) {
