@@ -5,15 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vue-cli-service build",
+    "preview": "vite preview",
+    "serve": "vue-cli-service serve",
+    "stg": "vue-cli-service serve --mode production",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@quasar/vite-plugin": "^1.7.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.4",
     "frontend": "file:",
     "pinia": "^2.1.7",
+    "vite-plugin-html-env": "^1.2.8",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },

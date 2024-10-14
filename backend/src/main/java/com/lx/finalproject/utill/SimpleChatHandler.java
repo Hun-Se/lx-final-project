@@ -20,16 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Slf4j
 @Component
-@RequiredArgsConstructor 
+@RequiredArgsConstructor
 public class SimpleChatHandler extends TextWebSocketHandler {
-	
-	private static final Logger log = LoggerFactory.getLogger(SimpleChatHandler.class);
 
+    private static final Logger log = LoggerFactory.getLogger(SimpleChatHandler.class);
     private final List<WebSocketSession> sessions = new ArrayList<>();
-    private final Gson gson; 
+    private final Gson gson = new Gson(); // Gson 객체 직접 생성
 
     public void broadcast(String message) throws Exception {
         for (WebSocketSession connected : sessions) {
@@ -59,6 +57,3 @@ public class SimpleChatHandler extends TextWebSocketHandler {
         sessions.remove(session);
     }
 }
-
-
-
