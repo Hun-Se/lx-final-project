@@ -1,4 +1,4 @@
-import { useSalesDetailsStore } from "@/stores/salesDetails";
+import { useSalesDetailsStore } from "@/stores/propertyDetails.js";
 import { storeToRefs } from "pinia";
 
 import { apiInstance } from "./index.js";

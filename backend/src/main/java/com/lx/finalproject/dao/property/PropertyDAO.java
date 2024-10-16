@@ -25,4 +25,7 @@ public interface PropertyDAO {
 
     // 매물 전체가저오기
 	List<PrpVO> getAllProperties();
+
+    //관심매물 삭제
+    void deleteInterestPrp(@Param("prpPk") int prpPk);
 }

@@ -56,4 +56,9 @@
     <delete id="deleteProperty" parameterType="int">
         DELETE FROM prp WHERE prp_pk = #{prpPk};
     </delete>
+
+    <!--  관심매물삭제   -->
+    <delete id="deleteInterestPrp" parameterType="int">
+        DELETE FROM favprp WHERE prp_pk = #{prpPk};
+    </delete>
 </mapper>

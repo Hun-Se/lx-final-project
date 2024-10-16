@@ -59,6 +59,11 @@ const router = createRouter({
       path: "/board",
       name: "board",
       component: () => import("../views/BoardView.vue"),
+    },
+    {
+      path: "/viewing_prp",
+      name: "viewingPrp",
+      component: () => import("../views/ViewingPrpView.vue")
     }
   ],
 });

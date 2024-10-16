@@ -1,7 +1,12 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 
-import { requestSalesList, requestSaleById } from "@/api/sales";
+import {
+  requestSalesList,
+  requestSaleById,
+  requestMyProperty,
+  requestMyInterestPrp,
+} from "@/api/property.js";
 
 export const useSaleStore = defineStore("sale", () => {
   //==== begin::매물 =====//
@@ -19,7 +24,6 @@ export const useSaleStore = defineStore("sale", () => {
     if (response) {
       // 매물 리스트 업데이트
       sales.value = response;
-      console.log("Updated sales list:", sales.value);
     } else {
       console.warn("응답 데이터가 없습니다.");
     }
@@ -35,7 +39,33 @@ export const useSaleStore = defineStore("sale", () => {
 
       // 선택된 매물 정보 업데이트
       selectedSalesDetails.value = response;
-      console.log("Updated sales list:", sales.value);
+    } else {
+      console.warn("응답 데이터가 없습니다.");
+    }
+  }
+
+  const saleListByAgent = ref([]);
+
+  async function fetchSaleListByAgent(agent_pk) {
+    const response = await requestMyProperty(agent_pk);
+
+    if (response) {
+      console.log(`response -> ${JSON.stringify(response)}`);
+      saleListByAgent.value = response;
+    } else {
+      console.warn("응답 데이터가 없습니다.");
+    }
+  }
+
+  const intersetPrpList = ref([]);
+
+  async function fetchIntersetPrp(userPk) {
+    console.log(userPk);
+    const response = await requestMyInterestPrp(userPk);
+
+    if (response) {
+      console.log(`response -> ${JSON.stringify(response)}`);
+      intersetPrpList.value = response;
     } else {
       console.warn("응답 데이터가 없습니다.");
     }
@@ -44,7 +74,11 @@ export const useSaleStore = defineStore("sale", () => {
   return {
     sales,
     selectedSalesDetails,
+    saleListByAgent,
+    intersetPrpList,
     fetchSalesList,
     fetchSalesDetails,
+    fetchSaleListByAgent,
+    fetchIntersetPrp,
   };
 });

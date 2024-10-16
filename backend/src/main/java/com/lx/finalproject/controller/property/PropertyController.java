@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.lx.finalproject.service.property.PropertyService;
 import com.lx.finalproject.vo.PrpVO;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/properties")
@@ -47,5 +48,12 @@ public class PropertyController {
     @DeleteMapping("/delete/{prpPk}")
     public void deleteProperty(@PathVariable int prpPk) {
     	service.deleteProperty(prpPk);
+    }
+
+    // 매물 삭제
+    @DeleteMapping("/interest/delete")
+    public void deleteProperty(@RequestBody Map<String, Object> req) {
+        int prpPk = Integer.valueOf(req.get("prpPk").toString());
+        service.deleteInterestPrp(prpPk);
     }
 }

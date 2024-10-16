@@ -51,7 +51,7 @@ function goToHome() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 2rem;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
 }
