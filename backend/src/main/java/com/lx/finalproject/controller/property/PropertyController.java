@@ -8,7 +8,7 @@ import com.lx.finalproject.vo.PrpVO;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/properties")
+@RequestMapping("/api")
 public class PropertyController {
 
     @Autowired

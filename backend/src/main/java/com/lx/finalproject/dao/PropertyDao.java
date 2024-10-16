@@ -1,13 +1,14 @@
 package com.lx.finalproject.dao;
 
 import java.util.List;
-import com.lx.finalproject.vo.PropertyVo;
+
+import com.lx.finalproject.dto.prp.PrpDTO;
 
 public interface PropertyDao {
 	
 	// 매물 리스트 가져오기
-    List<PropertyVo> getAllProperties();
+    List<PrpDTO> getAllProperties();
     
     
-    PropertyVo getPropertyById(Long prp_pk);
+    PrpDTO getPropertyMarkerById(Long prp_pk);
 }
