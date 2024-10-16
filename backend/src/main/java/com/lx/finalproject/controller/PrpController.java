@@ -1,7 +1,5 @@
 package com.lx.finalproject.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,20 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 //import com.lx.finalproject.service.PrpService;
 
 @RestController
-@RequestMapping("/api/prp")
+@RequestMapping("/api/properties")
 public class PrpController {
    
-//   @Autowired
-//   private PrpService prpService;
-   
-   // 모든 매물을 보여주기
+	/*
+	 * @GetMapping public String getPrpList(){ System.out.println("GET 요청받음");
+	 * String prpList = "테스트"; return prpList; }
+	 */
    @PostMapping
-   public String getPrpList(){
-      System.out.println("요청받음");
+   public String postPrpList(){
+      System.out.println("POST 요청받음");
       String prpList = "테스트";
-//      System.out.println(prpList);
       return prpList;
    }
+}
    
    // 설정한 필터 값으로 해당하는 매물을 조회해서 리턴
-}

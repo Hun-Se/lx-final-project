@@ -7,6 +7,7 @@
         class="app-sidebar flex-column custom-sidebar"
         :class="{ open: isOpen }"
       >
+      
         <div
           id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
