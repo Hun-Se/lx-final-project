@@ -28,7 +28,7 @@ export default ({ mode }) => {
     },
     server: {
       host: 'localhost',
-      port: 9000,
+      port: 5173,
       proxy: {
         "/ws/chat": {
           target: env.VITE_API_URL, // .env에서 불러온 API URL
