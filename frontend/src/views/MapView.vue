@@ -603,7 +603,39 @@
       </div>
       <!--end::사이드바-->
     </div>
-    <NaverMap></NaverMap>
+    <div id="modalBackground">
+     <NaverMap ></NaverMap>  
+    </div>
+
+   <!-- AI GPT modal -->
+<button type="button" id="exampleModalButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <i class="bi bi-robot" style="font-size: 38px; margin-left: 4px;"></i>
+</button>
+
+<!-- AI GPT Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="false"> 
+  <div class="modal-dialog" style="position: absolute; top: 440px; left: 1050px; max-width: 330px; width: 100%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">AI Chat 서비스</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- 모달 내용 -->
+      </div>
+      <div class="input-group mb-3" style="max-width: 300px; margin-left: 4px;">
+        <input type="text" name="AiGPT" value="원하시는 매물 조건을 입력해주세요." class="form-control">
+        <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
   </div>
 </template>
 
@@ -709,12 +741,37 @@ const showModal = ref(false);
 </script>
 
 <style scoped>
-/*===== begin::헤더,메인,푸터 기본화면 =====*/
+#exampleModal {
+  z-index: 9999;
+  
+}
 
+#exampleModalButton {
+  z-index: 9999;
+  position: relative;
+  left: 1400px;
+  top: 650px;
+  width: 70px; 
+  height: 70px; 
+  border-radius: 50%; 
+  background-color: #007bff; 
+  color: white; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none; 
+}
+
+#modalBackground{
+  z-index: 1040;
+}
+
+/*===== begin::헤더,메인,푸터 기본화면 =====*/
 #mainPage {
   width: 100%;
   height: 100%;
 }
+
 
 #headerPart {
   position: sticky;
@@ -728,7 +785,9 @@ const showModal = ref(false);
 
 /*===== end::헤더,메인,푸터 기본화면 =====*/
 
-/* 글씨체 */
+/* 글씨체 *
+
+
 .gothic-a1-thin {
   font-family: "Gothic A1", sans-serif;
   font-weight: 100;
