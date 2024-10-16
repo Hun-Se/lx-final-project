@@ -36,4 +36,8 @@ public class PropertyService {
 	
 		return dao.getAllProperties();
 	}
+
+    public void  deleteInterestPrp(int prpPk) {
+        dao.deleteInterestPrp(prpPk);
+    }
 }

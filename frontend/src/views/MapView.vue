@@ -642,7 +642,7 @@
 <script setup>
 import { ref, computed, reactive, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { useSaleStore } from "@/stores/sales";
+import { useSaleStore } from "@/stores/property.js";
 import NaverMap from "@/components/NaverMap.vue";
 import { storeToRefs } from "pinia";
 
@@ -880,7 +880,10 @@ const showModal = ref(false);
 /*사이드바*/
 .custom-sidebar {
   width: 350px;
-  transition: width 0.3s ease, visibility 0.3s ease, opacity 0.3s ease;
+  transition:
+    width 0.3s ease,
+    visibility 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .custom-sidebar.open {
@@ -892,7 +895,9 @@ const showModal = ref(false);
 }
 
 .app-sidebar-content {
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
   opacity: 1; /* 열림 상태에서 콘텐츠 표시 */
   visibility: visible;
 }

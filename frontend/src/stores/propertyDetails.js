@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 
-import { requestSaleById } from "@/api/sales";
+import { requestSaleById } from "@/api/property.js";
 
 export const useSalesDetailsStore = defineStore("salesDetails", () => {
   // 매물 상세 정보

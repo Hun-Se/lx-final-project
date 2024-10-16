@@ -32,7 +32,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
- 
+
 const router = useRouter();
 const isLoggedIn = ref(false);
 const username = ref("");
@@ -68,18 +68,18 @@ function goToHome() {
 }
 
 // AI 가격 예측 페이지로 이동
-function goToAiRealEstate(){
-  router.replace({path: '/ai_real_estate'})
+function goToAiRealEstate() {
+  router.replace({ path: "/ai_real_estate" });
 }
 
 // 매물지도 페이지로 이동
-function goToMap(){
-  router.replace({path: '/map'})
+function goToMap() {
+  router.replace({ path: "/map" });
 }
 
 // 중개 수수료 경매 페이지로 이동
-function goToAuction(){
-  router.replace({path: '/user_auction'})
+function goToAuction() {
+  router.replace({ path: "/user_auction" });
 }
 
 // 로그인 페이지로 이동 함수
@@ -119,9 +119,9 @@ function goToBurgerGame() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
+  padding: 2rem;
 }
 
 .logo h1 {
