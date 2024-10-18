@@ -62,28 +62,33 @@ export default {
     };
   },
   mounted() {
+  const script = document.createElement("script");
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.onload = () => {
     this.initMap();
-    this.fetchProperties(); // 매물 데이터 가져오기
-    window.addEventListener("resize", this.resizeMap);
-  },
+    this.fetchProperties();
+  };
+  document.head.appendChild(script);
+  window.addEventListener("resize", this.resizeMap);
+},
   beforeUnmount() {
     window.removeEventListener("resize", this.resizeMap);
   },
   methods: {
     initMap() {
-      const script = document.createElement("script");
-      script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i`;
-      script.onload = () => {
-        this.map = new naver.maps.Map("map", {
-          center: new naver.maps.LatLng(37.516042, 127.034881), //LX위치
-          zoom: 17,
-          zoomControl: false,
-          mapTypeControl: true,
-        });
-      };
-      document.head.appendChild(script);
-    },
-    fetchProperties() {
+  const script = document.createElement("script");
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.onload = () => {
+    this.map = new naver.maps.Map("map", {
+      center: new naver.maps.LatLng(37.516042, 127.034881),
+      zoom: 17,
+      zoomControl: false,
+      mapTypeControl: true,
+    });
+    this.naverMapsLoaded = true; // 플래그 설정
+  };
+  document.head.appendChild(script);
+},tchProperties() {
       axios.get('/api/properties')
         .then(response => {
           this.properties = response.data; // API에서 받아온 매물 데이터
@@ -142,16 +147,80 @@ export default {
       }
     },
     submit() {
-      const totalMinutes = parseInt(this.hours * 60) + parseInt(this.minutes);
-      if (this.location && this.selectedTransport && totalMinutes) {
-        this.result = {
-          location: this.location,
-          transport: this.selectedTransport,
-          duration: totalMinutes,
-        };
-      } else {
-        alert('모든 필드를 채워주세요!');
+  const totalMinutes = parseInt(this.hours * 60) + parseInt(this.minutes);
+  if (this.location && this.selectedTransport && totalMinutes) {
+    this.geocodeAddress(this.location)
+      .then(coords => {
+        console.log(coords); // 좌표 확인
+        return axios.get(`/api/isochrone/search`, {
+          params: {
+            lat: coords.lat,
+            lng: coords.lng,
+            transport: this.selectedTransport,
+            duration: totalMinutes
+          }
+        });
+      })
+      .then(response => {
+        this.drawIsochrone(response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('검색 중 오류가 발생했습니다.');
+      });
+  } else {
+    alert('모든 필드를 채워주세요!');
+  }
+},
+
+// 주소를 좌표로 변환하는 메소드 (네이버 지도 API 사용)
+geocodeAddress(address) {
+  return new Promise((resolve, reject) => {
+    if (!naver.maps.Service) {
+      reject('Naver maps service is not loaded');
+      return;
+    }
+    naver.maps.Service.geocode({
+      query: address
+    }, (status, response) => {
+      if (status !== naver.maps.Service.Status.OK) {
+        reject('Geocoding failed: ' + status);
+        return;
       }
+      const result = response.v2.addresses[0];
+      if (result) {
+        resolve({
+          lat: parseFloat(result.y),
+          lng: parseFloat(result.x)
+        });
+      } else {
+        reject('No results found');
+      }
+    });
+  });
+},
+
+// 등시선을 지도에 그리는 메소드
+drawIsochrone(data) {
+  if (this.isochrone) {
+    this.isochrone.setMap(null);
+  }
+  const coords = data.results[0].shapes[0].shell.map(point => 
+    new naver.maps.LatLng(point.lat, point.lng)
+  );
+  this.isochrone = new naver.maps.Polygon({
+    map: this.map,
+    paths: coords,
+    fillColor: '#ff0000',
+    fillOpacity: 0.3,
+    strokeColor: '#ff0000',
+    strokeOpacity: 0.6,
+    strokeWeight: 3
+  });
+  
+  // 등시선의 중심으로 지도 이동
+  this.map.setCenter(coords[0]);
+
     },
   },
 };
@@ -283,7 +352,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  flex-shrink: 0; /* 버튼이 줄어들지 않도록 설정 */
+  flex-shrink: 0; 
 }
 
 button:hover {
@@ -297,13 +366,13 @@ button:hover {
   }
 
   input, select, button {
-    width: 100%; /* 작은 화면에서는 모든 요소가 전체 너비를 차지 */
+    width: 100%; 
   }
 }
 
 @media (min-width: 769px) and (max-width: 1200px) {
   .search-bar {
-    width: 70%; /* 중간 화면 크기에서 너비를 70%로 조정 */
+    width: 70%; 
   }
 }
 
