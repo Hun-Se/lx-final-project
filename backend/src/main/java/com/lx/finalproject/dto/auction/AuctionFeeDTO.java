@@ -7,11 +7,13 @@ public class AuctionFeeDTO {
     private double brokerageFee;    // 중개수수료
     private double vat;             // 부가세
     private double totalFee;        // 총금액
+    private double feeRate;         // 상한요율
     
-    public AuctionFeeDTO(double brokerageFee, double vat) {
+    public AuctionFeeDTO(double brokerageFee, double vat, double feeRate) {
         this.brokerageFee = brokerageFee;
         this.vat = vat;
         this.totalFee = brokerageFee + vat;
+        this.feeRate = feeRate;
     }
     
     // Getters and Setters
@@ -38,11 +40,20 @@ public class AuctionFeeDTO {
 	public void setTotalFee(double totalFee) {
 		this.totalFee = totalFee;
 	}
+	
+	public double getFeeRate() {
+        return feeRate;
+    }
+
+    public void setFeeRate(double feeRate) {
+        this.feeRate = feeRate;
+        
+    }
 
 	// ToString
 	@Override
 	public String toString() {
-		return "AuctionFeeDTO [brokerageFee=" + brokerageFee + ", vat=" + vat + ", totalFee=" + totalFee + "]";
+		return "AuctionFeeDTO [brokerageFee=" + brokerageFee + ", vat=" + vat + ", totalFee=" + totalFee + ", feeRate=" + feeRate + "]";
 	}
     
 }

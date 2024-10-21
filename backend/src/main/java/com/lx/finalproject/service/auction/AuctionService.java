@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lx.finalproject.dao.auction.AuctionDAO;
+import com.lx.finalproject.dto.auction.AuctionAgentDTO;
 import com.lx.finalproject.dto.auction.AuctionFeeDTO;
 import com.lx.finalproject.vo.AuctionVO;
 
@@ -46,86 +47,44 @@ public class AuctionService {
 		return transactionAmount;
 	}
 	
-	 // 매물유형과 거래금액에 따른 중개수수료 계산
-    // - prpType = 매물유형 (0: 주택, 1: 오피스텔, 2: 그외)
-    // - transactionType = 거래유형
-    // - transactionAmount = 거래금액
-    public double calculateBrokerageFee(Integer prpType, Integer transactionType, double transactionAmount, double prpExclArea) {
+	 // 상한 요율 계산
+    public double calculateFeeRate(Integer prpType, Integer transactionType, double transactionAmount, double prpExclArea) {
         double feeRate = 0.0;
+        if (prpType == 0) {
+            if (transactionType == 0) {
+                feeRate = transactionAmount < 50000000 ? 0.006 : transactionAmount < 200000000 ? 0.005 : transactionAmount < 900000000 ? 0.004 : transactionAmount < 1200000000 ? 0.005 : transactionAmount < 1500000000 ? 0.006 : 0.007;
+            } else {
+                feeRate = transactionAmount < 100000000 ? 0.004 : (transactionType == 1 ? 0.003 : 0.004);
+            }
+        } else if (prpType == 1) {
+            feeRate = prpExclArea <= 85 ? (transactionType == 0 ? 0.005 : 0.004) : 0.009;
+        } else {
+            feeRate = 0.009;
+        }
+        return feeRate;
+    }
+
+    // MAXFEE 설정
+    private double determineMaxFee(double transactionAmount, int prpType, int transactionType) {
         double maxFee = 0.0;
-
-        if (prpType == 0) { // 주택 유형
-            if (transactionType == 0) { // 매매
-                if (transactionAmount < 50000000) {
-                    feeRate = 0.006;
-                    maxFee = 250000;
-                } else if (transactionAmount < 200000000) {
-                    feeRate = 0.005;
-                    maxFee = 800000;
-                } else if (transactionAmount < 900000000) {
-                    feeRate = 0.004;
-                } else if (transactionAmount < 1200000000) {
-                    feeRate = 0.005;
-                } else if (transactionAmount < 1500000000) {
-                    feeRate = 0.006;
-                } else {
-                    feeRate = 0.007;
-                }
-            } else if (transactionType == 1 || transactionType == 2) { // 전세 또는 월세
-                if (transactionAmount < 50000000) {
-                    feeRate = 0.005;
-                    maxFee = 200000;
-                } else if (transactionAmount < 100000000) {
-                    feeRate = 0.004;
-                    maxFee = 300000;
-                } else {
-                    feeRate = (transactionType == 1) ? 0.003 : 0.004; // 전세와 월세의 기본 상한 요율 차이 반영
-                }
-            }
-        } else if (prpType == 1) { // 오피스텔 유형
-            if (transactionType == 0) { // 매매
-                if (prpExclArea <= 85) { // 전용면적 85㎡ 이하인 경우
-                    feeRate = 0.005; // 상한요율 5%
-                } else {
-                    feeRate = 0.009; // 그 외 경우 상한요율 9%
-                }
-            } else if (transactionType == 1) { // 임대차
-                if (prpExclArea <= 85) { // 전용면적 85㎡ 이하인 경우
-                    feeRate = 0.004; // 상한요율 4%
-                } else {
-                    feeRate = 0.009; // 그 외 경우 상한요율 9%
-                }
-            }
-        } else { // 그 외 유형 (토지, 상가 등)
-            feeRate = 0.009; // 상한요율 9%
+        if (prpType == 0 && transactionType == 0) {
+            maxFee = transactionAmount < 50000000 ? 250000 : transactionAmount < 200000000 ? 800000 : 0;
+        } else if (prpType == 0 && (transactionType == 1 || transactionType == 2)) {
+            maxFee = transactionAmount < 50000000 ? 200000 : transactionAmount < 100000000 ? 300000 : 0;
         }
-	
+        return maxFee;
+    }
 
-//		// 0. 건축물 면적과 주택 면적의 비율에 따른 수수료율 조정
-//        if (area >= (buildingArea / 2)) {
-//            // 주택 중개보수 요율 적용 (기본 요율에서 조정)
-//            feeRate = 0.005;  // 주택 상한 요율로 조정
-//        } else if (area < (buildingArea / 2)) {
-//            // 주택 외 중개보수 요율 적용
-//            feeRate = 0.009;  // 주택 외 상한 요율로 조정
-//        }
+    // 중개수수료 계산
+    public double calculateBrokerageFee(double transactionAmount, double feeRate, double maxFee) {
+        double calculatedFee = transactionAmount * feeRate;
+        return (maxFee > 0 && calculatedFee > maxFee) ? maxFee : calculatedFee;
+    }
 
-        // 2. 기본 중개 수수료 계산
-        fee = transactionAmount * feeRate;
-
-        // 3. 한도액 초과 시 한도액 적용
-        if (maxFee > 0.0 && fee > maxFee) {
-            fee = maxFee;
-        }
-
-        return fee;
-	}
-
-	// 부가세 계산
-	public double calculateVAT() {
-		double brokerageFee = fee * 0.1; // 부가세 10%
-		return brokerageFee;
-	}
+    // 부가세 계산
+    public double calculateVAT(double brokerageFee) {
+        return brokerageFee * 0.1; // 부가세 10%
+    }
 	
 	// 경매 데이터 저장
     public void saveAuction(AuctionVO auctionVO) {
@@ -145,6 +104,11 @@ public class AuctionService {
     // 경매 수수료 데이터 조회
     public AuctionFeeDTO getAuctionFeeById(int auctionPk) {
         return AuctionDAO.getAuctionFeeById(auctionPk);
+    }
+    
+ // 사용자 ID를 기준으로 경매 및 매물 정보를 가져오는 메소드
+    public List<AuctionAgentDTO> getAuctionsWithPropertyByUserPk(int userPk) {
+        return AuctionDAO.getAuctionsWithPropertyByUserPk(userPk);
     }
 
 }
