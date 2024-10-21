@@ -10,22 +10,24 @@
       <select class="trans" v-model="selectedTransport">
         <option disabled value="">이동수단</option>
         <option value="walking">도보</option>
-        <option value="car">자차</option>
-        <option value="publicTransport">대중교통</option>
+        <option value="driving">자차</option>
+        <option value="public_transport">대중교통</option>
       </select>
-      <input class="input-hour"
-        type="number"
-        v-model="hours"
-        placeholder="시간 입력"
-        min="0"
-        step="1"
-      /><span>시간</span>
-      <input class="input-min"
-        type="number"
-        v-model="minutes"
-        placeholder="분 입력"
-        min="0"
-      /><span>분</span>
+     <input class="input-hour"
+  type="number"
+  v-model.number="hours"
+  placeholder="시간 입력"
+  min="0"
+  step="1"
+/><span>시간</span>
+<input class="input-min"
+  type="number"
+  v-model.number="minutes"
+  placeholder="분 입력"
+  min="0"
+  max="59"
+  step="1"
+/><span>분</span>
       <button @click="submit">검색</button>
   </div>
     <!-- 지도 -->
@@ -147,32 +149,48 @@ export default {
       }
     },
     submit() {
-  const totalMinutes = parseInt(this.hours * 60) + parseInt(this.minutes);
-  if (this.location && this.selectedTransport && totalMinutes) {
-    this.geocodeAddress(this.location)
-      .then(coords => {
-        console.log(coords); // 좌표 확인
-        return axios.get(`/api/isochrone/search`, {
-          params: {
-            lat: coords.lat,
-            lng: coords.lng,
-            transport: this.selectedTransport,
-            duration: totalMinutes
-          }
-        });
-      })
-      .then(response => {
-        this.drawIsochrone(response.data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('검색 중 오류가 발생했습니다.');
-      });
-  } else {
-    alert('모든 필드를 채워주세요!');
-  }
-},
+  const hours = parseInt(this.hours) || 0;  // 빈 문자열이나 NaN일 경우 0으로 처리
+  const minutes = parseInt(this.minutes) || 0;
+  const totalMinutes = hours * 3600 + minutes *60;
 
+  if (!this.location) {
+    alert('위치를 입력해주세요.');
+    return;
+  }
+  if (!this.selectedTransport) {
+    alert('이동수단을 선택해주세요.');
+    return;
+  }
+  if (isNaN(this.hours) || isNaN(this.minutes)) {
+    alert('시간과 분에는 숫자만 입력해주세요.');
+    return;
+  }
+
+  // 시간이 0이어도 검색 진행
+  this.geocodeAddress(this.location)
+    .then(coords => {
+      console.log(coords); // 좌표 확인
+      return axios.get(`/api/isochrone/search`, {
+        params: {
+          lat: coords.lat,
+          lng: coords.lng,
+          transport: this.selectedTransport,
+          duration: totalMinutes
+        }
+      });
+    })
+    .then(response => {
+      this.drawIsochrone(response.data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      if (error.message === 'No results found') {
+        alert('입력한 주소를 찾을 수 없습니다. 주소를 다시 확인해 주세요.');
+      } else {
+        alert('검색 중 오류가 발생했습니다.');
+      }
+    });
+},
 // 주소를 좌표로 변환하는 메소드 (네이버 지도 API 사용)
 geocodeAddress(address) {
   return new Promise((resolve, reject) => {
