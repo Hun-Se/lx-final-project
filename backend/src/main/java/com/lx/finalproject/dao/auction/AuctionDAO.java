@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Param;
 
 import com.lx.finalproject.dto.auction.AuctionFeeDTO;
 import com.lx.finalproject.vo.AuctionVO;
+import com.lx.finalproject.dto.auction.AuctionAgentDTO;
+import java.util.List;
 
 @Mapper
 public interface AuctionDAO {
@@ -20,4 +22,8 @@ public interface AuctionDAO {
 
     // 특정 경매 ID로 중개수수료 데이터를 가져오는 메소드
     AuctionFeeDTO getAuctionFeeById(@Param("auctionPk") int auctionPk);
+    
+    // 특정 사용자 ID에 대한 경매와 매물 정보를 조회하는 메소드
+    List<AuctionAgentDTO> getAuctionsWithPropertyByUserPk(@Param("userPk") int userPk);
+    
 }

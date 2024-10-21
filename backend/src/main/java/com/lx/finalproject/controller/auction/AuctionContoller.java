@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lx.finalproject.dto.auction.AuctionAgentDTO;
 import com.lx.finalproject.dto.auction.AuctionFeeDTO;
 import com.lx.finalproject.service.auction.AuctionService;
 import com.lx.finalproject.service.property.PropertyService;
@@ -28,6 +29,12 @@ public class AuctionContoller {
 
 	@Autowired
 	private PropertyService propertyService;
+	
+	// 사용자 ID를 이용한 경매 및 매물 정보 조회 엔드포인트
+    @GetMapping("/user/{userPk}")
+    public List<AuctionAgentDTO> getAuctionsByUserPk(@PathVariable int userPk) {
+        return auctionService.getAuctionsWithPropertyByUserPk(userPk);
+    }
 
 	// 중개수수료 계산 엔드포인트
 	@GetMapping("/calculate/{prpPk}")
@@ -48,17 +55,45 @@ public class AuctionContoller {
 		double exclArea = property.getPrpExclArea();
 		int prpType = property.getPrpType();
 
-		// 보증금과 월차임을 기반으로 거래금액 계산
-		double transactionAmount = auctionService.calculateTransactionAmount(deposit, price, transactionType);
+		// 거래금액 계산
+        double transactionAmount = auctionService.calculateTransactionAmount(deposit, price, transactionType);
 
-		// 거래금액과 매물유형, 전용면적을 기반으로 중개수수료 계산
-		double brokerageFee = auctionService.calculateBrokerageFee(prpType, transactionType, transactionAmount,
-				exclArea);
+        // 상한 요율 계산
+        double feeRate = auctionService.calculateFeeRate(prpType, transactionType, transactionAmount, exclArea);
 
-		// 부가세 계산
-		double vat = auctionService.calculateVAT();
+        // MAXFEE 설정
+        double maxFee = determineMaxFee(transactionAmount, prpType, transactionType);
 
-		// DTO로 결과 반환
-		return new AuctionFeeDTO(brokerageFee, vat);
-	}
+        // 중개수수료 계산 (MAXFEE 적용)
+        double brokerageFee = auctionService.calculateBrokerageFee(transactionAmount, feeRate, maxFee);
+
+        // 부가세 계산
+        double vat = auctionService.calculateVAT(brokerageFee);
+        
+     // 디버깅 로그 추가
+        System.out.println("Calculated values:");
+        System.out.println("Transaction Amount: " + transactionAmount);
+        System.out.println("Fee Rate: " + feeRate);
+        System.out.println("Brokerage Fee: " + brokerageFee);
+        System.out.println("VAT: " + vat);
+        System.out.println("Total Fee: " + (brokerageFee + vat));
+
+        // DTO로 결과 반환
+        return new AuctionFeeDTO(brokerageFee, vat, feeRate);
+    }
+
+    // MAXFEE를 결정하는 메서드
+    private double determineMaxFee(double transactionAmount, int prpType, int transactionType) {
+        double maxFee = 0.0;
+
+        if (prpType == 0 && transactionType == 0) { // 주택 매매
+            if (transactionAmount < 50000000) maxFee = 250000;
+            else if (transactionAmount < 200000000) maxFee = 800000;
+        } else if (prpType == 0 && (transactionType == 1 || transactionType == 2)) { // 주택 전세/월세
+            if (transactionAmount < 50000000) maxFee = 200000;
+            else if (transactionAmount < 100000000) maxFee = 300000;
+        }
+        // 추가적인 조건에 따라 다른 MAXFEE 설정 가능
+        return maxFee;
+    }
 }

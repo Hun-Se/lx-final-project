@@ -31,4 +31,27 @@
         FROM auction_fee
         WHERE auction_pk = #{auctionPk};
     </select>
+    
+    <!-- 특정 user_pk로 agent_pk를 찾고, 그 agent_pk로 관련된 경매 데이터를 가져오며 매물 가격 포함 -->
+    <select id="getAuctionsWithPropertyByUserPk" parameterType="int" resultType="com.lx.finalproject.dto.auction.AuctionAgentDTO">
+        SELECT 
+            a.auction_pk AS auctionPk, 
+            a.auction_comm AS auctionComm, 
+            a.auction_start AS auctionStart, 
+            a.auction_end AS auctionEnd, 
+            a.auction_status AS auctionStatus, 
+            a.agent_pk AS agentPk, 
+            a.user_pk AS userPk, 
+            a.prp_pk AS prpPk, 
+            a.inspreq_pk AS inspReqPk,
+            p.prp_name AS prpName, 
+            p.prp_price AS prpPrice
+        FROM 
+            auction a
+            INNER JOIN agent ag ON a.agent_pk = ag.agent_pk
+            INNER JOIN prp p ON a.prp_pk = p.prp_pk
+        WHERE 
+            ag.user_pk = #{userPk};
+    </select>
+    
 </mapper>
