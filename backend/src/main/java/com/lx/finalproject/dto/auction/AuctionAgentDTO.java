@@ -11,7 +11,10 @@ public class AuctionAgentDTO {
     private int userPk;
     private int prpPk;
     private String prpName;
+    private int prpTransType;
     private int prpPrice;
+    private int inspReqPk;
+    private String inspReqDate;
 
     // Getters and Setters
     public int getAuctionPk() {
@@ -93,5 +96,30 @@ public class AuctionAgentDTO {
     public void setPrpPrice(int prpPrice) {
         this.prpPrice = prpPrice;
     }
+
+	public int getInspReqPk() {
+		return inspReqPk;
+	}
+
+	public void setInspReqPk(int inspReqPk) {
+		this.inspReqPk = inspReqPk;
+	}
+
+	public String getInspReqDate() {
+		return inspReqDate;
+	}
+
+	public void setInspReqDate(String inspReqDate) {
+		this.inspReqDate = inspReqDate;
+	}
+
+	public int getPrpTransType() {
+		return prpTransType;
+	}
+
+	public void setPrpTransType(int prpTransType) {
+		this.prpTransType = prpTransType;
+	}
+    
     
 }
