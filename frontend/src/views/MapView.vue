@@ -1,642 +1,319 @@
 <template>
+  <component :is="computedHeader" id="headerPart" />
+
   <div id="mainPage">
     <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-      <!--begin::사이드바-->
-      <div
-        id="kt_app_sidebar"
-        class="app-sidebar flex-column custom-sidebar"
-        :class="{ open: isOpen }"
-      >
+      <div id="kt_app_sidebar" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }">
       
-        <div
-          id="kt_app_sidebar_toggle"
+        <div id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
-          @click="toggleSidebar"
-        >
-          <i
-            class="ki-duotone ki-black-left-line fs-3"
-            :class="{ 'rotate-180': isOpen }"
-          >
+          @click="toggleSidebar">
+          <i class="ki-duotone ki-black-left-line fs-3" :class="{ 'rotate-180': isOpen }">
             <span class="path1"></span>
             <span class="path2"></span>
           </i>
         </div>
 
-        <!--begin::로고이미지 및 검색(PC)-->
-        <div
-          class="app-sidebar-logo px-6 d-flex align-items-center"
-          id="kt_app_sidebar_logo"
-        >
-          <span class="me-3" @click="goHome()">
-            <img
-              alt="Logo"
-              src="/assets/media/framework-logos/go.png"
-              class="h-25px app-sidebar-logo-default"
-            />
-            <img
-              alt="Logo"
-              src="/assets/media/framework-logos/go.png"
-              class="h-20px app-sidebar-logo-minimize"
-            />
-          </span>
 
-          <!-- 사이드바가 열릴 때만 보이는 검색창 -->
-          <form v-if="isOpen" class="form-inline flex-grow-1 me-3">
-            <div class="input-group" style="width: 220px">
-              <input
-                class="form-control"
-                type="search"
-                placeholder="매물을 검색하세요."
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-primary" type="submit">
-                <i class="bi bi-search"></i>
-              </button>
-            </div>
-          </form>
-
-          <!--프로필-->
-          <div class="profile">
-            <img
-              :src="user.user_image"
-              alt="사용지 이미지"
-              class="profile-image"
-            />
+        <!-- 주택, 오피스텔 버튼 -->
+        <div id="sort-options" class="sort-options">
+          <div class="btn-group">
+            <!-- 버튼 클릭 시 드롭다운 토글 -->
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('dealTarget')"
+              style="border: 1px solid blue; background-color: white; color: blue;"
+              onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              기타 | 주택 | 오피스텔
+            </button>
+            <ul class="dropdown-menu" v-show="dropdownState.isDealTargetDropdownOpen" style="display: flex; justify-content: space-between;">
+              <li style="margin-left: 3ex">
+                <a href="#" class="btn" :class="filters.dealTarget === '기타' ? 'btn-primary' : 'btn-secondary'" @click.prevent="updateDealTarget('기타')" style="width: 10ex; margin-left: -2ex;">
+                  기타
+                </a>
+              </li>
+              <li style="margin-left: 3ex">
+                <a href="#" class="btn" :class="filters.dealTarget === '주택' ? 'btn-primary' : 'btn-secondary'" @click.prevent="updateDealTarget('주택')" style="width: 10ex">
+                  주택
+                </a>
+              </li>
+              <li style="margin-left: 3ex">
+                <a href="#" class="btn" :class="filters.dealTarget === '오피스텔' ? 'btn-primary' : 'btn-secondary'" @click.prevent="updateDealTarget('오피스텔')" style="width: 14ex">
+                  오피스텔
+                </a>
+              </li>
+            </ul>
           </div>
-        </div>
 
-        <!-- 최신순, 가격순, 면적순 링크를 사이드바가 열릴 때만 보이게 -->
-        <div
-          v-if="isOpen"
-          id="sort-options"
-          style="background-color: lightgray; padding: 10px; font-weight: 800"
-        >
-          <a
-            id="sort-latest"
-            style="margin-left: 2ex; cursor: pointer; font-weight: 800"
-            >최신순</a
-          >
-          |
-          <a id="sort-price" style="cursor: pointer; font-weight: 800"
-            >가격순</a
-          >
-          |
-          <a id="sort-area" style="cursor: pointer; font-weight: 800">면적순</a>
+          <!-- 전세, 월세, 매매 버튼 -->
+          <div class="btn-group" style="margin-left: 3ex;">
+            <!-- 버튼 클릭 시 드롭다운 토글 -->
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('dealType')"
+              style="border: 1px solid blue; background-color: white; color: blue;"
+              onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
 
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="showModal = true"
-            style="margin-left: 8ex"
-          >
-            필터
-          </button>
+              월세 | 전세 | 매매
+            </button>
+            <ul class="dropdown-menu"  v-show="dropdownState.isDealTypeDropdownOpen">
+            <ul style="display: flex; list-style-type: none; padding: 0; margin-bottom: 1ex;">
+              <li style="margin-right: 10px;">
+            <button type="button" class="btn" :class="activeInput === 'jeonse' ? 'btn-primary' : 'btn-secondary'"
+              @click="updateDealType('jeonse')">
+              전세
+            </button>
+              </li>
+              <li style="margin-right: 10px;">
+                <button type="button" class="btn" :class="activeInput === 'wolse' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateDealType('wolse')">
+                  월세
+                </button>
+              </li>
+              <li style="margin-right: 10px;">
+                <button type="button" class="btn" :class="activeInput === 'maemae' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateDealType('maemae')">
+                  매매
+                </button>
+              </li>
+            </ul>
 
-          <!-- Modal -->
-          <div
-            v-if="showModal"
-            class="modal fade show"
-            tabindex="-1"
-            role="dialog"
-            style="display: block; background: rgba(0, 0, 0, 0.5)"
-          >
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">필터</h5>
-                  <button
-                    type="button"
-                    class="close"
-                    @click="showModal = false"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-
-                <div class="modal-body">
-                  <!-- 거래 대상 -->
-                  <nav class="navbar navbar-light bg-light">
-                    <form class="form-inline">
-                      <h3 style="margin-left: 3ex; margin-top: 3ex">
-                        거래 대상
-                      </h3>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.dealTarget === '기타'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealTarget('기타')"
-                        style="width: 10ex; margin-left: 3ex"
-                      >
-                        기타
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.dealTarget === '주택'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealTarget('주택')"
-                        style="width: 10ex; margin-left: 3ex"
-                      >
-                        주택
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.dealTarget === '오피스텔'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealTarget('오피스텔')"
-                        style="width: 14ex; margin-left: 3ex"
-                      >
-                        오피스텔
-                      </button>
-                    </form>
-                  </nav>
-
-                  <!-- 거래 유형 -->
-                  <nav class="navbar navbar-light bg-light">
-                    <form class="form-inline">
-                      <h3 style="margin-left: 3ex; margin-top: 3ex">
-                        거래 유형
-                      </h3>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          activeInput === 'all'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealType('all')"
-                        style="width: 10ex; margin-left: 3ex"
-                      >
-                        전체
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          activeInput === 'jeonse'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealType('jeonse')"
-                        style="width: 10ex; margin-left: 2ex"
-                      >
-                        전세
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          activeInput === 'wolse'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealType('wolse')"
-                        style="width: 10ex; margin-left: 2ex"
-                      >
-                        월세
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          activeInput === 'maemae'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateDealType('maemae')"
-                        style="width: 10ex; margin-left: 2ex"
-                      >
-                        매매
-                      </button>
-                    </form>
-                  </nav>
-
-                  <!-- 전세금, 월세, 매매금액 입력 -->
-                  <div v-if="activeInput === 'jeonse' || activeInput === 'all'">
-                    <nav class="navbar navbar-light bg-light">
-                      <form class="form-inline">
-                        <h3 style="margin-left: 3ex; margin-top: 3ex">
-                          전세금
-                        </h3>
-                        <input
-                          v-model="filters.jeonse.min"
-                          style="margin-left: 3ex; width: 15ex"
-                          placeholder="최소값"
-                        />
-                        ~
-                        <input
-                          v-model="filters.jeonse.max"
-                          style="width: 15ex"
-                          placeholder="최대값"
-                        />
-                      </form>
-                    </nav>
-                  </div>
-                  <div v-if="activeInput === 'wolse' || activeInput === 'all'">
-                    <nav class="navbar navbar-light bg-light">
-                      <form class="form-inline">
-                        <h3 style="margin-left: 3ex; margin-top: 3ex">
-                          보증금
-                        </h3>
-                        <input
-                          v-model="filters.wolse.min"
-                          style="margin-left: 3ex; width: 15ex"
-                          placeholder="최소값"
-                        />
-                        ~
-                        <input
-                          v-model="filters.wolse.max"
-                          style="width: 15ex"
-                          placeholder="최대값"
-                        />
-                      </form>
-                    </nav>
-                  </div>
-                  <div v-if="activeInput === 'maemae' || activeInput === 'all'">
-                    <nav class="navbar navbar-light bg-light">
-                      <form class="form-inline">
-                        <h3 style="margin-left: 3ex; margin-top: 3ex">
-                          매매 금액
-                        </h3>
-                        <input
-                          v-model="filters.maemae.min"
-                          style="margin-left: 3ex; width: 15ex"
-                          placeholder="최소값"
-                        />
-                        ~
-                        <input
-                          v-model="filters.maemae.max"
-                          style="width: 15ex"
-                          placeholder="최대값"
-                        />
-                      </form>
-                    </nav>
-                  </div>
-
-                  <!-- 구조 선택 -->
-                  <nav class="navbar navbar-light bg-light">
-                    <form class="form-inline">
-                      <h3 style="margin-left: 3ex; margin-top: 3ex">구조</h3>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.structure === '전체'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateStructure('전체')"
-                        style="width: 10ex; margin-left: 3ex"
-                      >
-                        전체
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.structure === '복층'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateStructure('복층')"
-                        style="width: 10ex; margin-left: 2ex"
-                      >
-                        복층
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.structure === '오픈방'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateStructure('오픈방')"
-                        style="width: 13ex; margin-left: 2ex"
-                      >
-                        오픈방
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.structure === '분리형'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateStructure('분리형')"
-                        style="width: 13ex; margin-left: 2ex"
-                      >
-                        분리형
-                      </button>
-                    </form>
-                  </nav>
-
-                  <!-- 층수 선택 -->
-                  <nav class="navbar navbar-light bg-light">
-                    <form class="form-inline">
-                      <h3 style="margin-left: 3ex; margin-top: 3ex">층수</h3>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.floor === '전체'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateFloor('전체')"
-                        style="width: 10ex; margin-left: 3ex"
-                      >
-                        전체
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.floor === '옥탑방'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateFloor('옥탑방')"
-                        style="width: 13ex; margin-left: 1ex"
-                      >
-                        옥탑방
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.floor === '반지하층'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateFloor('반지하층')"
-                        style="width: 13ex; margin-left: 1ex"
-                      >
-                        반지하층
-                      </button>
-                      <button
-                        type="button"
-                        class="btn"
-                        :class="
-                          filters.floor === '지상층'
-                            ? 'btn-primary'
-                            : 'btn-secondary'
-                        "
-                        @click="updateFloor('지상층')"
-                        style="width: 13ex; margin-left: 1ex"
-                      >
-                        지상층
-                      </button>
-                    </form>
-                  </nav>
-
-                  <!-- 전용 면적 선택 -->
-                  <nav class="navbar navbar-light bg-light">
-                    <form class="form-inline">
-                      <h3 style="margin-left: 3ex; margin-top: 3ex">
-                        전용 면적
-                      </h3>
-                      <table
-                        class="table table-bordered text-center"
-                        style="margin-left: 3ex"
-                      >
-                        <tbody>
-                          <tr>
-                            <td
-                              class="table-primary"
-                              style="vertical-align: middle"
-                            >
-                              <button
-                                type="button"
-                                @click="updateArea('전체')"
-                                class="btn btn-link text-black"
-                              >
-                                전체
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('10평 이하')"
-                                class="btn btn-link"
-                              >
-                                10평 이하
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('10평대')"
-                                class="btn btn-link"
-                              >
-                                10평대
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('20평대')"
-                                class="btn btn-link"
-                              >
-                                20평대
-                              </button>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('30평대')"
-                                class="btn btn-link"
-                              >
-                                30평대
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('40평대')"
-                                class="btn btn-link"
-                              >
-                                40평대
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('50평대')"
-                                class="btn btn-link"
-                              >
-                                50평대
-                              </button>
-                            </td>
-                            <td>
-                              <button
-                                type="button"
-                                @click="updateArea('60평 이상')"
-                                class="btn btn-link"
-                              >
-                                60평 이상
-                              </button>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </form>
-                  </nav>
-                </div>
-
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    @click="closeModal"
-                  >
-                    닫기
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    @click="submitFilters"
-                  >
-                    결과 보기
-                  </button>
-                </div>
+              <!-- 전세금, 월세, 매매금액 입력 -->
+              <div v-if="activeInput === 'jeonse' || activeInput === 'all'" >
+                <nav class="navbar navbar-light bg-light">
+                  <form class="form-inline">
+                    <h3 style="margin-left: 3ex; margin-top: 3ex">전세금</h3>
+                    <input v-model="filters.jeonse.min" style="margin-left: 3ex; width: 15ex" placeholder="최소값" />
+                    ~
+                    <input v-model="filters.jeonse.max" style="width: 15ex" placeholder="최대값" />
+                  </form>
+                </nav>
               </div>
-            </div>
+              <div v-if="activeInput === 'wolse' || activeInput === 'all'">
+                <nav class="navbar navbar-light bg-light">
+                  <form class="form-inline">
+                    <h3 style="margin-left: 3ex; margin-top: 3ex">보증금</h3>
+                    <input v-model="filters.wolse.min" style="margin-left: 3ex; width: 15ex" placeholder="최소값" />
+                    ~
+                    <input v-model="filters.wolse.max" style="width: 15ex" placeholder="최대값" />
+                  </form>
+                </nav>
+              </div>
+              <div v-if="activeInput === 'maemae' || activeInput === 'all'">
+                <nav class="navbar navbar-light bg-light">
+                  <form class="form-inline">
+                    <h3 style="margin-left: 3ex; margin-top: 3ex">매매 금액</h3>
+                    <input v-model="filters.maemae.min" style="margin-left: 3ex; width: 15ex" placeholder="최소값" />
+                    ~
+                    <input v-model="filters.maemae.max" style="width: 15ex" placeholder="최대값" />
+                  </form>
+                </nav>
+              </div>
+            </ul>
+          </div>
+
+          <!-- 구조 버튼-->
+          <div class="btn-group" style="margin-top: 2ex;">
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('structure')"
+              style="border: 1px solid blue; background-color: white; color: blue;"
+              onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              구조
+            </button>
+            <ul class="dropdown-menu" v-show="dropdownState.isStructureDropdownOpen">
+              <li style="display: inline; margin-left: 3ex;">
+                <button type="button" class="btn" :class="filters.structure === '전체' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateStructure('전체')" style="width: 10ex;">
+                  전체
+                </button>
+              </li>
+              <li style="display: inline; margin-left: 2ex;">
+                <button type="button" class="btn" :class="filters.structure === '복층' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateStructure('복층')" style="width: 10ex;">
+                  복층
+                </button>
+              </li>
+              <li style="display: inline; margin-left: 2ex;">
+                <button type="button" class="btn" :class="filters.structure === '오픈방' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateStructure('오픈방')" style="width: 13ex;">
+                  오픈방
+                </button>
+              </li>
+              <li style="display: inline; margin-left: 3ex;">
+                <button type="button" class="btn" :class="filters.structure === '분리형' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateStructure('분리형')" style="width: 13ex;  margin-top: 1ex;">
+                  분리형
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- 층수 버튼-->
+          <div class="btn-group" style="margin-left: 1ex; margin-top: 2ex;">
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('floor')"
+              style="border: 1px solid blue; background-color: white; color: blue;"
+              onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              층수
+            </button>
+            <ul class="dropdown-menu" v-show="dropdownState.isFloorDropdownOpen">
+              <li style="display: inline; margin-left: 3ex;">
+                <button type="button" class="btn" :class="filters.floor === '전체' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateFloor('전체')" style="width: 10ex;">
+                  전체
+                </button>
+              </li>
+              <li style="display: inline; margin-left: 1ex;">
+                <button type="button" class="btn" :class="filters.floor === '옥탑방' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateFloor('옥탑방')" style="width: 13ex;">
+                  옥탑방
+                </button>
+              </li>
+              <li style="display: inline; margin-left: 1ex;">
+                <button type="button" class="btn" :class="filters.floor === '반지하층' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateFloor('반지하층')" style="width: 13ex;">
+                  반지하층
+                </button>
+              </li>
+              <li style="display: inline; margin-left: 3ex;">
+                <button type="button" style="width: 13ex; margin-top: 1ex;" class="btn" :class="filters.floor === '지상층' ? 'btn-primary' : 'btn-secondary'"
+                  @click="updateFloor('지상층')" >
+                  지상층
+                </button>
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- 전용 면적 버튼과 모달 버튼을 포함한 그룹 -->
+          <div class="btn-group" style="margin-left: 1ex; margin-top: 2ex; height: 5ex;">
+            <!-- 전용 면적 버튼 -->
+            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('area')"
+              style="border: 1px solid blue; background-color: white; color: blue;"
+              onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              전용 면적
+            </button>
+            <ul class="dropdown-menu" v-show="dropdownState.isAreaDropdownOpen" >
+              <table class="table table-bordered text-center" style="margin-left: 3ex; width: 40ex; margin-top: 2ex;">
+                <tbody>
+                  <tr>
+                    <td class="table-primary" style="vertical-align: middle">
+                      <button type="button" @click="updateArea('전체')" class="btn btn-link text-black">
+                        전체
+                      </button>
+                    </td>
+                    <td>
+                      <button type="button" @click="updateArea('10평 이하')" class="btn btn-link">
+                        10평 이하
+                      </button>
+                    </td>
+                    <td>
+                      <button type="button" @click="updateArea('10평대')" class="btn btn-link">
+                        10평대
+                      </button>
+                    </td>
+                    <td>
+                      <button type="button" @click="updateArea('20평대')" class="btn btn-link">
+                        20평대
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <button type="button" @click="updateArea('30평대')" class="btn btn-link">
+                        30평대
+                      </button>
+                    </td>
+                    <td>
+                      <button type="button" @click="updateArea('40평대')" class="btn btn-link">
+                        40평대
+                      </button>
+                    </td>
+                    <td>
+                      <button type="button" @click="updateArea('50평대')" class="btn btn-link">
+                        50평대
+                      </button>
+                    </td>
+                    <td>
+                      <button type="button" @click="updateArea('60평 이상')" class="btn btn-link">
+                        60평 이상
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </ul>
+            <!-- 모달 버튼 -->
+            <button type="button" class="btn btn-primary" @click="openModal"
+              style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
+              <i class="bi bi-robot" style="font-size: 3ex; color: white;"></i> <!-- 아이콘 색상을 흰색으로 설정 -->
+            </button>
+
           </div>
         </div>
-        <!--end::로고이미지 및 검색-->
 
-        <!--begin::사이드바 메뉴-->
-        <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+        <div v-if="isModalOpen" class="modal-content"
+          style="position: relative; top: 0; left: 0; max-width: 330px; width: 100%; margin-top: 1ex; margin-left: 0.5ex; border: 1px solid #007bff; border-radius: 0.5rem; padding: 1rem;">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" style="margin-left: 1ex; font-weight: bolder;">AI Chat 서비스</h1>
+            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- 모달 내용 -->
+          </div>
+          <div class="input-group mb-3" style="max-width: 300px; margin-left: 0.5ex; margin-top: 1ex;">
+            <input type="text" name="AiGPT" placeholder="원하시는 매물 조건을 입력해주세요." class="form-control">
+            <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="closeModal">닫기</button>
+          </div>
+        </div>
+
+
+        <!-- 매물 리스트 -->
+        <div class="app-sidebar-menu overflow-hidden flex-column-fluid"
+          style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); overflow-y: auto;">
           <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper">
-            <div
-              id="kt_app_sidebar_menu_scroll"
-              class="scroll-y my-5 mx-3"
-              style="width: 600px"
-              data-kt-scroll="true"
-              data-kt-scroll-activate="true"
-              data-kt-scroll-height="auto"
-              data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer"
-              data-kt-scroll-wrappers="#kt_app_sidebar_menu"
-              data-kt-scroll-offset="5px"
-              data-kt-scroll-save-state="true"
-            >
-              <div class="property-container">
-                <!-- 매물 리스트 -->
-                <div v-if="!selectedSalesId" class="property-list">
-                  <ul class="property-items">
-                    <li
-                      v-for="(item, index) in sales"
-                      :key="item.prpPk"
-                      class="property-item"
-                      @click="toggleSalesDetail(item.prpPk)"
-                    >
-                      <img
-                        :src="'/assets/img/' + item.prpImg"
-                        alt="매물 이미지"
-                        class="property-image"
-                        :style="{ width: '250px', height: 'auto' }"
-                      />
-                      <div class="property-details">
-                        <p
-                          class="property-name"
-                          style="
-                            font-size: 2ex;
-                            font-weight: 800;
-                            margin-top: 1ex;
-                          "
-                        >
-                          {{ item.prpName }}
-                        </p>
-                        <p class="property-price">{{ item.prpPrice }}</p>
-                        <p class="property-content">{{ item.prpDesc }}</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+            <div class="property-container">
+              <div v-if="!selectedSalesId" class="property-list">
+                <ul class="property-items">
+                  <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item"
+                    @click="toggleSalesDetail(item.prpPk)">
+                    <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image"
+                      style="width: 250px; height: auto;" />
+                    <div class="property-details">
+                      <p class="property-name">{{ item.prpName }}</p>
+                      <p class="property-price">{{ item.prpPrice }}</p>
+                      <p class="property-content">{{ item.prpDesc }}</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
 
-                <!-- 매물 상세 정보 -->
-                <div v-if="selectedSalesId" class="property-detail">
-                  <img
-                    :src="'/assets/img/' + selectedSalesDetails.prpImg"
-                    alt="매물 이미지"
-                    class="property-image"
-                    :style="{ width: '290px', height: 'auto' }"
-                  />
-                  <h3 style="margin-top: 2ex"><strong>상세 정보</strong></h3>
-                  <p>{{ selectedSalesDetails.prpName }}</p>
-                  <p>{{ selectedSalesDetails.prpPrice }}</p>
-                  <p>{{ selectedSalesDetails.prpExclArea }}</p>
-                  <p>{{ selectedSalesDetails.prpDesc }}</p>
-                  <p>{{ selectedSalesDetails.prpDesc }}</p>
-                  <p>{{ selectedSalesDetails.prpAddrDetail }}</p>
+              <div v-if="selectedSalesId" class="property-detail">
+                <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image"
+                  style="width: 290px; height: auto;" />
+                <h3>상세 정보</h3>
+                <p>{{ selectedSalesDetails.prpName }}</p>
+                <p>{{ selectedSalesDetails.prpPrice }}</p>
+                <p>{{ selectedSalesDetails.prpExclArea }}</p>
+                <p>{{ selectedSalesDetails.prpDesc }}</p>
+                <p>{{ selectedSalesDetails.prpAddrDetail }}</p>
 
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    style="border-radius: 10px; margin-left: 18ex"
-                    @click="toggleSalesDetail(null)"
-                  >
-                    v
-                  </button>
-                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm"
+                  @click="toggleSalesDetail(null)">v</button>
               </div>
             </div>
           </div>
         </div>
-        <!--end::사이드바 메뉴-->
+
+
       </div>
-      <!--end::사이드바-->
     </div>
+
     <div id="modalBackground">
-     <NaverMap ></NaverMap>  
+      <NaverMap></NaverMap>
     </div>
-
-   <!-- AI GPT modal -->
-<button type="button" id="exampleModalButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  <i class="bi bi-robot" style="font-size: 38px; margin-left: 4px;"></i>
-</button>
-
-<!-- AI GPT Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="false"> 
-  <div class="modal-dialog" style="position: absolute; top: 440px; left: 1050px; max-width: 330px; width: 100%;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">AI Chat 서비스</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <!-- 모달 내용 -->
-      </div>
-      <div class="input-group mb-3" style="max-width: 300px; margin-left: 4px;">
-        <input type="text" name="AiGPT" value="원하시는 매물 조건을 입력해주세요." class="form-control">
-        <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
   </div>
 </template>
 
@@ -646,6 +323,21 @@ import { useRouter } from "vue-router";
 import { useSaleStore } from "@/stores/property.js";
 import NaverMap from "@/components/NaverMap.vue";
 import { storeToRefs } from "pinia";
+import Header2 from "@/components/Header2.vue";
+import MobileHeader from "@/components/MobileHeader.vue";
+
+// isMobile 변수 정의 (화면 크기를 기준으로)
+const isMobile = ref(window.innerWidth <= 768);
+
+// 화면 크기가 변경될 때 모바일 여부를 업데이트
+window.addEventListener("resize", () => {
+  isMobile.value = window.innerWidth <= 768;
+});
+
+// 렌더할 헤더 선택
+const computedHeader = computed(() => {
+  return isMobile.value ? MobileHeader : Header2;
+});
 
 const router = useRouter();
 const store = useSaleStore();
@@ -658,10 +350,6 @@ onMounted(() => {
 const init = () => {
   store.fetchSalesList();
   console.log(sales.value);
-};
-
-const goHome = () => {
-  router.push({ path: "/" });
 };
 
 // 필터 상태를 관리할 reactive 객체
@@ -678,35 +366,49 @@ const filters = reactive({
 
 const activeInput = ref("all");
 
+// 드롭다운 상태를 관리할 reactive 객체
+const dropdownState = reactive({
+  isDealTargetDropdownOpen: false,
+  isDealTypeDropdownOpen: false,
+  isStructureDropdownOpen: false,
+  isFloorDropdownOpen: false,
+  isAreaDropdownOpen: false,
+});
+
+// 드롭다운 상태 토글 함수
+const toggleDropdown = (type) => {
+  const dropdownKey = `is${type.charAt(0).toUpperCase() + type.slice(1)}DropdownOpen`;
+  dropdownState[dropdownKey] = !dropdownState[dropdownKey];
+};
+
 // 거래 대상 업데이트
 const updateDealTarget = (target) => {
   filters.dealTarget = target;
+  dropdownState.isDealTargetDropdownOpen = false;
 };
 
 // 거래 유형 업데이트
 const updateDealType = (type) => {
-  activeInput.value = type;
   filters.dealType = type;
+  dropdownState.isDealTypeDropdownOpen = false;
 };
 
 // 구조 업데이트
 const updateStructure = (structure) => {
   filters.structure = structure;
+  dropdownState.isStructureDropdownOpen = false;
 };
 
 // 층수 업데이트
 const updateFloor = (floor) => {
   filters.floor = floor;
+  dropdownState.isFloorDropdownOpen = false;
 };
 
 // 전용 면적 업데이트
 const updateArea = (area) => {
   filters.area = area;
-};
-
-// 모달 닫기
-const closeModal = () => {
-  // 모달 닫기 로직 구현
+  dropdownState.isAreaDropdownOpen = false;
 };
 
 // 필터 제출
@@ -731,116 +433,59 @@ function toggleSalesDetail(salesId) {
   store.fetchSalesDetails(salesId);
 }
 
-//프로필 불러오기
-const user = ref({
-  user_id: 1,
-  user_image: "/assets/img/user01.png",
-});
+// 모달 상태 관리
+const isModalOpen = ref(false);
 
-// 모달 열림 상태 관리
-const showModal = ref(false);
+// 모달 열기
+const openModal = () => {
+  isModalOpen.value = true;
+};
+
+// 모달 닫기
+const closeModal = () => {
+  isModalOpen.value = false;
+};
+
+// AI GPT 제출
+const submitAiGPT = () => {
+  // 문의 로직 구현
+  console.log("AI GPT 문의 제출");
+};
 </script>
 
+
 <style scoped>
-#exampleModal {
+.dropdown-menu {
+  padding: 10px;
+  border: 1px solid #ccc;
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 340px;
   z-index: 9999;
-  
+
 }
 
-#exampleModalButton {
+.dropdown-menu.show {
+  display: block;
   z-index: 9999;
-  position: relative;
-  left: 1400px;
-  top: 650px;
-  width: 70px; 
-  height: 70px; 
-  border-radius: 50%; 
-  background-color: #007bff; 
-  color: white; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none; 
 }
 
-#modalBackground{
-  z-index: 1040;
-}
 
 /*===== begin::헤더,메인,푸터 기본화면 =====*/
 #mainPage {
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  overflow-y: auto;
 }
-
 
 #headerPart {
   position: sticky;
   top: 0;
-}
-
-#footerPart {
-  position: sticky;
-  bottom: 0;
-}
-
-/*===== end::헤더,메인,푸터 기본화면 =====*/
-
-/* 글씨체 *
-
-
-.gothic-a1-thin {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 100;
-  font-style: normal;
-}
-
-.gothic-a1-extralight {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 200;
-  font-style: normal;
-}
-
-.gothic-a1-light {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 300;
-  font-style: normal;
-}
-
-.gothic-a1-regular {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.gothic-a1-medium {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 500;
-  font-style: normal;
-}
-
-.gothic-a1-semibold {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
-.gothic-a1-bold {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-.gothic-a1-extrabold {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 800;
-  font-style: normal;
-}
-
-.gothic-a1-black {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 900;
-  font-style: normal;
+  z-index: 1000;
+  background-color: #fff;
+  height: 75px;
+  border-bottom: 1px solid #ccc;
 }
 
 /* 구분선, 스크롤 */
@@ -869,7 +514,9 @@ const showModal = ref(false);
 .property-detail {
   padding: 20px;
   background-color: #f5f5f5;
-  width: 47ex;
+  width: 100%;
+  max-width: 600px;
+  margin-left: 30px;
 }
 
 .divider {
@@ -882,9 +529,9 @@ const showModal = ref(false);
 .custom-sidebar {
   width: 350px;
   transition:
-    width 0.3s ease,
-    visibility 0.3s ease,
-    opacity 0.3s ease;
+  width 0.3s ease,
+  visibility 0.3s ease,
+  opacity 0.3s ease;
 }
 
 .custom-sidebar.open {
@@ -893,27 +540,29 @@ const showModal = ref(false);
 
 .custom-sidebar:not(.open) {
   width: 23px;
+  right: -10px;
 }
 
 .app-sidebar-content {
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
-  opacity: 1; /* 열림 상태에서 콘텐츠 표시 */
+  opacity: 1;
+  /* 열림 상태에서 콘텐츠 표시 */
   visibility: visible;
 }
 
 .app-sidebar-content.hidden-content {
-  opacity: 0; /* 닫힘 상태에서 콘텐츠 숨김 */
+  opacity: 0;
+  /* 닫힘 상태에서 콘텐츠 숨김 */
   visibility: hidden;
 }
 
 .ki-black-left-line {
-  transition: transform 0.3s ease; /* 아이콘 애니메이션 */
+  transition: transform 0.3s ease;
+  /* 아이콘 애니메이션 */
 }
 
 .ki-black-left-line.rotate-180 {
-  transform: rotate(180deg); /* 아이콘 회전 */
+  transform: rotate(180deg);
+  /* 아이콘 회전 */
 }
 
 #kt_app_sidebar_toggle {
@@ -921,7 +570,8 @@ const showModal = ref(false);
   top: 50%;
   right: 0;
   transform: translateY(-50%);
-  z-index: 1000; /* 사이드바 위에 표시 */
+  z-index: 1000;
+  /* 사이드바 위에 표시 */
 }
 
 /* 사이드바 내부 메뉴 */
@@ -934,22 +584,10 @@ const showModal = ref(false);
   background-color: lightgray;
   padding: 10px;
   font-weight: 800;
-}
-
-/* 프로필 */
-.profile {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 }
 
-.profile-image {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #440ef6;
-  object-fit: cover;
-}
 
 /* 필터 테이블 */
 .table-bordered {
@@ -968,23 +606,43 @@ const showModal = ref(false);
   padding: 1ex;
 }
 
+
 .divider {
   border-bottom: 1px solid #ccc;
   margin: 1ex 0;
 }
 
+#footerPart {
+  position: sticky;
+  bottom: 0;
+}
+
 #kt_app_sidebar.collapsed #sort-options {
-  display: none; /* 사이드바가 접혔을 때 숨김 */
+  display: none;
+  /* 사이드바가 접혔을 때 숨김 */
 }
 
 #kt_app_sidebar:not(.collapsed) #sort-options {
-  display: block; /* 사이드바가 펼쳐졌을 때 보임 */
+  display: block;
+  /* 사이드바가 펼쳐졌을 때 보임 */
 }
+
 #kt_app_sidebar.collapsed .form-inline {
-  display: none; /* 사이드바가 접혔을 때 숨김 */
+  display: none;
+  /* 사이드바가 접혔을 때 숨김 */
 }
 
 #kt_app_sidebar:not(.collapsed) .form-inline {
-  display: block; /* 사이드바가 펼쳐졌을 때 보임 */
+  display: block;
+  /* 사이드바가 펼쳐졌을 때 보임 */
+}
+
+#kt_app_sidebar {
+  position: absolute;
+  top: 75px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
 }
 </style>
