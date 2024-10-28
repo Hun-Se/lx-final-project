@@ -1,35 +1,5 @@
 <template>
-  <div class="map-container">
-    <!-- 검색 바 -->
-    <div class="search-bar">
-      <input class="orgin"
-        type="text"
-        v-model="location"
-        placeholder="위치를 입력하세요"
-      />
-      <select class="trans" v-model="selectedTransport">
-        <option disabled value="">이동수단</option>
-        <option value="walking">도보</option>
-        <option value="driving">자차</option>
-        <option value="public_transport">대중교통</option>
-      </select>
-     <input class="input-hour"
-  type="number"
-  v-model.number="hours"
-  placeholder="시간 입력"
-  min="0"
-  step="1"
-/><span>시간</span>
-<input class="input-min"
-  type="number"
-  v-model.number="minutes"
-  placeholder="분 입력"
-  min="0"
-  max="59"
-  step="1"
-/><span>분</span>
-      <button @click="submit">검색</button>
-  </div>
+  <div class="map-container">   
     <!-- 지도 -->
     <div id="map"></div>
 
