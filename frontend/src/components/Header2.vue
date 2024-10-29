@@ -1,63 +1,47 @@
 <template>
-  <!-- Header -->
-<header class="header">
-     
-        <span class="logo cursor-pointer" id="logo_h1" @click="goToHome">내매물받아줘</span>
+  <header class="header">
+    <span class="logo cursor-pointer" id="logo_h1" @click="goToHome">내매물받아줘</span>
 
-        <!-- 검색 바 -->
-        <span class="search-bar" id="search" style="margin-left: 1ex;">
-          <input class="orgin"
-            type="text"
-            v-model="location"
-            placeholder="위치를 입력하세요"
-          />
-          에서
-          <select class="trans" v-model="selectedTransport">
-            <option disabled value="">이동수단</option>
-            <option value="walking">도보</option>
-            <option value="driving">자차</option>
-            <option value="public_transport">대중교통</option>
-          </select>
-          로
-        <input class="input-hour"
-            type="number"
-            v-model.number="hours"
-            placeholder="시간 입력"
-            min="0"
-            step="1"
-          />
-          내에
-          <span> 시간 </span>
-          <input class="input-min"
-            type="number"
-            v-model.number="minutes"
-            placeholder="분 입력"
-            min="0"
-            max="59"
-            step="1"
-          /><span>분 내에 있는 매물을 </span>
-          <button @click="submit" class="btn btn-primary btn-sm">검색</button>
-        </span>   
-      
+    <!-- 검색 바 -->
+    <span class="search-bar" id="search" style="margin-left: 1ex;">
+      <input class="orgin" type="text" v-model="location" placeholder="위치를 입력하세요" />
+      에서
+      <select class="trans" v-model="selectedTransport">
+        <option disabled value="">이동수단</option>
+        <option value="walking">도보</option>
+        <option value="driving">자차</option>
+        <option value="public_transport">대중교통</option>
+      </select>
+      로
+      <input class="input-hour" type="number" v-model.number="hours" placeholder="시간 입력" min="0" max="2" step="1" />
+      <span> 시간 </span>
+      <input class="input-min" type="number" v-model.number="minutes" placeholder="분 입력" min="0" max="59" step="1" />
+      <span>분 내에 있는 매물을 </span>
+      <button @click="submit" class="btn btn-primary btn-sm">검색</button>
+    </span>
+    <div style="display: flex; align-items: center;">
 
-        <div style="display: flex; align-items: center;">
-
-        <a @click="goToMypage" class="cursor-pointer">
-          <i class="bi bi-box2-heart-fill" style="color: #007bff; font-size: 24px;"></i>
-        </a>
-        <span style="font-weight: bold; margin-left: 80px;">{{ username }}님</span>
-      </div>
-    </header>
+<a @click="goToMypage" class="cursor-pointer">
+  <i class="bi bi-box2-heart-fill" style="color: #007bff; font-size: 24px;"></i>
+</a>
+<span style="font-weight: bold; margin-left: 80px;">{{ username }}님</span>
+</div>
+  </header>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import axios from 'axios';
 
 const router = useRouter();
 const isLoggedIn = ref(false);
 const username = ref("");
-
+const location = ref("");
+const selectedTransport = ref("");
+const hours = ref("");
+const minutes = ref("");
+const isochrone = ref(null); // 폴리곤 객체
 // 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
 onMounted(() => {
   const storedUsername = localStorage.getItem("username");
@@ -66,8 +50,85 @@ onMounted(() => {
     username.value = storedUsername;
   }
 });
+// 검색 및 폴리곤 그리기
+function submit() {
+  const totalMinutes = (parseInt(hours.value) || 0) * 3600 + (parseInt(minutes.value) || 0) * 60;
 
+  if (!location.value || !selectedTransport.value || totalMinutes === 0) {
+    alert("모든 필드를 올바르게 입력해주세요.");
+    return;
+  }
 
+  geocodeAddress(location.value)
+    .then((coords) => {
+      return axios.get(`/api/isochrone/search`, {
+        params: {
+          lat: coords.lat,
+          lng: coords.lng,
+          transport: selectedTransport.value,
+          duration: totalMinutes,
+        },
+      });
+    })
+    .then((response) => {
+      drawIsochrone(response.data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("검색 중 오류가 발생했습니다.");
+    });
+}
+
+// 주소를 좌표로 변환하는 함수
+function geocodeAddress(address) {
+  return new Promise((resolve, reject) => {
+    if (!naver.maps.Service) {
+      reject("Naver maps service is not loaded");
+      return;
+    }
+    naver.maps.Service.geocode({ query: address }, (status, response) => {
+      if (status !== naver.maps.Service.Status.OK) {
+        reject("Geocoding failed");
+        return;
+      }
+      const result = response.v2.addresses[0];
+      if (result) {
+        resolve({
+          lat: parseFloat(result.y),
+          lng: parseFloat(result.x),
+        });
+      } else {
+        reject("No results found");
+      }
+    });
+  });
+}
+
+// 폴리곤 그리기 함수
+function drawIsochrone(data) {
+  if (!window.mapInstance) {
+    console.error("지도 객체가 초기화되지 않았습니다.");
+    return;
+  }
+
+  if (isochrone.value) {
+    isochrone.value.setMap(null);
+  }
+
+  const coords = data.results[0].shapes[0].shell.map(
+    (point) => new naver.maps.LatLng(point.lat, point.lng)
+  );
+  isochrone.value = new naver.maps.Polygon({
+    map: window.mapInstance,
+    paths: coords,
+    fillColor: "#ff0000",
+    fillOpacity: 0.3,
+    strokeColor: "#ff0000",
+    strokeOpacity: 0.6,
+    strokeWeight: 3,
+  });
+  window.mapInstance.setCenter(coords[0]);
+}
 // 홈으로 이동 함수
 function goToHome() {
   router.replace({ path: "/" });
@@ -87,8 +148,6 @@ function goToMap() {
 function goToAuction() {
   router.replace({ path: "/user_auction" });
 }
-
-
 // 마이페이지로 이동 함수
 function goToMypage() {
   if (isLoggedIn.value) {
@@ -104,6 +163,7 @@ function goToBoard() {
   router.replace({ path: "/board" });
 }
 </script>
+
 
 <style scoped>
 /* 헤더 */
