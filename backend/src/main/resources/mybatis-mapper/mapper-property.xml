@@ -3,15 +3,17 @@
 
 <mapper namespace="com.lx.finalproject.dao.property.PropertyDAO">
 
-	<select id="getAllProperties" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
-        SELECT * FROM prp
-    </select>
+	<select id="getAllProperties" parameterType="int"
+		resultType="com.lx.finalproject.vo.PrpVO">
+		SELECT * FROM prp
+	</select>
 
-    <!-- 매물 리스트 가져오기 -->
-    <select id="getAllPropertiesByAgent" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
-        SELECT * FROM prp
-        WHERE user_pk = #{agentPk}
-    </select>
+	<!-- 매물 리스트 가져오기 -->
+	<select id="getAllPropertiesByAgent" parameterType="int"
+		resultType="com.lx.finalproject.vo.PrpVO">
+		SELECT * FROM prp
+		WHERE user_pk = #{agentPk}
+	</select>
 
 	<!-- 특정 매물 가져오기 -->
 	<select id="getPropertyById" parameterType="int"
@@ -23,16 +25,25 @@
 	<!-- 매물 저장 -->
 	<insert id="saveProperty"
 		parameterType="com.lx.finalproject.vo.PrpVO">
-		INSERT INTO prp (prp_name, prp_img, prp_type, prp_supp_area, prp_excl_area,
-		prp_block, prp_floor, prp_unit, prp_addr_detail, prp_trans_type,
-		prp_deposit, prp_price, prp_maint_fee, prp_parking_avail, prp_constr,
-		prp_struc_type, prp_desc, prp_status, prp_reg_time, region_pk,
+		INSERT INTO prp (prp_name, prp_img, prp_type,
+		prp_supp_area, prp_excl_area,
+		prp_block, prp_floor, prp_unit,
+		prp_addr_detail, prp_trans_type,
+		prp_deposit, prp_price, prp_maint_fee,
+		prp_parking_avail, prp_constr,
+		prp_struc_type, prp_desc, prp_status,
+		prp_reg_time, region_pk,
 		user_pk)
-		VALUES (#{prpName}, #{prpImg}, #{prpType}, #{prpSuppArea}, #{prpExclArea},
-		#{prpBlock}, #{prpFloor}, #{prpUnit}, #{prpAddrDetail},
-		#{prpTransType}, #{prpDeposit}, #{prpPrice}, #{prpMaintFee},
-		#{prpParkingAvail}, #{prpConstr}, #{prpStrucType}, #{prpDesc},
-		#{prpStatus}, #{prpRegTime}, #{regionPk}, #{userPk});
+		VALUES (#{prpName}, #{prpImg},
+		#{prpType}, #{prpSuppArea}, #{prpExclArea},
+		#{prpBlock}, #{prpFloor},
+		#{prpUnit}, #{prpAddrDetail},
+		#{prpTransType}, #{prpDeposit},
+		#{prpPrice}, #{prpMaintFee},
+		#{prpParkingAvail}, #{prpConstr},
+		#{prpStrucType}, #{prpDesc},
+		#{prpStatus}, #{prpRegTime}, #{regionPk},
+		#{userPk});
 	</insert>
 
 	<!-- 매물 업데이트 -->
@@ -43,7 +54,8 @@
 		prp_img = #{prpImg},
 		prp_type = #{prpType},
 		prp_supp_area = #{prpSuppArea},
-		prp_excl_area = #{prpExclArea},
+		prp_excl_area =
+		#{prpExclArea},
 		prp_block = #{prpBlock},
 		prp_floor = #{prpFloor},
 		prp_unit = #{prpUnit},
@@ -56,29 +68,31 @@
 		prp_constr = #{prpConstr},
 		prp_struc_type = #{prpStrucType},
 		prp_desc = #{prpDesc},
-		prp_status = #{prpStatus},
+		prp_status =
+		#{prpStatus},
 		prp_reg_time = #{prpRegTime},
 		region_pk = #{regionPk},
 		user_pk = #{userPk}
 		WHERE prp_pk = #{prpPk};
 	</update>
 
-    <!-- 매물 삭제 -->
-    <delete id="deleteProperty" parameterType="int">
-        DELETE FROM prp WHERE prp_pk = #{prpPk};
-    </delete>
+	<!-- 매물 삭제 -->
+	<delete id="deleteProperty" parameterType="int">
+		DELETE FROM prp WHERE prp_pk = #{prpPk};
+	</delete>
 
-    <!--  관심매물삭제   -->
-    <delete id="deleteInterestPrp" parameterType="int">
-        DELETE FROM favprp WHERE prp_pk = #{prpPk};
-    </delete>
+	<!-- 관심매물삭제 -->
+	<delete id="deleteInterestPrp" parameterType="int">
+		DELETE FROM favprp WHERE prp_pk = #{prpPk};
+	</delete>
 
 	<select id="getAllPropertiesMap"
 		resultType="com.lx.finalproject.dto.prp.PrpDTO">
 		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
 		AS price,
 		coord_pk, ST_AsText(location) as location FROM coordPk
-		FROM prp p
+		FROM
+		prp p
 		JOIN coord c ON
 		p.coord_pk = c.coord_pk
 	</select>
@@ -89,28 +103,32 @@
 		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
 		AS price, ST_AsText(c.location) AS location
 		FROM prp p
-		JOIN coord c ON p.coord_pk = c.coord_pk;
+		JOIN coord c ON
+		p.coord_pk = c.coord_pk;
 
 	</select>
-	
+
 	<select id="getPropertyMarkerById" parameterType="Long"
 		resultType="com.lx.finalproject.dto.prp.PrpDTO">
-		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price AS price,
+		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
+		AS price,
 		ST_AsText(c.location) AS location
 		FROM prp p
-		JOIN coord c ON p.coord_pk = c.coord_pk
+		JOIN coord c ON
+		p.coord_pk = c.coord_pk
 		WHERE p.prp_pk = #{prpPk};
 	</select>
 	<!-- 경위도 찢어버려 -->
-	<select id="getPotintById" parameterType="Long"
+	<select id="getPointById" parameterType="Long"
 		resultType="com.lx.finalproject.dto.prp.PrpDTO">
-	SELECT 
-    p.prp_pk AS prpPK, 
-    p.prp_name AS name, 
-    p.prp_price AS price, 
-    ST_Y(c.location) AS latitude,  -- 위도
-    ST_X(c.location) AS longitude   -- 경도
-FROM prp p
-JOIN coord c ON p.coord_pk = c.coord_pk;
-</select>
+		SELECT
+		p.coord_pk AS coordPk,
+		p.prp_pk AS prpPk,
+		p.prp_name AS name,
+        CAST(p.prp_price AS DECIMAL(15, 0)) AS price,  <!-- 정수형으로 반환 -->
+		ST_Y(c.location) AS latitude, -- 위도
+		ST_X(c.location) AS longitude -- 경도
+		FROM prp p
+		JOIN coord c ON p.coord_pk = c.coord_pk;
+	</select>
 </mapper>
