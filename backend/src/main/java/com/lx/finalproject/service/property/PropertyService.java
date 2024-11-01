@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.lx.finalproject.dao.property.PropertyDAO;
+import com.lx.finalproject.dto.prp.PrpDTO;
 import com.lx.finalproject.vo.PrpVO;
 
 @Service
@@ -39,5 +40,9 @@ public class PropertyService {
 
     public void  deleteInterestPrp(int prpPk) {
         dao.deleteInterestPrp(prpPk);
+    }
+    public List<PrpDTO> getPointById() {
+    	
+        return  dao.getPointById();
     }
 }

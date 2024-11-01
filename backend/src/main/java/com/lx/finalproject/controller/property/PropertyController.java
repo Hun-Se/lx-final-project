@@ -3,6 +3,8 @@ package com.lx.finalproject.controller.property;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.lx.finalproject.dto.prp.PrpDTO;
 import com.lx.finalproject.service.property.PropertyService;
 import com.lx.finalproject.vo.PrpVO;
 import java.util.Map;
@@ -18,7 +20,10 @@ public class PropertyController {
     public List<PrpVO> getPropertiesAll() {
         return service.getAllProperties();
     }
-    
+    @GetMapping("/map")
+    public List<PrpDTO> getPointById() {
+        return service.getPointById();
+    }
 
     // 매물 리스트 가져오기
     @GetMapping("/agent")
