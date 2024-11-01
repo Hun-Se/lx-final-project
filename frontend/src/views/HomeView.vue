@@ -1,130 +1,223 @@
 <template>
   <component :is="renderHeader()" />
 
-  <div v-if="userName" class="d-flex">{{ userName }}님 안녕하세요.</div>
-  <h1 class="display-1" style="text-align: center; margin-top: 2ex">
-    LX가 만든 부동산 데이터 플랫폼
-  </h1>
+  <div class="container">
 
-  <h1 class="display-5" style="text-align: center">
-    고객을 위한 부동산 직거래 정보, LX부동산
-  </h1>
+    <!-- 검색 및 배너-->
+    <div class="mt-20">
 
-  <div class="nanum-pen-script-regular" style="margin-top: 6ex">
-    <div class="carousel" style="margin-bottom: 2ex">
-      <div class="group">
-        <div class="Scard card-ai cursor-pointer" @click="goToAiRealEstate()">
-          <p
-            class="slider-text"
-            style="
-              margin-top: 2ex;
-              font-size: 1.2em;
-              color: white;
-              font-weight: bold;
-            "
-          >
-            가격 예측 AI
-          </p>
+      <div style="display: flex; align-items: center;">
+
+        <input v-model="searchByType" class="form-check-input" type="radio" name="flexRadioDefault" value="time"
+          checked>
+        <label class="form-check-label lh-base" for="flexRadioDefault1">
+          <div style="font-size: 20px; margin-left: 10px;">
+            등시간 검색
+          </div>
+
+        </label>
+        <input v-model="searchByType" class="form-check-input ms-4" type="radio" name="flexRadioDefault"
+          id="flexRadioDefault2" value="keyWord">
+
+
+        <label class="form-check-label lh-base" for="flexRadioDefault2">
+          <div style="font-size: 20px; margin-left: 10px;">
+            키워드 검색
+          </div>
+        </label>
+
+      </div>
+
+      <!-- 기존 검색 바 -->
+      <div v-if="searchByType === 'tme'" class="search-bar mt-9" id="search" style="margin-left: 1ex;">
+        <input class="orgin" type="text" v-model="location" placeholder="위치를 입력하세요" />
+        에서
+        <select class="trans" v-model="selectedTransport">
+          <option disabled value="">이동수단</option>
+          <option value="walking">도보</option>
+          <option value="driving">자차</option>
+          <option value="public_transport">대중교통</option>
+        </select>
+        로
+        <input class="input-hour" type="number" v-model.number="hours" placeholder="시간 입력" min="0" step="1" />
+        내에
+        <span> 시간 </span>
+        <input class="input-min" type="number" v-model.number="minutes" placeholder="분 입력" min="0" max="59"
+          step="1" /><span>분 내에 있는 매물을 </span>
+        <button @click="submit" class="btn btn-primary ">검색</button>
+      </div>
+
+      <!--등시간 검색-->
+      <div v-if="searchByType === 'time'" style="font-size: 30px;">
+        <div class="mt-10" style="display: flex; align-items: center;">
+          <input class="input-location text-center" style="margin-right: 10px; margin-left: 10px; width: 400px;"
+            placeholder="위치를 입력해주세요">
+          에서
+
+          <select style=" font-size: 30px; height: 50px; border-radius: 10px ; margin-right: 10px; margin-left: 20px;">
+            <option disabled selected>이동수단</option>
+            <option value="walking">도보</option>
+            <option value="driving">자차</option>
+            <option value="bus">버스</option>
+            <option value="public_transport">지하철</option>
+          </select>로
+
+          <input class="input-time text-center" type="number" placeholder="0" min="0">
+          시간
+
+          <input class="input-time text-center" type="number" placeholder="0" min="0" max="59">
+          분
+
+          <span style="margin-left: 10px; margin-right: 20px;">내에 있는 매물</span>
+          <button type="button" class="btn btn-primary btn-lg">검색</button>
+        </div>
+
+      </div>
+
+      <!-- 키워드 검색 -->
+      <div v-else-if="searchByType === 'keyWord'" class="mt-10">
+        <div class="mt-10" style="display: flex; align-items: center;">
+          <input class="input-location text-center" placeholder="지역, 지하철, 대학 등 키워드를 입력해주세요"
+            style="width: 1000px; margin:auto">
+          <button type="button" class="btn btn-primary btn-lg" style="margin:auto">검색</button>
         </div>
       </div>
-      <div class="group">
-        <div class="Scard card-map cursor-pointer" @click="goToMap()">
-          <p
-            class="slider-text"
-            style="
-              margin-top: 2ex;
-              font-size: 1.2em;
-              color: white;
-              font-weight: bold;
-            "
-          >
-            매물지도
-          </p>
+
+    </div>
+
+    <!-- 매물 카드-->
+    <div class="row mt-20">
+
+      <div class="col-3">
+        <div class="card card-effect" style="height: auto; ">
+          <div class="card-body">
+            <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">원 / 투룸</div>
+            <div class="row text-center" style="display: flex; align-items: center;">
+              <div class="col-7" style="color: gray;">
+                <div>주택 / 빌라, 오피스텔,</div>
+                <div class="mt-2">아파트까지 모~든</div>
+                <div class="mt-2"> 전월세 매물을 한번에!</div>
+              </div>
+              <div class="col-5"><img src="/assets/img/oneroom.png" style="width: 95px;"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="group">
-        <div class="Scard card-auction cursor-pointer" @click="goToAuction()">
-          <p
-            class="slider-text"
-            style="
-              margin-top: 2ex;
-              font-size: 1.2em;
-              color: white;
-              font-weight: bold;
-            "
-          >
-            중개 수수료 경매
-          </p>
+
+      <div class="col-3">
+        <div class="card card-effect" style="height: 212px; ">
+          <div class="card-body">
+            <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">주택 / 빌라</div>
+            <div class="row text-center" style="display: flex; align-items: center;">
+              <div class="col-7" style="color: gray;">
+                <div>원하는 빌라, 주택</div>
+                <div class="mt-2">전월세 매물 모두 여기!</div>
+              </div>
+              <div class="col-5"><img src="/assets/img/villa.png" style="width: 120px;"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="group">
-        <div class="Scard card-board cursor-pointer" @click="goToBoard()">
-          <p
-            class="slider-text"
-            style="
-              margin-top: 2ex;
-              font-size: 1.2em;
-              color: white;
-              font-weight: bold;
-            "
-          >
-            지역게시판
-          </p>
+
+      <div class="col-3">
+        <div class="card card-effect" style="height: auto; ">
+          <div class="card-body">
+            <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">오피스텔</div>
+            <div class="row text-center" style="display: flex; align-items: center;">
+              <div class="col-7" style="color: gray;">
+                <div>다양한 정보와</div>
+                <div class="mt-2">다양한 매물!</div>
+              </div>
+              <div class="col-5"><img src="/assets/img/officetel.png" style="width: 82px;"></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="group">
-        <div class="Scard">
-          <img
-            src="/assets/img/sales01.png"
-            alt="이미지 5"
-            class="card-image"
-          />
-          <p
-            class="slider-text"
-            style="
-              margin-top: 3ex;
-              font-size: 1.6em;
-              color: white;
-              font-weight: bold;
-            "
-          >
-            가격 예측 AI
-          </p>
-        </div>
-      </div>
-      <div class="group">
-        <div class="Scard">
-          <img
-            src="/assets/img/sales01.png"
-            alt="이미지 5"
-            class="card-image"
-          />
-          <p
-            class="slider-text"
-            style="
-              margin-top: 3ex;
-              font-size: 1.6em;
-              color: white;
-              font-weight: bold;
-            "
-          >
-            가격 예측 AI
-          </p>
+
+      <div class="col-3">
+        <div class="card card-effect" style="height: auto; ">
+          <div class="card-body">
+            <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">아파트</div>
+            <div class="row text-center" style="display: flex; align-items: center;">
+              <div class="col-7" style="color: gray;">
+                <div>풍부한 단지정보 및</div>
+                <div class="mt-2">다양한 아파트 매물!</div>
+              </div>
+              <div class="col-5"><img src="/assets/img/apartment.png" style="width: 100px;"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div v-if="!userName" class="d-grid gap-2 col-5 mx-auto">
-      <button
-        type="button"
-        class="btn btn-secondary"
-        style="border-radius: 10ex; font-weight: bold"
-        @click="goToLogin"
-      >
-        로그인하고 더 많은 기능보기
-      </button>
+    <!-- 홍보 배너-->
+    <div class="row mt-20">
+
+      <!-- 배너 -->
+      <div class="col-8" style=" background-color: aqua;">
+        <div id="carouselExampleIndicators" class="carousel slide" style="height: 300px;">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+              aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+              aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+              aria-label="Slide 3"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="/assets/img/home.jpg" alt="...">1번 배너
+            </div>
+            <div class="carousel-item">
+              <img src="/assets/img/home.jpg" alt="...">2번 배너
+            </div>
+            <div class="carousel-item">
+              <img src="/assets/img/home.jpg" alt="...">3번 배너
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!--AI 집값 예측-->
+      <div class="col-4">
+        <div class="card" style="height: 320px; ">
+          <div class="card-body text-center">
+            <div class="d-flex justify-content-around">
+              <img src="/assets/img/decrease_graph.png" style="width: 100px;">
+              <img src="/assets/img/increase_graph.png" style="width: 100px;">
+            </div>
+            <div class="mt-5" style="font-size: 30px; font-weight: 500;">
+              내가 찜한 집의
+            </div>
+            <div class="mt-5" style="font-size: 30px; font-weight: 500;">
+              미래 시세 어떻게 될까?
+            </div>
+            <div class="mt-5">
+              <button type="button" class="btn btn-primary btn-lg" style="margin:auto"> AI 집값 예측 바로가기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
     </div>
+
+
   </div>
+
+  <div v-if="userName" class="d-flex">{{ userName }}님 안녕하세요.</div>
+
 </template>
 
 <script setup>
@@ -135,6 +228,9 @@ import Header from "@/components/Header.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import { useMobileStore } from "@/stores/mobile";
 import { storeToRefs } from "pinia";
+
+const searchByType = ref("time")
+
 
 const store = useMobileStore();
 const { isMobile } = storeToRefs(store);
@@ -201,6 +297,49 @@ onMounted(async () => {
   /* 최대 너비 조정 */
   overflow: visible;
   display: flex;
+}
+
+.card-effect {
+  transition: transform 0.3s ease;
+  /* 부드러운 애니메이션 */
+}
+
+.card-effect:hover {
+  transform: translateY(-10px);
+  /* 마우스를 올렸을 때 카드가 위로 10px 떠오름 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* 그림자 효과 추가 */
+  cursor: pointer;
+}
+
+.input-location {
+  font-size: 30px;
+  height: 50px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.input-location:hover {
+  transform: translateY(-10px);
+  /* 마우스를 올렸을 때 카드가 위로 10px 떠오름 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* 그림자 효과 추가 */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.input-time {
+  height: 50px;
+  margin-left: 20px;
+  margin-right: 5px;
+  font-size: 30px;
+  width: 50px;
+  border-radius: 10px;
 }
 
 .Scard {
