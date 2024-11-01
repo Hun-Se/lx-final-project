@@ -2,30 +2,43 @@
   <header class="header">
     <span class="logo cursor-pointer" id="logo_h1" @click="goToHome">내매물받아줘</span>
 
-    <!-- 검색 바 -->
-    <span class="search-bar" id="search" style="margin-left: 1ex;">
-      <input class="orgin" type="text" v-model="location" placeholder="위치를 입력하세요" />
-      에서
-      <select class="trans" v-model="selectedTransport">
-        <option disabled value="">이동수단</option>
-        <option value="walking">도보</option>
-        <option value="driving">자차</option>
-        <option value="public_transport">대중교통</option>
-      </select>
-      로
-      <input class="input-hour" type="number" v-model.number="hours" placeholder="시간 입력" min="0" max="2" step="1" />
-      <span> 시간 </span>
-      <input class="input-min" type="number" v-model.number="minutes" placeholder="분 입력" min="0" max="59" step="1" />
-      <span>분 내에 있는 매물을 </span>
-      <button @click="submit" class="btn btn-primary btn-sm">검색</button>
-    </span>
+
+
+    <!--등시간 검색-->
+    <div style="font-size: 20px;">
+      <div style="display: flex; align-items: center;">
+        <input class="input-location text-center" style="margin-right: 10px; margin-left: 10px; width: 400px;"
+        v-model="location" placeholder="위치를 입력해주세요">
+        에서
+
+        <select v-model="selectedTransport" style=" font-size: 20px; height: 40px; border-radius: 10px ; margin-right: 10px; margin-left: 20px;">
+          <option disabled selected>이동수단</option>
+          <option value="walking">도보</option>
+          <option value="driving">자차</option>
+          <option value="bus">버스</option>
+          <option value="public_transport">지하철</option>
+        </select>로
+
+        <input class="input-time text-center" type="number" v-model.number="hours" placeholder="0" min="0">
+        시간
+
+        <input class="input-time text-center" type="number" v-model.number="minutes" placeholder="0" min="0" max="59">
+        분
+
+        <span style="margin-left: 10px; margin-right: 20px;">내에 있는 매물</span>
+        <button @click="submit" type="button" class="btn btn-primary btn-lg">검색</button>
+      </div>
+
+    </div>
+
+
     <div style="display: flex; align-items: center;">
 
-<a @click="goToMypage" class="cursor-pointer">
-  <i class="bi bi-box2-heart-fill" style="color: #007bff; font-size: 24px;"></i>
-</a>
-<span style="font-weight: bold; margin-left: 80px;">{{ username }}님</span>
-</div>
+      <a @click="goToMypage" class="cursor-pointer">
+        <i class="bi bi-box2-heart-fill" style="color: #007bff; font-size: 24px;"></i>
+      </a>
+      <span style="font-weight: bold; margin-left: 80px;">{{ username }}님</span>
+    </div>
   </header>
 </template>
 
@@ -176,6 +189,36 @@ function goToBoard() {
   padding: 2rem;
 }
 
+.input-location {
+  font-size: 20px;
+  height: 40px;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.input-location:hover {
+  transform: translateY(0px);
+  /* 마우스를 올렸을 때 카드가 위로 10px 떠오름 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* 그림자 효과 추가 */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+.input-time {
+  height: 40px;
+  margin-left: 20px;
+  margin-right: 5px;
+  font-size: 20px;
+  width: 50px;
+  border-radius: 10px;
+}
+
 #logo_h1 {
   font-weight: bold;
   color: rgb(0, 119, 255);
@@ -208,15 +251,21 @@ function goToBoard() {
   padding: 0;
   display: flex;
   justify-content: flex-end;
-  white-space: nowrap; /* 한 줄로 표시되도록 강제 */
+  white-space: nowrap;
+  /* 한 줄로 표시되도록 강제 */
 }
 
 .nav-right li {
-  margin: 0 10px; /* 여백을 추가해서 간격 조절 */
-  white-space: nowrap; /* 이정현님을 한 줄로 표시 */
-  overflow: hidden; /* 텍스트가 길면 넘어가는 부분을 숨김 */
-  text-overflow: ellipsis; /* 너무 길면 생략(...) 처리 */
-  max-width: 100px; /* 너무 긴 이름을 제한 */
+  margin: 0 10px;
+  /* 여백을 추가해서 간격 조절 */
+  white-space: nowrap;
+  /* 이정현님을 한 줄로 표시 */
+  overflow: hidden;
+  /* 텍스트가 길면 넘어가는 부분을 숨김 */
+  text-overflow: ellipsis;
+  /* 너무 길면 생략(...) 처리 */
+  max-width: 100px;
+  /* 너무 긴 이름을 제한 */
 }
 
 .nav-center li,
