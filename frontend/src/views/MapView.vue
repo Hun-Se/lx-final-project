@@ -3,7 +3,7 @@
 
   <div id="mainPage">
     <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-      <div id="kt_app_sidebar" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }">
+      <div id="kt_app" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }">
       
         <div id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
@@ -242,6 +242,7 @@
                 </tbody>
               </table>
             </ul>
+            
             <!-- 모달 버튼 -->
             <button type="button" class="btn btn-primary" @click="openModal"
               style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
@@ -270,48 +271,46 @@
         </div>
 
 
-        <!-- 매물 리스트 -->
-        <div class="app-sidebar-menu overflow-hidden flex-column-fluid"
-          style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); overflow-y: auto;">
-          <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper">
-            <div class="property-container">
-              <div v-if="!selectedSalesId" class="property-list">
-                <ul class="property-items">
-                  <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item"
-                    @click="toggleSalesDetail(item.prpPk)">
-                    <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image"
-                      style="width: 250px; height: auto;" />
-                    <div class="property-details">
-                      <p class="property-name">{{ item.prpName }}</p>
-                      <p class="property-price">{{ item.prpPrice }}</p>
-                      <p class="property-content">{{ item.prpDesc }}</p>
-                    </div>
-                  </li>
-                </ul>
+            <!-- 매물 리스트 -->
+            <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
+              
+              <!-- 매물 리스트 사이드바 -->
+              <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: auto;">
+                <div class="property-container">
+                  <div v-if="!selectedSalesId" class="property-list">
+                    <ul class="property-items">
+                      <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)">
+                        <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: auto;" />
+                        <div class="property-details">
+                          <p class="property-name">{{ item.prpName }}</p>
+                          <p class="property-price">{{ item.prpPrice }}</p>
+                          <p class="property-content">{{ item.prpDesc }}</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
 
-              <div v-if="selectedSalesId" class="property-detail">
-                <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image"
-                  style="width: 290px; height: auto;" />
-                <h3>상세 정보</h3>
-                <p>{{ selectedSalesDetails.prpName }}</p>
-                <p>{{ selectedSalesDetails.prpPrice }}</p>
-                <p>{{ selectedSalesDetails.prpExclArea }}</p>
-                <p>{{ selectedSalesDetails.prpDesc }}</p>
-                <p>{{ selectedSalesDetails.prpAddrDetail }}</p>
+              <!-- 상세 정보 사이드바 -->
 
-                <button type="button" class="btn btn-outline-secondary btn-sm"
-                  @click="toggleSalesDetail(null)">v</button>
-              </div>
+                <div v-if="selectedSalesId" class="app-sidebar-detail">
+                  <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 290px; height: auto;" />
+                  <h3>상세 정보</h3>
+                  <p>{{ selectedSalesDetails.prpName }}</p>
+                  <p>{{ selectedSalesDetails.prpPrice }}</p>
+                  <p>{{ selectedSalesDetails.prpExclArea }}</p>
+                  <p>{{ selectedSalesDetails.prpDesc }}</p>
+                  <p>{{ selectedSalesDetails.prpAddrDetail }}</p>
+
+                  <button type="button" class="btn btn-outline-secondary btn-sm" @click="toggleSalesDetail(null)">닫기</button>
+                </div>
+       
             </div>
-          </div>
         </div>
-
-
       </div>
-    </div>
 
-    <div id="modalBackground">
+      <div id="modalBackground">
       <NaverMap></NaverMap>
     </div>
   </div>
@@ -424,13 +423,18 @@ const toggleSidebar = () => {
   isOpen.value = !isOpen.value;
 };
 
-// 선택된 매물 ID
+// 선택된 매물 ID 및 상세 정보
 const selectedSalesId = ref(null);
 
-// 매물 클릭 시 상세 정보 토글
-function toggleSalesDetail(salesId) {
-  selectedSalesId.value = salesId;
-  store.fetchSalesDetails(salesId);
+// 매물 상세 정보 토글 함수
+function toggleSalesDetail(prpPk) {
+  if (prpPk) {
+    selectedSalesId.value = prpPk;
+    selectedSalesDetails.value = sales.value.find(item => item.prpPk === prpPk);
+  } else {
+    selectedSalesId.value = null;
+    selectedSalesDetails.value = {};
+  }
 }
 
 // 모달 상태 관리
@@ -495,20 +499,8 @@ const submitAiGPT = () => {
   border: 1px solid #ccc;
   padding: 10px;
   width: 320px;
-}
-
-.property-items {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-.property-item {
-  border: 2px solid rgb(224, 224, 224);
-  padding: 16px;
-  margin: 10px 0;
-  background-color: #fff;
-  transition: box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .property-detail {
@@ -574,9 +566,11 @@ const submitAiGPT = () => {
   /* 사이드바 위에 표시 */
 }
 
-/* 사이드바 내부 메뉴 */
 .property-item {
-  margin-bottom: 15px;
+  border: 2px solid rgb(224, 224, 224);
+  padding: 16px;
+  margin: 10px 0;
+  background-color: #fff;
 }
 
 /* 정렬 옵션 스타일 */
@@ -617,31 +611,72 @@ const submitAiGPT = () => {
   bottom: 0;
 }
 
-#kt_app_sidebar.collapsed #sort-options {
+/* 사이드바가 접혔을 때 옵션들 숨김 */
+#kt_app:not(.open) #sort-options,
+#kt_app:not(.open) .form-inline {
   display: none;
-  /* 사이드바가 접혔을 때 숨김 */
 }
 
-#kt_app_sidebar:not(.collapsed) #sort-options {
+/* 사이드바가 펼쳐졌을 때 옵션들 표시 */
+#kt_app.open #sort-options,
+#kt_app.open .form-inline {
   display: block;
-  /* 사이드바가 펼쳐졌을 때 보임 */
 }
 
-#kt_app_sidebar.collapsed .form-inline {
-  display: none;
-  /* 사이드바가 접혔을 때 숨김 */
-}
-
-#kt_app_sidebar:not(.collapsed) .form-inline {
-  display: block;
-  /* 사이드바가 펼쳐졌을 때 보임 */
-}
-
-#kt_app_sidebar {
+#kt_app {
   position: absolute;
   top: 75px;
   left: 0;
   right: 0;
   bottom: 0;
 }
+/* 전체 사이드바 구조 */
+.app-sidebar-menu {
+  display: flex; /* 두 개의 사이드바를 나란히 배치 */
+}
+
+/* 상세 사이드바 */
+.app-sidebar-detail {
+  width: 290px; /* 상세 사이드바의 너비 */
+  overflow-y: auto; /* 세로 스크롤 가능 */
+  background-color: #fff; /* 배경색 */
+  border-left: 1px solid #ddd; /* 왼쪽 경계선 */
+  padding: 20px; /* 패딩 */
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+/* 상세 사이드바가 열릴 때 */
+.app-sidebar-detail[v-cloak] {
+  display: none; /* 초기 상태에서는 숨김 */
+}
+
+.app-sidebar-detail.v-enter {
+  transform: translateX(0); /* 화면에 들어올 때 */
+}
+
+.app-sidebar-detail.v-leave-to {
+  transform: translateX(100%); /* 화면에서 나갈 때 */
+}
+
+/* 매물 리스트 스타일 */
+.property-items {
+  list-style-type: none; /* 리스트 스타일 제거 */
+  padding: 0; /* 패딩 제거 */
+}
+
+.property-item {
+  border: 2px solid rgb(224, 224, 224); /* 매물 아이템 테두리 */
+  padding: 16px; /* 패딩 */
+  margin: 10px 0; /* 여백 */
+  background-color: #fff; /* 배경색 */
+}
+
+.property-item:hover {
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 */
+}
+
+.property-details {
+  margin-left: 10px; /* 내용 여백 */
+}
+
 </style>
