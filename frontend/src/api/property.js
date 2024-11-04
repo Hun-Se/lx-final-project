@@ -36,8 +36,20 @@ export const requestMyProperty = async (user_pk) => {
   }
 };
 
+// 매물등록
+export const createProperty = async (data) => {
+  const url = `api/properties/create`
+  try {
+    const response = await api.post(url, data);
+    return response.data;
+  } catch(err) {
+    console.error(`매물등록 에러 : ${err}`);
+    return null;
+  }
+}
+
 export const requestMyInterestPrp = async (userPk) => {
-  const url = `api/properties/interest?userPk=` + userPk;
+  const url = `api/properties/interest?userPk=` + Number(userPk);
   try {
     const response = await api.get(url);
     return response.data;
