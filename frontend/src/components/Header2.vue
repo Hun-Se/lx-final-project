@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <span class="logo cursor-pointer" id="logo_h1" @click="goToHome">내매물받아줘</span>
+    <span class="logo cursor-pointer" id="logo_h1" @click="goToHome">믿음집</span>
 
 
 
@@ -57,7 +57,7 @@ const minutes = ref("");
 const isochrone = ref(null); // 폴리곤 객체
 // 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
 onMounted(() => {
-  const storedUsername = localStorage.getItem("username");
+  const storedUsername = sessionStorage.getItem("username");
   if (storedUsername) {
     isLoggedIn.value = true;
     username.value = storedUsername;
@@ -163,8 +163,9 @@ function goToAuction() {
 }
 // 마이페이지로 이동 함수
 function goToMypage() {
-  if (isLoggedIn.value) {
-    router.replace({ path: "/mypage" });
+  const userPk = sessionStorage.getItem("userPk");
+  if (userPk) {
+    router.replace({ path: "/my_page" });
   } else {
     alert("로그인이 필요합니다.");
     goToLoginpage(); // 로그인 안 된 상태에서 마이페이지 접근 시 로그인 페이지로 이동

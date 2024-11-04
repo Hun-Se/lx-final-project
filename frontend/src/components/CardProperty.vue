@@ -16,7 +16,6 @@
               alt="..."
             />
             <input
-              v-if="selectPageNum === 0"
               class="form-check-input prp-checkbox"
               type="checkbox"
               value=""
@@ -25,7 +24,6 @@
             <i
               v-if="selectPageNum === 1"
               class="bi bi-heart-fill heart-icon"
-              @click="removeInterestPrp(item.prpPk)"
             ></i>
           </div>
 
@@ -47,12 +45,6 @@
               class="btn btn-primary btn-sm"
               >매물수정</a
             >
-            <a
-              v-else-if="selectPageNum === 1"
-              href="#"
-              class="btn btn-primary btn-sm"
-              >임장등록</a
-            >
           </div>
         </div>
       </li>
@@ -62,6 +54,7 @@
 
 <script setup>
 import { useMyPageStore } from "@/stores/myPage.js";
+import { useSaleStore } from "@/stores/property.js";
 import { storeToRefs } from "pinia";
 import { deleteInterestPrp } from "@/api/property.js";
 
@@ -74,6 +67,10 @@ const props = defineProps({
 
 async function removeInterestPrp(prpPk) {
   await deleteInterestPrp(prpPk);
+
+  const saleStore = useSaleStore();
+  const userPk = sessionStorage.getItem("userPk");
+  await saleStore.fetchInterestPrp(userPk);
 }
 </script>
 
@@ -146,7 +143,7 @@ async function removeInterestPrp(prpPk) {
 
 .heart-icon {
   position: absolute;
-  right: 10px;
+  left: 10px;
   top: 10px;
   font-size: 25px;
   color: red;

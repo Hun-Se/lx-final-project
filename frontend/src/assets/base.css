@@ -1,14 +1,15 @@
 :root {
   --color-bg-white: #fff;
+  --color-bg-black: #000000;
   --color-text-grey: #808080;
-  --color-bg-blue1: #050c9c;
-  --color-bg-blue2: #3572ef;
-  --color-bg-blue3: #3abef9;
-  --color-bg-blue4: #a7e6ff;
+  --color-bg-blue1: #0c2bb2;
+  --color-bg-blue2: #3e69da;
+  --color-bg-blue3: #3a8ff3;
+  --color-bg-blue4: #93d0fc;
 }
 
 #app {
-  font-family: Gothic A1;
+  font-family: Gothic A1, sans-serif;
 }
 
 html, body, div, span, applet, object, iframe,
@@ -53,4 +54,15 @@ q:before, q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+.blind {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
