@@ -11,9 +11,10 @@
         {{ menu }}
       </li>
     </ul>
+    <!--0: 내매물  -->
     <div v-if="selectPageNum === 0">
       <div class="d-flex mt-3">
-        <div class="property-container flex-grow-1">
+        <div class="property-container p-5 flex-grow-1">
           <div class="d-flex w-100 justify-content-between">
             <form data-v-c44d4e75="" class="form-inline">
               <div data-v-c44d4e75="" class="input-group" style="width: 220px">
@@ -33,7 +34,12 @@
               </div>
             </form>
             <div>
-              <button class="btn btn-primary me-2">매물등록</button>
+              <button
+                @click="onClickOpenRegisterPrp"
+                class="btn btn-primary me-2"
+              >
+                매물등록
+              </button>
               <button class="btn btn-danger">매물삭제</button>
             </div>
           </div>
@@ -449,33 +455,104 @@
           </div>
         </div>
       </div>
+      <RegisterPrpModal></RegisterPrpModal>
     </div>
+    <!--1: 관심매물   -->
     <div v-else-if="selectPageNum === 1">
       <div class="d-flex mt-3">
-        <div class="property-container flex-grow-1">
+        <div class="property-container p-5 flex-grow-1">
           <div class="d-flex w-100 justify-content-between">
-            <form data-v-c44d4e75="" class="form-inline">
-              <div data-v-c44d4e75="" class="input-group" style="width: 220px">
-                <input
-                  data-v-c44d4e75=""
-                  class="form-control"
-                  type="search"
-                  placeholder="매물을 검색하세요."
-                  aria-label="Search"
-                /><button
-                  data-v-c44d4e75=""
-                  class="btn btn-outline-primary"
-                  type="submit"
+            <div data-v-c44d4e75="" class="input-group" style="width: 220px">
+              <input
+                data-v-c44d4e75=""
+                class="form-control"
+                type="search"
+                placeholder="매물을 검색하세요."
+                aria-label="Search"
+              /><button
+                data-v-c44d4e75=""
+                class="btn btn-outline-primary"
+                type="submit"
+              >
+                <i data-v-c44d4e75="" class="bi bi-search"></i>
+              </button>
+            </div>
+
+            <div class="d-flex">
+              <div class="card-toolbar me-10" style="position: relative">
+                <!--begin::Daterangepicker(defined in src/js/layout/app.js)-->
+                <div
+                  data-kt-daterangepicker="true"
+                  data-kt-daterangepicker-opens="left"
+                  class="btn btn-flex btn-sm btn-light d-flex align-items-center px-4 w-100"
+                  data-kt-initialized="1"
+                  @click="onClickCalender"
                 >
-                  <i data-v-c44d4e75="" class="bi bi-search"></i>
-                </button>
+                  <!--begin::Display range-->
+                  <div class="text-gray-600 fw-bold fs-2">2024년 9월 1일</div>
+                  <!--end::Display range-->
+                  <i
+                    class="ki-duotone ki-calendar-8 text-gray-500 lh-0 fs-2 ms-2 me-0"
+                  >
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                    <span class="path5"></span>
+                    <span class="path6"></span>
+                  </i>
+                </div>
+                <!--end::Daterangepicker-->
+                <div
+                  class="flatpickr-calendar rangeMode animate arrowTop arrowLeft"
+                  :class="{ open: isCalenderDrop }"
+                  tabindex="-1"
+                  style="top: 4rem; right: 10px"
+                >
+                  <Calender></Calender>
+                </div>
               </div>
-            </form>
+              <div class="card-toolbar me-10" style="position: relative">
+                <!--begin::Daterangepicker(defined in src/js/layout/app.js)-->
+                <div
+                  data-kt-daterangepicker="true"
+                  data-kt-daterangepicker-opens="left"
+                  class="btn btn-flex btn-sm btn-light d-flex align-items-center px-4 w-100"
+                  data-kt-initialized="1"
+                  @click="onClickDateDrop"
+                >
+                  <!--begin::Display range-->
+                  <div class="text-gray-600 fw-bold fs-2">-- : --</div>
+                  <!--end::Display range-->
+                  <i class="ms-4 bi bi-clock-fill text-gray-600"></i>
+                </div>
+                <!--end::Daterangepicker-->
+                <div
+                  class="flatpickr-calendar rangeMode animate arrowTop arrowLeft datepicker"
+                  :class="{ open: isDateDrop }"
+                  tabindex="-1"
+                  style="top: 4rem; right: -18px"
+                >
+                  <div class="d-flex">
+                    <ul class="timeList">
+                      <li v-for="(time, index) in times" :key="index">
+                        {{ time }}
+                      </li>
+                    </ul>
+                    <div class="d-flex flex-column ms-4">
+                      <button class="btn">AM</button>
+                      <button class="btn btn-light-primary">PM</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary">매물보기 신청</button>
+            </div>
           </div>
           <div class="card-container mt-5">
             <CardProperty
               :properties="
-                selectPageNum === 0 ? saleListByAgent : intersetPrpList
+                selectPageNum === 0 ? saleListByAgent : interestPrpList
               "
             ></CardProperty>
           </div>
@@ -889,22 +966,268 @@
         </div>
       </div>
     </div>
-    <div v-else="selectPageNum === 2">
-      <h1>임장현황페이지입니다.</h1>
+    <!--2: 매물보기 현황    -->
+    <div v-else-if="selectPageNum === 2">
+      <div class="card card-flush h-lg-100">
+        <!--begin::Header-->
+        <div class="card-header pt-7">
+          <!--begin::Title-->
+          <h3 class="card-title align-items-start flex-column">
+            <span class="card-label fw-bold text-gray-800">신고내역</span>
+          </h3>
+          <!--end::Title-->
+          <!--begin::Toolbar-->
+          <div class="card-toolbar">
+            <!--begin::Daterangepicker(defined in src/js/layout/app.js)-->
+
+            <!--end::Daterangepicker-->
+          </div>
+          <!--end::Toolbar-->
+        </div>
+        <!--end::Header-->
+        <!--begin::Body-->
+        <div class="card-body pt-6">
+          <!--begin::Table container-->
+          <div class="table-responsive">
+            <!--begin::Table-->
+            <table class="table table-row-dashed align-middle gs-0 gy-3 my-0">
+              <!--begin::Table head-->
+              <thead>
+                <tr class="fs-7 fw-bold text-gray-500 border-bottom-0">
+                  <th class="p-0 text-start">매물정보</th>
+                  <th class="p-0 text-end">주소</th>
+                  <th class="p-0 text-end">가격</th>
+                  <th class="p-0 text-end pe-12">작성자</th>
+                  <th class="p-0 pb-3 w-125px text-end pe-7">신고날짜</th>
+                  <th class="p-0 pb-3 w-50px text-end">삭제</th>
+                </tr>
+              </thead>
+              <!--end::Table head-->
+              <!--begin::Table body-->
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="symbol symbol-50px me-3">
+                        <img src="assets/img/home.jpg" class="" alt="" />
+                      </div>
+                      <div class="d-flex justify-content-start flex-column">
+                        <a
+                          href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
+                          >풀옵션, 2호선 도보1분 살기좋은집</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6"
+                      >도림로 47길 25</span
+                    >
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6">1000/50</span>
+                  </td>
+                  <td class="text-end">
+                    <!--begin::Label-->
+                    <span>따뜻한공인중개사</span>
+                  </td>
+                  <td class="text-end">
+                    <span>2024.10.27</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="symbol symbol-50px me-3">
+                        <img src="assets/img/home.jpg" class="" alt="" />
+                      </div>
+                      <div class="d-flex justify-content-start flex-column">
+                        <a
+                          href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
+                          >풀옵션, 2호선 도보1분 살기좋은집</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6"
+                      >도림로 47길 25</span
+                    >
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6">1000/50</span>
+                  </td>
+                  <td class="text-end">
+                    <!--begin::Label-->
+                    <span>따뜻한공인중개사</span>
+                  </td>
+                  <td class="text-end">
+                    <span>2024.10.27</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="symbol symbol-50px me-3">
+                        <img src="assets/img/home.jpg" class="" alt="" />
+                      </div>
+                      <div class="d-flex justify-content-start flex-column">
+                        <a
+                          href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
+                          >풀옵션, 2호선 도보1분 살기좋은집</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6"
+                      >도림로 47길 25</span
+                    >
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6">1000/50</span>
+                  </td>
+                  <td class="text-end">
+                    <!--begin::Label-->
+                    <span>따뜻한공인중개사</span>
+                  </td>
+                  <td class="text-end">
+                    <span>2024.10.27</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="symbol symbol-50px me-3">
+                        <img src="assets/img/home.jpg" class="" alt="" />
+                      </div>
+                      <div class="d-flex justify-content-start flex-column">
+                        <a
+                          href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
+                          >풀옵션, 2호선 도보1분 살기좋은집</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6"
+                      >도림로 47길 25</span
+                    >
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6">1000/50</span>
+                  </td>
+                  <td class="text-end">
+                    <!--begin::Label-->
+                    <span>따뜻한공인중개사</span>
+                  </td>
+                  <td class="text-end">
+                    <span>2024.10.27</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="symbol symbol-50px me-3">
+                        <img src="assets/img/home.jpg" class="" alt="" />
+                      </div>
+                      <div class="d-flex justify-content-start flex-column">
+                        <a
+                          href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
+                          >풀옵션, 2호선 도보1분 살기좋은집</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6"
+                      >도림로 47길 25</span
+                    >
+                  </td>
+                  <td class="text-end pe-0">
+                    <span class="text-gray-600 fw-bold fs-6">1000/50</span>
+                  </td>
+                  <td class="text-end">
+                    <!--begin::Label-->
+                    <span>따뜻한공인중개사</span>
+                  </td>
+                  <td class="text-end">
+                    <span>2024.10.27</span>
+                  </td>
+                  <td class="text-end">
+                    <a
+                      href="#"
+                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+              <!--end::Table body-->
+            </table>
+          </div>
+          <!--end::Table-->
+        </div>
+        <!--end: Card Body-->
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import Header from "@/components/Header.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import CardProperty from "@/components/CardProperty.vue";
+import RegisterPrpModal from "@/components/RegisterPrpModal.vue";
 
 import { useMobileStore } from "@/stores/mobile";
 import { useMyPageStore } from "@/stores/myPage.js";
 import { useSaleStore } from "@/stores/property.js";
-import { onMounted, ref } from "vue";
+import { useRegisterPrpModalStore } from "@/stores/modal";
+
+import { onMounted } from "vue";
+import { createProperty } from "@/api/property.js";
+import Calender from "@/components/Calender.vue";
 
 const mobileStore = useMobileStore();
 const { isMobile } = storeToRefs(mobileStore);
@@ -914,26 +1237,34 @@ const { selectPageNum } = storeToRefs(changeMypageStore);
 const menuList = changeMypageStore.menuList;
 
 const saleStore = useSaleStore();
-const { saleListByAgent, intersetPrpList } = storeToRefs(saleStore);
+const { saleListByAgent, interestPrpList } = storeToRefs(saleStore);
 
-// 세션스토리지에서 가져오는걸로 수정해야함
-const user_pk = sessionStorage.getItem("userPk");
+const userPk = sessionStorage.getItem("userPk");
 
 onMounted(() => {
-  console.log(selectPageNum.value);
   if (selectPageNum.value === 0) {
-    saleStore.fetchSaleListByAgent(user_pk);
+    saleStore.fetchSaleListByAgent(userPk);
   } else if (selectPageNum.value === 1) {
-    saleStore.fetchIntersetPrp(user_pk);
+    saleStore.fetchInterestPrp(userPk);
   }
 });
 
 const onClickSelectPage = async (num) => {
   selectPageNum.value = num;
   if (num === 1) {
-    const userPk = sessionStorage.getItem("userPk");
-    await saleStore.fetchIntersetPrp(userPk);
+    await saleStore.fetchInterestPrp(userPk);
   }
+};
+
+// 모달
+const storeModal = useRegisterPrpModalStore();
+const onClickOpenRegisterPrp = () => {
+  storeModal.openModal();
+};
+
+const onClickRegisterPrp = async () => {
+  await createProperty(userPk);
+  await saleStore.fetchSaleListByAgent(userPk);
 };
 
 const renderHeader = () => {
@@ -943,9 +1274,46 @@ const renderHeader = () => {
     return Header;
   }
 };
+
+const times = ref([]);
+
+// 초기 시간을 설정합니다.
+let hour = 9;
+let minute = 0;
+
+// 30분 단위로 시간을 증가시키며 `times` 배열에 추가합니다.
+for (let i = 0; i < 48; i++) {
+  // 하루에 48번 반복
+  // 시간을 포맷팅하여 배열에 추가합니다.
+  const formattedTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+  times.value.push(formattedTime);
+
+  // 30분씩 증가
+  minute += 30;
+  if (minute >= 60) {
+    minute = 0;
+    hour += 1;
+  }
+
+  // 시간이 24시를 넘어가면 0시로 초기화
+  if (hour >= 24) {
+    hour = 0;
+  }
+}
+
+const isCalenderDrop = ref(false);
+const isDateDrop = ref(false);
+
+function onClickCalender() {
+  isCalenderDrop.value = !isCalenderDrop.value;
+}
+
+function onClickDateDrop() {
+  isDateDrop.value = !isDateDrop.value;
+}
 </script>
 
-<style scope>
+<style scoped>
 .container-sub-menu li {
   margin-right: 1em;
   cursor: pointer;
@@ -969,7 +1337,33 @@ const renderHeader = () => {
   overflow: scroll;
 }
 
-.list-container {
-  width: 220px;
+.flatpickr-calendar {
+  min-width: 400px;
+}
+
+.datepicker {
+  padding: 10px;
+  min-width: 0;
+  width: auto !important;
+  font-family: inherit;
+  border: 0;
+  border-radius: 0;
+  box-shadow: var(--bs-dropdown-box-shadow);
+  background-color: var(--bs-body-bg);
+  border-radius: 0.475rem;
+}
+
+.flatpickr-calendar {
+  overflow: scroll;
+}
+
+.datepicker.open {
+  max-height: 300px;
+}
+
+.timeList li {
+  padding: 4px;
+  cursor: pointer;
 }
 </style>
+npm

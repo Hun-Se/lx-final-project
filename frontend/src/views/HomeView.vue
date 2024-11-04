@@ -263,6 +263,16 @@ function goToAuction() {
 function goToBoard() {
   router.replace({ path: "/board" });
 }
+// 마이페이지로 이동 함수
+function goToMypage() {
+  const userPk = sessionStorage.getItem("userPk");
+  if (userPk) {
+    router.push({ path: "/my_page" });
+  } else {
+    alert("로그인이 필요합니다.");
+    goToLoginpage(); // 로그인 안 된 상태에서 마이페이지 접근 시 로그인 페이지로 이동
+  }
+}
 
 const userName = ref("");
 const userPk = ref(null);
@@ -286,6 +296,8 @@ onMounted(async () => {
     console.log("User is not logged in");
   }
 });
+
+
 </script>
 
 <style>

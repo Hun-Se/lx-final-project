@@ -57,15 +57,14 @@ export const useSaleStore = defineStore("sale", () => {
     }
   }
 
-  const intersetPrpList = ref([]);
+  const interestPrpList = ref([]);
 
-  async function fetchIntersetPrp(userPk) {
-    console.log(userPk);
+  async function fetchInterestPrp(userPk) {
     const response = await requestMyInterestPrp(userPk);
 
     if (response) {
       console.log(`response -> ${JSON.stringify(response)}`);
-      intersetPrpList.value = response;
+      interestPrpList.value = response;
     } else {
       console.warn("응답 데이터가 없습니다.");
     }
@@ -75,10 +74,10 @@ export const useSaleStore = defineStore("sale", () => {
     sales,
     selectedSalesDetails,
     saleListByAgent,
-    intersetPrpList,
+    interestPrpList,
     fetchSalesList,
     fetchSalesDetails,
     fetchSaleListByAgent,
-    fetchIntersetPrp,
+    fetchInterestPrp,
   };
 });
