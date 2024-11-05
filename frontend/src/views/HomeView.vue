@@ -58,7 +58,7 @@
             <option disabled selected>이동수단</option>
             <option value="walking">도보</option>
             <option value="driving">자차</option>
-            <option value="public_transport">지하철</option>
+            <option value="public_transport">대중교통</option>
           </select>로
 
           <input class="input-time text-center" type="number" placeholder="0" min="0">
