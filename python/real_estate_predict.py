@@ -69,10 +69,17 @@ print("MAE:", mae_2024)
 print("R²:", r2_2024)
 
 # 새로운 데이터 예측 (2024년)
-new_data_2024 = pd.DataFrame({'area': [85], 'floor': [10], 'construction_year': [2015], 
-                              'school_distance': [300], 'subway_distance': [400], 
-                              'total_floors': [20], 'number_of_buildings': [10], 
-                              'construction_company': [1]})
+new_data_2024 = pd.DataFrame({'area': [84.8792], 'floor': [14], 'construction_year': [2019],
+                              'school_distance': [99], 'subway_distance': [143], 
+                              'total_floors': [15], 'number_of_buildings': [4], 
+                              'construction_company': ['롯데건설']})
+# 주요 건설사 리스트 정의
+major_construction_companies = ['삼성물산', '현대건설', 'GS건설', '롯데건설', 'HDC현대건설', '대우건설', '한화건설', '현대엔지니어링', '디엘이앤씨', '포크소이앤씨', '에스케이에코플랜트']  # 주요 건설사 이름 리스트
+
+# construction_company 열에 대해 주요 건설사는 1, 그 외는 0으로 인코딩
+new_data_2024['construction_company'] = new_data_2024['construction_company'].apply(
+    lambda x: 1 if x in major_construction_companies else 0
+)
 new_data_scaled_2024 = scaler_2024.transform(new_data_2024)
 
 predicted_price_per_area_xgb_2024 = xgb_model_2024.predict(new_data_scaled_2024)
@@ -123,9 +130,20 @@ print("MAE:", mae_2025)
 print("R²:", r2_2025)
 
 # 2025년 새 데이터 예측
-new_data_2025 = pd.DataFrame({'area': [85], 'floor': [10], 'construction_year': [2015], 
-                              'deal_year': [2025], 'school_distance': [300], 'subway_distance': [400], 
-                              'total_floors': [20], 'number_of_buildings': [10], 'construction_company': [1]})
+new_data_2025 = pd.DataFrame({'area': [84.8792], 'floor': [14], 'construction_year': [2019], 'deal_year' : [2023],
+                              'school_distance': [99], 'subway_distance': [143], 
+                              'total_floors': [15], 'number_of_buildings': [4], 
+                              'construction_company': ['롯데건설']})
+# 주요 건설사 리스트 정의
+major_construction_companies = ['삼성물산', '현대건설', 'GS건설', '롯데건설', 'HDC현대건설', '대우건설', '한화건설', '현대엔지니어링', '디엘이앤씨', '포크소이앤씨', '에스케이에코플랜트']  # 주요 건설사 이름 리스트
+# construction_company 열에 대해 주요 건설사는 1, 그 외는 0으로 인코딩
+new_data_2025['construction_company'] = new_data_2025['construction_company'].apply(
+    lambda x: 1 if x in major_construction_companies else 0
+)
+# 학습 데이터의 subway_distance 최대값을 사용하여 None 채우기
+max_subway_distance = df['subway_distance'].max()
+new_data_2025['subway_distance'].fillna(max_subway_distance, inplace=True)
+
 new_data_scaled_2025 = scaler_2025.transform(new_data_2025)
 
 predicted_price_per_area_xgb_2025 = xgb_model_2025.predict(new_data_scaled_2025)
