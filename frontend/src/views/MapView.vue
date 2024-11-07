@@ -241,7 +241,7 @@
                 </tbody>
               </table>
             </ul>
-            
+
             <!-- 모달 버튼 -->
             <button type="button" class="btn btn-primary" @click="openModal"
               style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
@@ -287,7 +287,7 @@
                 </div>
               </div>
             </div>
-         
+
             <!-- 상세 정보 사이드바 -->
             <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 0; height: 100%; width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
               <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
