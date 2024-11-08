@@ -242,7 +242,7 @@
                 </tbody>
               </table>
             </ul>
-            
+
             <!-- 모달 버튼 -->
             <button type="button" class="btn btn-primary" @click="openModal"
               style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
@@ -277,7 +277,7 @@
                 </div>
               </div>
             </div>
-         
+
             <!-- 상세 정보 사이드바 -->
             <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 60px; height: calc(100vh - 60px); width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
               

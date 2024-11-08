@@ -1,6 +1,6 @@
 <template>
   <component :is="renderHeader()" />
-  <div class="m-20">
+  <div class="m-20 fs-2x">
     <h1>매물 가격 예측</h1>
     <div class="prediction">
       <h2>{{ region }} {{ buildingName }} 매물의 </h2>
@@ -10,20 +10,6 @@
     <div class="chart-container">
       <canvas id="priceChart1"></canvas>
     </div>
-  </div>
-
-  <div class="m-20">
-    <h1>매물 지역 가격 예측</h1>
-    <div class="prediction">
-      <h2>{{ region }} 지역의</h2>
-      <h2>1년뒤 예상 가격 : {{ predictedPrice2 }} 만원</h2>
-    </div>
-
-    <div class="chart-container">
-      <canvas id="priceChart2"></canvas>
-    </div>
-    <br>
-    <br>
   </div>
 </template>
 
@@ -48,120 +34,78 @@ export default {
       } else {
         return Header;
       }
-};
+    };
 
-    const predictedPrice1 = ref(476000); // 예측 가격 데이터
-    const predictedPrice2 = ref(2250);
-    const buildingName = ref('XI 아파트'); // 빌딩 이름 데이터
-    const region = ref('서울시 반포동'); // 지역 데이터
+    const predictedPrice1 = ref(126816); // 예측 가격 데이터
+    const buildingName = ref('경희궁자이'); // 빌딩 이름 데이터
+    const region = ref('서울시 종로구 평동'); // 지역 데이터
     const chart1 = ref(null);
-    const chart2 = ref(null);
+
+    // 2024년과 2025년 데이터
+    const data2024 = [125757, 153709];
+    const data2025 = [126816, 153187];
 
     const createChart1 = () => {
       const ctx = document.getElementById('priceChart1').getContext('2d');
       chart1.value = new Chart(ctx, {
-        type: 'line', // 꺾은 선 그래프
+        type: 'bar', // 막대 그래프로 변경
         data: {
-          labels: [
-            '2020 Q1', '2020 Q2', '2020 Q3', '2020 Q4',
-            '2021 Q1', '2021 Q2', '2021 Q3', '2021 Q4',
-            '2022 Q1', '2022 Q2', '2022 Q3', '2022 Q4',
-            '2023 Q1', '2023 Q2', '2023 Q3', '2023 Q4'
-          ], // 3개월 단위 레이블
+          labels: ['경희궁자이', '경희궁롯데케슬'], // 건물 레이블
           datasets: [
             {
-              label: '예상가격',
-              data: [
-                400000, 405000, 405000, 410000, 
-                418000, 420000, 430000, 428000, 
-                438000, 448000, 460000, 459000, 
-                458000, 465000, 469000, 476000
-              ], // 가격 변동을 반영한 예측 데이터
-              fill: false,
-              pointRadius: 10, // 데이터 포인트 크기 조정
+              label: '2024',
+              data: data2024, // 2024년 데이터
+              backgroundColor: 'rgba(75, 192, 192, 0.6)', // 2024년 색상
               borderColor: 'rgba(75, 192, 192, 1)',
-              tension: 0.4, // 곡선 부드러움 조정
+              borderWidth: 1,
             },
             {
-              label: '실가격',
-              data: [
-                405000, 410000, 412000, 418000, 
-                424000, 430000, 438000, 435000, 
-                445000, 452000, 460000, 458000, 
-                464000, 470000, 475000
-              ], // 가격 변동을 반영한 실제 가격 데이터
-              fill: false,
-              pointRadius: 10, // 데이터 포인트 크기 조정
+              label: '2025',
+              data: data2025, // 2025년 데이터
+              backgroundColor: 'rgba(255, 99, 132, 0.6)', // 2025년 색상
               borderColor: 'rgba(255, 99, 132, 1)',
-              tension: 0.4, // 곡선 부드러움 조정
+              borderWidth: 1,
             },
           ],
         },
         options: {
-          responsive: true, // 창 크기에 따라 차트 자동 조정
-          maintainAspectRatio: false, // 브라우저 창 크기 비율에 맞추어 조정
-          aspectRatio: 0.42, // 차트 비율 설정
+          responsive: true,
+          maintainAspectRatio: false,
+          aspectRatio: 0.42,
           scales: {
             y: {
               beginAtZero: true,
-              min: 390000,
-              max: 490000 // Y축 범위 확장
+              min: 120000,
+              max: 160000, // Y축 범위 확장
+              ticks: {
+                stepSize: 5000, // Y축 간격 조정
+              },
             },
           },
-        },
-      });
-    };
+          plugins: {
+            legend: {
+              position: 'top', // 범례 위치 설정
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const index = context.dataIndex; // 현재 막대의 인덱스
+                  const value = context.raw; // 현재 막대의 값
+                  const year = context.dataset.label; // 데이터의 레이블 (2024 또는 2025)
+                  let percentageChange = '';
 
-    const createChart2 = () => {
-      const ctx = document.getElementById('priceChart2').getContext('2d');
-      chart2.value = new Chart(ctx, {
-        type: 'line', // 꺾은 선 그래프
-        data: {
-          labels: [
-            '2020 Q1', '2020 Q2', '2020 Q3', '2020 Q4',
-            '2021 Q1', '2021 Q2', '2021 Q3', '2021 Q4',
-            '2022 Q1', '2022 Q2', '2022 Q3', '2022 Q4',
-            '2023 Q1', '2023 Q2', '2023 Q3', '2023 Q4'
-          ], // 3개월 단위 레이블
-          datasets: [
-            {
-              label: '예상가격',
-              data: [
-                1500, 1600, 1550, 1650, 
-                1700, 1800, 1750, 1850, 
-                1900, 2000, 1950, 2050,
-                2100, 2150, 2200, 2250
-              ], // 가격 변동을 반영한 예상 가격 데이터
-              fill: false,
-              pointRadius: 10, // 데이터 포인트 크기 조정
-              borderColor: 'rgba(75, 192, 192, 1)',
-              tension: 0.4 // 곡선 부드러움 조정
-            },
-            {
-              label: '실가격',
-              data: [
-                1520, 1580, 1600, 1700, 
-                1760, 1820, 1800, 1900, 
-                1960, 2020, 2000, 2080,
-                2120, 2180, 2240
-              ], // 가격 변동을 반영한 실제 가격 데이터
-              fill: false,
-              pointRadius: 10, // 데이터 포인트 크기 조정
-              borderColor: 'rgba(255, 99, 132, 1)',
-              tension: 0.4 // 곡선 부드러움 조정
-            },
-          ],
-        },
-        options: {
-          responsive: true, // 창 크기에 따라 차트 자동 조정
-          maintainAspectRatio: false, // 브라우저 창 크기 비율에 맞추어 조정
-          aspectRatio: 0.42, // 차트 비율 설정
-          scales: {
-            y: {
-              beginAtZero: true,
-              min: 1400,
-              max: 2500
-            },
+                  // 2024와 2025 데이터를 비교하여 상승률(%)을 계산
+                  if (year === '2025') {
+                    const price2024 = data2024[index];
+                    const price2025 = data2025[index];
+                    const change = ((price2025 - price2024) / price2024) * 100;
+                    percentageChange = ` (${change.toFixed(2)}%)`;
+                  }
+
+                  return `${year}: ${value} 만원${percentageChange}`;
+                }
+              }
+            }
           },
         },
       });
@@ -169,16 +113,13 @@ export default {
 
     onMounted(() => {
       createChart1();
-      createChart2();
     });
 
     return {
       predictedPrice1,
-      predictedPrice2,
       buildingName,
       region,
       chart1,
-      chart2,
       renderHeader 
     };
   },

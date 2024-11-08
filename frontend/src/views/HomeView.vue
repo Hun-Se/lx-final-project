@@ -58,8 +58,7 @@
             <option disabled selected>이동수단</option>
             <option value="walking">도보</option>
             <option value="driving">자차</option>
-            <option value="bus">버스</option>
-            <option value="public_transport">지하철</option>
+            <option value="public_transport">대중교통</option>
           </select>로
 
           <input class="input-time text-center" type="number" placeholder="0" min="0">
@@ -89,7 +88,7 @@
     <div class="row mt-20">
 
       <div class="col-3">
-        <div class="card card-effect" style="height: auto; ">
+        <div @click="goToMap" class="card card-effect" style="height: auto; ">
           <div class="card-body">
             <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">원 / 투룸</div>
             <div class="row text-center" style="display: flex; align-items: center;">
@@ -105,7 +104,7 @@
       </div>
 
       <div class="col-3">
-        <div class="card card-effect" style="height: 212px; ">
+        <div @click="goToMap" class="card card-effect" style="height: 212px; ">
           <div class="card-body">
             <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">주택 / 빌라</div>
             <div class="row text-center" style="display: flex; align-items: center;">
@@ -120,7 +119,7 @@
       </div>
 
       <div class="col-3">
-        <div class="card card-effect" style="height: auto; ">
+        <div @click="goToMap" class="card card-effect" style="height: auto; ">
           <div class="card-body">
             <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">오피스텔</div>
             <div class="row text-center" style="display: flex; align-items: center;">
@@ -135,7 +134,7 @@
       </div>
 
       <div class="col-3">
-        <div class="card card-effect" style="height: auto; ">
+        <div @click="goToMap" class="card card-effect" style="height: auto; ">
           <div class="card-body">
             <div class="text-center mb-5" style="font-size: 30px; font-weight: 600;">아파트</div>
             <div class="row text-center" style="display: flex; align-items: center;">
@@ -154,8 +153,8 @@
     <div class="row mt-20">
 
       <!-- 배너 -->
-      <div class="col-8" style=" background-color: aqua;">
-        <div id="carouselExampleIndicators" class="carousel slide" style="height: 300px;">
+      <div class="col-8">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000" style="padding: 0;" >
           <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
               aria-current="true" aria-label="Slide 1"></button>
@@ -166,23 +165,23 @@
           </div>
           <div class="carousel-inner">
             <div class="carousel-item active">
-              <img src="/assets/img/home.jpg" alt="...">1번 배너
+              <img src="/assets/img/banner1.png" alt="1번 배너" style="width:100%  ;">
             </div>
             <div class="carousel-item">
-              <img src="/assets/img/home.jpg" alt="...">2번 배너
+              <img src="/assets/img/banner2.png" alt="2번 배너" style="width:100% ;">
             </div>
             <div class="carousel-item">
-              <img src="/assets/img/home.jpg" alt="...">3번 배너
+              <img src="/assets/img/banner3.png" alt="3번 배너" style="width:100% ;">
             </div>
           </div>
           <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-            data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            data-bs-slide="prev" >
+            <span class="carousel-control-prev-icon" aria-hidden="true"  style="background-color: grey;"></span>
             <span class="visually-hidden">Previous</span>
           </button>
           <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
             data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="carousel-control-next-icon" aria-hidden="true" style="background-color: grey;"></span>
             <span class="visually-hidden">Next</span>
           </button>
         </div>
@@ -246,22 +245,22 @@ const renderHeader = () => {
 // AI 가격 예측 페이지로 이동
 
 function goToAiRealEstate() {
-  router.replace({ path: "/ai_real_estate" });
+  router.push({ path: "/ai_real_estate" });
 }
 
 // 매물지도 페이지로 이동
 function goToMap() {
-  router.replace({ path: "/map" });
+  router.push({ path: "/map" });
 }
 
 // 중개 수수료 경매 페이지로 이동
 function goToAuction() {
-  router.replace({ path: "/user_auction" });
+  router.push({ path: "/user_auction" });
 }
 
 // 게시판 페이지로 이동
 function goToBoard() {
-  router.replace({ path: "/board" });
+  router.push({ path: "/board" });
 }
 // 마이페이지로 이동 함수
 function goToMypage() {
@@ -309,6 +308,12 @@ onMounted(async () => {
   /* 최대 너비 조정 */
   overflow: visible;
   display: flex;
+}
+
+.carousel-inner {
+  border: 2px solid #ccc; /* 원하는 테두리 색상 */
+  border-radius: 10px; /* 둥근 모서리를 원할 경우 */
+  padding: 5px; /* 테두리와 이미지 사이 간격 */
 }
 
 .card-effect {

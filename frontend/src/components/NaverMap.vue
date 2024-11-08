@@ -1,92 +1,102 @@
 <template>
   <div class="map-container">
- <div id="map"></div>
+    <div id="map"></div>
     <div class="zoom-controls">
       <button @click="zoomIn" class="zoom-button">+</button>
       <button @click="zoomOut" class="zoom-button">-</button>
     </div>
-    <div>
-  <CustomOverlay
-  v-for="(location, index) in locations"
-  :key="index"
-  :map="map"
-  :position="{ lat: location.latitude, lng: location.longitude }"
-  :name="location.name"
-  :price="location.price"
-/>
-</div>
- </div>
-
+  </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import CustomOverlay from './CustomOverlay.vue';
+import axios from "axios";
 
 export default {
-  components: { CustomOverlay },
-  setup() {
-    const map = ref(null);
-    const locations = ref([]);
-
-    onMounted(() => {
-      // 네이버 지도 API 스크립트 로드
-      const script = document.createElement("script");
-      script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
-      script.onload = initMap;
-      document.head.appendChild(script);
-    });
-
-    // 지도 초기화 함수
-    const initMap = async () => {
-      map.value = new naver.maps.Map("map", {
+  data() {
+    return {
+      map: null,
+      locations: [], // 마커 데이터를 저장할 배열
+    };
+  },
+  mounted() {
+    const script = document.createElement("script");
+    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+    script.onload = () => {
+      this.initMap();
+    };
+    document.head.appendChild(script);
+  },
+  methods: {
+    async initMap() {
+      this.map = new naver.maps.Map("map", {
         center: new naver.maps.LatLng(37.516042, 127.034881),
-        zoom: 15,
+        zoom: 17,
         zoomControl: false,
         mapTypeControl: true,
       });
+      window.mapInstance = this.map; // 전역 변수 설정
 
       // 위치 데이터 가져오기
       try {
-        const response = await axios.get('/api/properties/map');
-        console.log("API 응답 데이터:", response.data); // 1. API 응답 데이터 확인
-
-        locations.value = response.data.map((location) => ({
-          latitude: location.latitude,  // API에서 계산된 위도
-          longitude: location.longitude,  // API에서 계산된 경도
+        const response = await axios.get("/api/properties/map");
+        this.locations = response.data.map((location) => ({
+          latitude: location.latitude,
+          longitude: location.longitude,
           name: location.name,
           price: location.price,
         }));
-        console.log("변환된 locations 데이터:", locations.value); // 변환된 데이터 확인
-
       } catch (error) {
-        console.error("데이터를가져오는중 오류발생:", error);
+        console.error("데이터를 가져오는 중 오류 발생:", error);
       }
-    };
-    return {
-      map,
-      locations,
-      zoomIn,
-      zoomOut,
-    };
+
+      // 마커 생성
+      this.locations.forEach((location) => {
+        const content = `
+          <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue2); background: white; cursor: pointer; position: relative; z-index: 2">
+            <div style="max-width: 23rem; height: 1rem; padding: 0 0.8rem; text-overflow: ellipsis; white-space: nowrap; display: table-cell; vertical-align: middle; font-weight: 600;">
+              <p>${location.name}</p>
+              <p>${location.price}원</p>
+            </div>
+            <span style="position: absolute; border-style: solid; border-width: 1.2rem 1rem 0 1rem; border-color: #ffffff transparent; display: block; width: 0; z-index: 1; top: 2.5rem; left: 4.0rem;"></span>
+            <span style="position: absolute; border-style: solid; border-width: 1.1rem 1rem 0 1rem; border-color: var(--color-bg-blue2) transparent; display: block; width: 0; z-index: 0; top: 2.933rem; left: 4.0rem;"></span>
+          </div>
+        `;
+
+        new naver.maps.Marker({
+          position: new naver.maps.LatLng(
+            location.latitude,
+            location.longitude,
+          ),
+          map: this.map,
+          icon: {
+            content: content,
+            size: new naver.maps.Size(38, 58),
+            anchor: new naver.maps.Point(19, 58),
+          },
+        });
+      });
+    },
+    zoomIn() {
+      if (this.map) {
+        this.map.setZoom(this.map.getZoom() + 1);
+      }
+    },
+    zoomOut() {
+      if (this.map) {
+        this.map.setZoom(this.map.getZoom() - 1);
+      }
+    },
+    resetMap() {
+      if (this.map) {
+        // 초기 위치와 줌 레벨로 지도를 리셋
+        this.map.setCenter(
+          new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng),
+        );
+        this.map.setZoom(this.initialZoom);
+      }
+    },
   },
 };
-    // 확대 및 축소 기능
-    const zoomIn = () => {
-      if (overlay) {
-        console.log("overlay");
-        overlay.setMap(null); // 오버레이 제거
-      }
-      console.log("hi");
-      if (map.value) map.value.setZoom(map.value.getZoom() + 1);
-    };
-
-    const zoomOut = () => {
-      if (map.value) map.value.setZoom(map.value.getZoom() - 1);
-    };
-
-  
 </script>
 
 <style scoped>
