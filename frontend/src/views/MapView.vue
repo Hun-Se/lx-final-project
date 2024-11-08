@@ -3,7 +3,8 @@
 
   <div id="mainPage">
     <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-      <div id="kt_app" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }">
+      <div id="kt_app" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }"
+      :style="{ position: 'fixed', top: '70px', left: isOpen ? '0' : '-300px', height: 'calc(100vh - 70px)', overflowY: 'auto', width: '350px', transition: 'left 0.3s'}">
       
         <div id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
@@ -250,24 +251,6 @@
           </div>
         </div>
 
-        <div v-if="isModalOpen" class="modal-content"
-          style="position: relative; top: 0; left: 0; max-width: 330px; width: 100%; margin-top: 1ex; margin-left: 0.5ex; border: 1px solid #007bff; border-radius: 0.5rem; padding: 1rem;">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" style="margin-left: 1ex; font-weight: bolder;">AI Chat 서비스</h1>
-            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <!-- 모달 내용 -->
-          </div>
-          <div class="input-group mb-3" style="max-width: 300px; margin-left: 0.5ex; margin-top: 1ex;">
-            <input type="text" name="AiGPT" placeholder="원하시는 매물 조건을 입력해주세요." class="form-control">
-            <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="closeModal">닫기</button>
-          </div>
-        </div>
-
 
         <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
             <!-- 매물 리스트 사이드바 -->
@@ -275,12 +258,19 @@
               <div class="property-container">
                 <div class="property-list">
                   <ul class="property-items">
-                    <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)">
-                      <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: auto;" />
+                    <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
+                      <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
+                      
+                      <!-- 이미지 위에 반투명 텍스트 -->
+                      <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
+                        믿음집
+                      </div>
+
                       <div class="property-details">
-                        <p class="property-name">{{ item.prpName }}</p>
-                        <p class="property-price">{{ item.prpPrice }}</p>
-                        <p class="property-content">{{ item.prpDesc }}</p>
+                        <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
+                        <p style="margin-top: 2ex;">{{ selectedSalesDetails.prpExclArea }}㎡</p>
+                        <p class="property-content" style="margin-top: 1ex;">{{ item.prpDesc }}</p>
+                        <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">방주인</div>
                       </div>
                     </li>
                   </ul>
@@ -289,15 +279,62 @@
             </div>
 
             <!-- 상세 정보 사이드바 -->
-            <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 0; height: 100%; width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
+            <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 60px; height: calc(100vh - 60px); width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
+              
+              <!-- btn-close 버튼 -->
+              <button type="button" class="btn-close" style="position: absolute; top: 10px; right: 10px; background-color: white; border-radius: 30%; border: 1px solid #ddd;" @click="toggleSalesDetail(null)"></button>
+
+              <!-- AI Chat -->            
+              <div v-if="isModalOpen" class="modal-content"
+                style="position: relative; top: 0; left: 0; max-width: 330px; width: 100%; margin-top: 3ex; margin-left: 0.5ex; border: 1px solid #007bff; border-radius: 0.5rem; padding: 1rem;">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" style="margin-left: 1ex; font-weight: bolder;">AI Chat 서비스</h1>                
+                </div>
+                <div class="modal-body">
+                  <!-- 모달 내용 -->
+                </div>
+                <div class="input-group mb-3" style="max-width: 300px; margin-left: 0.5ex; margin-top: 1ex;">
+                  <input type="text" name="AiGPT" placeholder="원하시는 매물 조건을 입력해주세요." class="form-control">
+                  <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" @click="closeModal">닫기</button>
+                </div>
+              </div>
+
+              <!-- 매물 상세정보 -->
+              <p style="margin-top: 3ex; margin-bottom: 1ex; font-size: large; font-weight: bolder; color: darkgray;">
+                <strong style="color: black;">매물</strong>{{ selectedSalesDetails.prpPrice }} 
+                  <i style="color: black; margin-left: 5ex; font-size: large;" class="bi bi-share"></i><i style="color: black; margin-left: 2ex; font-size: large;" class="bi bi-heart-fill"></i></p>
+
               <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
-              <div class="detail-header" style="font-size: large; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; margin-top: 1ex;">상세 정보</div>
-              <p><strong style="font-weight: bolder;">이름:</strong> {{ selectedSalesDetails.prpName }}</p>
-              <p style="margin-top: 1ex;"><strong style="font-weight: bolder;">가격:</strong> {{ selectedSalesDetails.prpPrice }}</p>
-              <p style="margin-top: 1ex;"><strong style="font-weight: bolder;">면적:</strong> {{ selectedSalesDetails.prpExclArea }}</p>
-              <p style="margin-top: 1ex;"><strong style="font-weight: bolder;">설명:</strong> {{ selectedSalesDetails.prpDesc }}</p>
-              <p style="margin-top: 1ex;"><strong style="font-weight: bolder;">주소:</strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
-              <button type="button" class="btn btn-outline-primary btn-sm" style="margin-left: 33ex;" @click="toggleSalesDetail(null)">닫기</button>
+              <div class="detail-header" style="font-size: small; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid #ccc; padding: 5px; display: inline-block; border-radius: 6px; border-width: 2px;">
+                매물번호{{ selectedSalesDetails.prpPrice }}
+              </div>
+
+              <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
+              <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex;">{{ selectedSalesDetails.prpDesc }}</p>
+              <p style="margin-top: 4ex;">{{ selectedSalesDetails.prpName }}</p>       
+              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-pin-map-fill"></i></strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
+              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-rulers"></i></strong> {{ selectedSalesDetails.prpExclArea }}</p>
+              
+              <button type="button" class="btn btn-primary btn-sm" 
+                style="border: 1px solid  #0d6efd; background-color: white; color: #0d6efd; margin-top: 3ex; width: 40ex"
+                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';">
+                <i class="bi bi-cash-coin"
+                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>실거래가 보러가기
+                <i class="bi bi-arrow-right"
+                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>
+              </button>
+
+              <div style="margin-top: 3ex; display: flex; align-items: center;">
+                <i class="bi bi-telephone-fill" style="font-size: 22px; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
+                <i class="bi bi-chat-fill" style="font-size: 22px; margin-left: 1ex; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
+                <button type="button" class="btn btn-primary" style="width: 14ex; margin-left: 1ex; font-size: 19px; padding: 10px 20px; border-radius: 0; line-height: 2;">채팅하기</button>
+              </div>
             </div>
           </div>
         </div>
@@ -343,6 +380,7 @@ const init = () => {
   store.fetchSalesList();
   console.log(sales.value);
 };
+
 
 // 필터 상태를 관리할 reactive 객체
 const filters = reactive({
