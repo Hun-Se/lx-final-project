@@ -2,12 +2,8 @@
   <component :is="renderHeader()" />
   <div class="p-3">
     <ul class="container-sub-menu d-flex fs-4 p-3">
-      <li
-        v-for="(menu, index) in menuList"
-        :key="index"
-        :class="['p-2', { selected: selectPageNum === index }]"
-        @click="onClickSelectPage(index)"
-      >
+      <li v-for="(menu, index) in menuList" :key="index" :class="['p-2', { selected: selectPageNum === index }]"
+        @click="onClickSelectPage(index)">
         {{ menu }}
       </li>
     </ul>
@@ -18,26 +14,14 @@
           <div class="d-flex w-100 justify-content-between">
             <form data-v-c44d4e75="" class="form-inline">
               <div data-v-c44d4e75="" class="input-group" style="width: 220px">
-                <input
-                  data-v-c44d4e75=""
-                  class="form-control"
-                  type="search"
-                  placeholder="매물을 검색하세요."
-                  aria-label="Search"
-                /><button
-                  data-v-c44d4e75=""
-                  class="btn btn-outline-primary"
-                  type="submit"
-                >
+                <input data-v-c44d4e75="" class="form-control" type="search" placeholder="매물을 검색하세요."
+                  aria-label="Search" /><button data-v-c44d4e75="" class="btn btn-outline-primary" type="submit">
                   <i data-v-c44d4e75="" class="bi bi-search"></i>
                 </button>
               </div>
             </form>
             <div>
-              <button
-                @click="onClickOpenRegisterPrp"
-                class="btn btn-primary me-2"
-              >
+              <button @click="onClickOpenRegisterPrp" class="btn btn-primary me-2">
                 매물등록
               </button>
               <button class="btn btn-danger">매물삭제</button>
@@ -58,20 +42,14 @@
                   <form class="w-100 position-relative" autocomplete="off">
                     <!--begin::Icon-->
                     <i
-                      class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 ms-5 translate-middle-y"
-                    >
+                      class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 ms-5 translate-middle-y">
                       <span class="path1"></span>
                       <span class="path2"></span>
                     </i>
                     <!--end::Icon-->
                     <!--begin::Input-->
-                    <input
-                      type="text"
-                      class="form-control form-control-solid px-13"
-                      name="search"
-                      value=""
-                      placeholder="Search by username or email..."
-                    />
+                    <input type="text" class="form-control form-control-solid px-13" name="search" value=""
+                      placeholder="Search by username or email..." />
                     <!--end::Input-->
                   </form>
                   <!--end::Form-->
@@ -80,34 +58,23 @@
                 <!--begin::Card body-->
                 <div class="card-body pt-5 h-50" id="kt_chat_contacts_body">
                   <!--begin::List-->
-                  <div
-                    class="scroll-y me-n5 pe-5 h-100"
-                    data-kt-scroll="true"
-                    data-kt-scroll-activate="{default: false, lg: true}"
-                    data-kt-scroll-max-height="auto"
+                  <div class="scroll-y me-n5 pe-5 h-100" data-kt-scroll="true"
+                    data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                     data-kt-scroll-dependencies="#kt_header, #kt_app_header, #kt_toolbar, #kt_app_toolbar, #kt_footer, #kt_app_footer, #kt_chat_contacts_header"
                     data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_contacts_body"
-                    data-kt-scroll-offset="5px"
-                  >
+                    data-kt-scroll-offset="5px">
                     <!--begin::User-->
                     <div class="d-flex flex-stack py-4">
                       <!--begin::Details-->
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                            >M</span
-                          >
+                          <span class="symbol-label bg-light-danger text-danger fs-6 fw-bolder">M</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Melody Macy</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Melody Macy</a>
                           <div class="fw-semibold text-muted">
                             melody@altbox.com
                           </div>
@@ -136,11 +103,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Max Smith</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Max Smith</a>
                           <div class="fw-semibold text-muted">max@kt.com</div>
                         </div>
                         <!--end::Details-->
@@ -149,10 +112,7 @@
                       <!--begin::Lat seen-->
                       <div class="d-flex flex-column align-items-end ms-2">
                         <span class="text-muted fs-7 mb-1">5 hrs</span>
-                        <span
-                          class="badge badge-sm badge-circle badge-light-success"
-                          >6</span
-                        >
+                        <span class="badge badge-sm badge-circle badge-light-success">6</span>
                       </div>
                       <!--end::Lat seen-->
                     </div>
@@ -167,18 +127,12 @@
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
                           <img alt="Pic" src="/assets/img/user01.png" />
-                          <div
-                            class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"
-                          ></div>
+                          <div class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"></div>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Sean Bean</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Sean Bean</a>
                           <div class="fw-semibold text-muted">
                             sean@dellito.com
                           </div>
@@ -189,10 +143,7 @@
                       <!--begin::Lat seen-->
                       <div class="d-flex flex-column align-items-end ms-2">
                         <span class="text-muted fs-7 mb-1">5 hrs</span>
-                        <span
-                          class="badge badge-sm badge-circle badge-light-success"
-                          >2</span
-                        >
+                        <span class="badge badge-sm badge-circle badge-light-success">2</span>
                       </div>
                       <!--end::Lat seen-->
                     </div>
@@ -211,11 +162,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Brian Cox</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Brian Cox</a>
                           <div class="fw-semibold text-muted">
                             brian@exchange.com
                           </div>
@@ -226,10 +173,7 @@
                       <!--begin::Lat seen-->
                       <div class="d-flex flex-column align-items-end ms-2">
                         <span class="text-muted fs-7 mb-1">1 day</span>
-                        <span
-                          class="badge badge-sm badge-circle badge-light-success"
-                          >2</span
-                        >
+                        <span class="badge badge-sm badge-circle badge-light-success">2</span>
                       </div>
                       <!--end::Lat seen-->
                     </div>
@@ -243,19 +187,12 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-warning text-warning fs-6 fw-bolder"
-                            >C</span
-                          >
+                          <span class="symbol-label bg-light-warning text-warning fs-6 fw-bolder">C</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Mikaela Collins</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Mikaela Collins</a>
                           <div class="fw-semibold text-muted">mik@pex.com</div>
                         </div>
                         <!--end::Details-->
@@ -282,11 +219,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Francis Mitcham</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Francis Mitcham</a>
                           <div class="fw-semibold text-muted">
                             f.mit@kpmg.com
                           </div>
@@ -310,19 +243,12 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                            >O</span
-                          >
+                          <span class="symbol-label bg-light-danger text-danger fs-6 fw-bolder">O</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Olivia Wild</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Olivia Wild</a>
                           <div class="fw-semibold text-muted">
                             olivia@corpmail.com
                           </div>
@@ -346,19 +272,12 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-primary text-primary fs-6 fw-bolder"
-                            >N</span
-                          >
+                          <span class="symbol-label bg-light-primary text-primary fs-6 fw-bolder">N</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Neil Owen</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Neil Owen</a>
                           <div class="fw-semibold text-muted">
                             owen.neil@gmail.com
                           </div>
@@ -387,11 +306,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Dan Wilson</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Dan Wilson</a>
                           <div class="fw-semibold text-muted">
                             dam@consilting.com
                           </div>
@@ -415,22 +330,13 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                            >E</span
-                          >
-                          <div
-                            class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"
-                          ></div>
+                          <span class="symbol-label bg-light-danger text-danger fs-6 fw-bolder">E</span>
+                          <div class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"></div>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Emma Bold</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Emma Bold</a>
                           <div class="fw-semibold text-muted">
                             emma@intenso.com
                           </div>
@@ -463,17 +369,8 @@
         <div class="property-container p-5 flex-grow-1">
           <div class="d-flex w-100 justify-content-between">
             <div data-v-c44d4e75="" class="input-group" style="width: 220px">
-              <input
-                data-v-c44d4e75=""
-                class="form-control"
-                type="search"
-                placeholder="매물을 검색하세요."
-                aria-label="Search"
-              /><button
-                data-v-c44d4e75=""
-                class="btn btn-outline-primary"
-                type="submit"
-              >
+              <input data-v-c44d4e75="" class="form-control" type="search" placeholder="매물을 검색하세요."
+                aria-label="Search" /><button data-v-c44d4e75="" class="btn btn-outline-primary" type="submit">
                 <i data-v-c44d4e75="" class="bi bi-search"></i>
               </button>
             </div>
@@ -481,19 +378,13 @@
             <div class="d-flex">
               <div class="card-toolbar me-10" style="position: relative">
                 <!--begin::Daterangepicker(defined in src/js/layout/app.js)-->
-                <div
-                  data-kt-daterangepicker="true"
-                  data-kt-daterangepicker-opens="left"
-                  class="btn btn-flex btn-sm btn-light d-flex align-items-center px-4 w-100"
-                  data-kt-initialized="1"
-                  @click="onClickCalender"
-                >
+                <div data-kt-daterangepicker="true" data-kt-daterangepicker-opens="left"
+                  class="btn btn-flex btn-sm btn-light d-flex align-items-center px-4 w-100" data-kt-initialized="1"
+                  @click="onClickCalender">
                   <!--begin::Display range-->
                   <div class="text-gray-600 fw-bold fs-2">2024년 9월 1일</div>
                   <!--end::Display range-->
-                  <i
-                    class="ki-duotone ki-calendar-8 text-gray-500 lh-0 fs-2 ms-2 me-0"
-                  >
+                  <i class="ki-duotone ki-calendar-8 text-gray-500 lh-0 fs-2 ms-2 me-0">
                     <span class="path1"></span>
                     <span class="path2"></span>
                     <span class="path3"></span>
@@ -503,36 +394,24 @@
                   </i>
                 </div>
                 <!--end::Daterangepicker-->
-                <div
-                  class="flatpickr-calendar rangeMode animate arrowTop arrowLeft"
-                  :class="{ open: isCalenderDrop }"
-                  tabindex="-1"
-                  style="top: 4rem; right: 10px"
-                >
+                <div class="flatpickr-calendar rangeMode animate arrowTop arrowLeft" :class="{ open: isCalenderDrop }"
+                  tabindex="-1" style="top: 4rem; right: 10px">
                   <Calender></Calender>
                 </div>
               </div>
               <div class="card-toolbar me-10" style="position: relative">
                 <!--begin::Daterangepicker(defined in src/js/layout/app.js)-->
-                <div
-                  data-kt-daterangepicker="true"
-                  data-kt-daterangepicker-opens="left"
-                  class="btn btn-flex btn-sm btn-light d-flex align-items-center px-4 w-100"
-                  data-kt-initialized="1"
-                  @click="onClickDateDrop"
-                >
+                <div data-kt-daterangepicker="true" data-kt-daterangepicker-opens="left"
+                  class="btn btn-flex btn-sm btn-light d-flex align-items-center px-4 w-100" data-kt-initialized="1"
+                  @click="onClickDateDrop">
                   <!--begin::Display range-->
                   <div class="text-gray-600 fw-bold fs-2">-- : --</div>
                   <!--end::Display range-->
                   <i class="ms-4 bi bi-clock-fill text-gray-600"></i>
                 </div>
                 <!--end::Daterangepicker-->
-                <div
-                  class="flatpickr-calendar rangeMode animate arrowTop arrowLeft datepicker"
-                  :class="{ open: isDateDrop }"
-                  tabindex="-1"
-                  style="top: 4rem; right: -18px"
-                >
+                <div class="flatpickr-calendar rangeMode animate arrowTop arrowLeft datepicker"
+                  :class="{ open: isDateDrop }" tabindex="-1" style="top: 4rem; right: -18px">
                   <div class="d-flex">
                     <ul class="timeList">
                       <li v-for="(time, index) in times" :key="index">
@@ -550,11 +429,8 @@
             </div>
           </div>
           <div class="card-container mt-5">
-            <CardProperty
-              :properties="
-                selectPageNum === 0 ? saleListByAgent : interestPrpList
-              "
-            ></CardProperty>
+            <CardProperty :properties="selectPageNum === 0 ? saleListByAgent : interestPrpList
+              "></CardProperty>
           </div>
         </div>
         <div class="flex-grow-1 util-container">
@@ -568,20 +444,14 @@
                   <form class="w-100 position-relative" autocomplete="off">
                     <!--begin::Icon-->
                     <i
-                      class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 ms-5 translate-middle-y"
-                    >
+                      class="ki-duotone ki-magnifier fs-3 text-gray-500 position-absolute top-50 ms-5 translate-middle-y">
                       <span class="path1"></span>
                       <span class="path2"></span>
                     </i>
                     <!--end::Icon-->
                     <!--begin::Input-->
-                    <input
-                      type="text"
-                      class="form-control form-control-solid px-13"
-                      name="search"
-                      value=""
-                      placeholder="Search by username or email..."
-                    />
+                    <input type="text" class="form-control form-control-solid px-13" name="search" value=""
+                      placeholder="Search by username or email..." />
                     <!--end::Input-->
                   </form>
                   <!--end::Form-->
@@ -590,34 +460,23 @@
                 <!--begin::Card body-->
                 <div class="card-body pt-5 h-50" id="kt_chat_contacts_body">
                   <!--begin::List-->
-                  <div
-                    class="scroll-y me-n5 pe-5 h-100"
-                    data-kt-scroll="true"
-                    data-kt-scroll-activate="{default: false, lg: true}"
-                    data-kt-scroll-max-height="auto"
+                  <div class="scroll-y me-n5 pe-5 h-100" data-kt-scroll="true"
+                    data-kt-scroll-activate="{default: false, lg: true}" data-kt-scroll-max-height="auto"
                     data-kt-scroll-dependencies="#kt_header, #kt_app_header, #kt_toolbar, #kt_app_toolbar, #kt_footer, #kt_app_footer, #kt_chat_contacts_header"
                     data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_contacts_body"
-                    data-kt-scroll-offset="5px"
-                  >
+                    data-kt-scroll-offset="5px">
                     <!--begin::User-->
                     <div class="d-flex flex-stack py-4">
                       <!--begin::Details-->
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                            >M</span
-                          >
+                          <span class="symbol-label bg-light-danger text-danger fs-6 fw-bolder">M</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Melody Macy</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Melody Macy</a>
                           <div class="fw-semibold text-muted">
                             melody@altbox.com
                           </div>
@@ -646,11 +505,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Max Smith</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Max Smith</a>
                           <div class="fw-semibold text-muted">max@kt.com</div>
                         </div>
                         <!--end::Details-->
@@ -659,10 +514,7 @@
                       <!--begin::Lat seen-->
                       <div class="d-flex flex-column align-items-end ms-2">
                         <span class="text-muted fs-7 mb-1">5 hrs</span>
-                        <span
-                          class="badge badge-sm badge-circle badge-light-success"
-                          >6</span
-                        >
+                        <span class="badge badge-sm badge-circle badge-light-success">6</span>
                       </div>
                       <!--end::Lat seen-->
                     </div>
@@ -677,18 +529,12 @@
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
                           <img alt="Pic" src="/assets/img/user01.png" />
-                          <div
-                            class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"
-                          ></div>
+                          <div class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"></div>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Sean Bean</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Sean Bean</a>
                           <div class="fw-semibold text-muted">
                             sean@dellito.com
                           </div>
@@ -699,10 +545,7 @@
                       <!--begin::Lat seen-->
                       <div class="d-flex flex-column align-items-end ms-2">
                         <span class="text-muted fs-7 mb-1">5 hrs</span>
-                        <span
-                          class="badge badge-sm badge-circle badge-light-success"
-                          >2</span
-                        >
+                        <span class="badge badge-sm badge-circle badge-light-success">2</span>
                       </div>
                       <!--end::Lat seen-->
                     </div>
@@ -721,11 +564,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Brian Cox</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Brian Cox</a>
                           <div class="fw-semibold text-muted">
                             brian@exchange.com
                           </div>
@@ -736,10 +575,7 @@
                       <!--begin::Lat seen-->
                       <div class="d-flex flex-column align-items-end ms-2">
                         <span class="text-muted fs-7 mb-1">1 day</span>
-                        <span
-                          class="badge badge-sm badge-circle badge-light-success"
-                          >2</span
-                        >
+                        <span class="badge badge-sm badge-circle badge-light-success">2</span>
                       </div>
                       <!--end::Lat seen-->
                     </div>
@@ -753,19 +589,12 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-warning text-warning fs-6 fw-bolder"
-                            >C</span
-                          >
+                          <span class="symbol-label bg-light-warning text-warning fs-6 fw-bolder">C</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Mikaela Collins</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Mikaela Collins</a>
                           <div class="fw-semibold text-muted">mik@pex.com</div>
                         </div>
                         <!--end::Details-->
@@ -792,11 +621,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Francis Mitcham</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Francis Mitcham</a>
                           <div class="fw-semibold text-muted">
                             f.mit@kpmg.com
                           </div>
@@ -820,19 +645,12 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                            >O</span
-                          >
+                          <span class="symbol-label bg-light-danger text-danger fs-6 fw-bolder">O</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Olivia Wild</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Olivia Wild</a>
                           <div class="fw-semibold text-muted">
                             olivia@corpmail.com
                           </div>
@@ -856,19 +674,12 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-primary text-primary fs-6 fw-bolder"
-                            >N</span
-                          >
+                          <span class="symbol-label bg-light-primary text-primary fs-6 fw-bolder">N</span>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Neil Owen</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Neil Owen</a>
                           <div class="fw-semibold text-muted">
                             owen.neil@gmail.com
                           </div>
@@ -897,11 +708,7 @@
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Dan Wilson</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Dan Wilson</a>
                           <div class="fw-semibold text-muted">
                             dam@consilting.com
                           </div>
@@ -925,22 +732,13 @@
                       <div class="d-flex align-items-center">
                         <!--begin::Avatar-->
                         <div class="symbol symbol-45px symbol-circle">
-                          <span
-                            class="symbol-label bg-light-danger text-danger fs-6 fw-bolder"
-                            >E</span
-                          >
-                          <div
-                            class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"
-                          ></div>
+                          <span class="symbol-label bg-light-danger text-danger fs-6 fw-bolder">E</span>
+                          <div class="symbol-badge bg-success start-100 top-100 border-4 h-8px w-8px ms-n2 mt-n2"></div>
                         </div>
                         <!--end::Avatar-->
                         <!--begin::Details-->
                         <div class="ms-5">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2"
-                            >Emma Bold</a
-                          >
+                          <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary mb-2">Emma Bold</a>
                           <div class="fw-semibold text-muted">
                             emma@intenso.com
                           </div>
@@ -1012,18 +810,13 @@
                         <img src="assets/img/home.jpg" class="" alt="" />
                       </div>
                       <div class="d-flex justify-content-start flex-column">
-                        <a
-                          href="apps/projects/users.html"
-                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
-                          >풀옵션, 2호선 도보1분 살기좋은집</a
-                        >
+                        <a href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">풀옵션, 2호선 도보1분 살기좋은집</a>
                       </div>
                     </div>
                   </td>
                   <td class="text-end pe-0">
-                    <span class="text-gray-600 fw-bold fs-6"
-                      >도림로 47길 25</span
-                    >
+                    <span class="text-gray-600 fw-bold fs-6">도림로 47길 25</span>
                   </td>
                   <td class="text-end pe-0">
                     <span class="text-gray-600 fw-bold fs-6">1000/50</span>
@@ -1036,10 +829,7 @@
                     <span>2024.10.27</span>
                   </td>
                   <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
-                    >
+                    <a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
                       <i class="bi bi-trash"></i>
                     </a>
                   </td>
@@ -1051,18 +841,13 @@
                         <img src="assets/img/home.jpg" class="" alt="" />
                       </div>
                       <div class="d-flex justify-content-start flex-column">
-                        <a
-                          href="apps/projects/users.html"
-                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
-                          >풀옵션, 2호선 도보1분 살기좋은집</a
-                        >
+                        <a href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">풀옵션, 2호선 도보1분 살기좋은집</a>
                       </div>
                     </div>
                   </td>
                   <td class="text-end pe-0">
-                    <span class="text-gray-600 fw-bold fs-6"
-                      >도림로 47길 25</span
-                    >
+                    <span class="text-gray-600 fw-bold fs-6">도림로 47길 25</span>
                   </td>
                   <td class="text-end pe-0">
                     <span class="text-gray-600 fw-bold fs-6">1000/50</span>
@@ -1075,10 +860,7 @@
                     <span>2024.10.27</span>
                   </td>
                   <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
-                    >
+                    <a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
                       <i class="bi bi-trash"></i>
                     </a>
                   </td>
@@ -1090,18 +872,13 @@
                         <img src="assets/img/home.jpg" class="" alt="" />
                       </div>
                       <div class="d-flex justify-content-start flex-column">
-                        <a
-                          href="apps/projects/users.html"
-                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
-                          >풀옵션, 2호선 도보1분 살기좋은집</a
-                        >
+                        <a href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">풀옵션, 2호선 도보1분 살기좋은집</a>
                       </div>
                     </div>
                   </td>
                   <td class="text-end pe-0">
-                    <span class="text-gray-600 fw-bold fs-6"
-                      >도림로 47길 25</span
-                    >
+                    <span class="text-gray-600 fw-bold fs-6">도림로 47길 25</span>
                   </td>
                   <td class="text-end pe-0">
                     <span class="text-gray-600 fw-bold fs-6">1000/50</span>
@@ -1114,10 +891,7 @@
                     <span>2024.10.27</span>
                   </td>
                   <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
-                    >
+                    <a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
                       <i class="bi bi-trash"></i>
                     </a>
                   </td>
@@ -1129,18 +903,13 @@
                         <img src="assets/img/home.jpg" class="" alt="" />
                       </div>
                       <div class="d-flex justify-content-start flex-column">
-                        <a
-                          href="apps/projects/users.html"
-                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
-                          >풀옵션, 2호선 도보1분 살기좋은집</a
-                        >
+                        <a href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">풀옵션, 2호선 도보1분 살기좋은집</a>
                       </div>
                     </div>
                   </td>
                   <td class="text-end pe-0">
-                    <span class="text-gray-600 fw-bold fs-6"
-                      >도림로 47길 25</span
-                    >
+                    <span class="text-gray-600 fw-bold fs-6">도림로 47길 25</span>
                   </td>
                   <td class="text-end pe-0">
                     <span class="text-gray-600 fw-bold fs-6">1000/50</span>
@@ -1153,10 +922,7 @@
                     <span>2024.10.27</span>
                   </td>
                   <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
-                    >
+                    <a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
                       <i class="bi bi-trash"></i>
                     </a>
                   </td>
@@ -1168,18 +934,13 @@
                         <img src="assets/img/home.jpg" class="" alt="" />
                       </div>
                       <div class="d-flex justify-content-start flex-column">
-                        <a
-                          href="apps/projects/users.html"
-                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6"
-                          >풀옵션, 2호선 도보1분 살기좋은집</a
-                        >
+                        <a href="apps/projects/users.html"
+                          class="text-gray-800 fw-bold text-hover-primary mb-1 fs-6">풀옵션, 2호선 도보1분 살기좋은집</a>
                       </div>
                     </div>
                   </td>
                   <td class="text-end pe-0">
-                    <span class="text-gray-600 fw-bold fs-6"
-                      >도림로 47길 25</span
-                    >
+                    <span class="text-gray-600 fw-bold fs-6">도림로 47길 25</span>
                   </td>
                   <td class="text-end pe-0">
                     <span class="text-gray-600 fw-bold fs-6">1000/50</span>
@@ -1192,10 +953,7 @@
                     <span>2024.10.27</span>
                   </td>
                   <td class="text-end">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px"
-                    >
+                    <a href="#" class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary w-30px h-30px">
                       <i class="bi bi-trash"></i>
                     </a>
                   </td>
