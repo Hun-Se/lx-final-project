@@ -243,41 +243,45 @@
               </table>
             </ul>
 
-            <!-- 모달 버튼 -->
-            <button type="button" class="btn btn-primary" @click="openModal"
-              style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
-              <i class="bi bi-robot" style="font-size: 3ex; color: white;"></i> <!-- 아이콘 색상을 흰색으로 설정 -->
-            </button>
-          </div>
-        </div>
-
-
-        <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
-            <!-- 매물 리스트 사이드바 -->
-            <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: auto; height: 100%; display: flex; flex-direction: column;">
-              <div class="property-container" style="flex: 1;">
-                  <div class="property-list" style="overflow-y: auto; min-height: 240vh; flex: 1;">
-                      <ul class="property-items">
-                          <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
-                              <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
-                              
-                              <!-- 이미지 위에 반투명 텍스트 -->
-                              <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
-                                  믿음집
-                              </div>
-
-                              <div v-if="selectedSalesDetails" class="property-details">
-                                  <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
-                                  <p style="margin-top: 2ex;">{{ selectedSalesDetails.prpExclArea }}㎡</p>
-                                  <p class="property-content" style="margin-top: 1ex;">{{ item.prpDesc }}</p>
-                                  <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">방주인</div>
-                              </div>
-                          </li>
-                      </ul>
-                  </div>
-              </div>
+              <!-- 모달 버튼 -->
+              <button type="button" class="btn btn-primary" @click="openModal"
+                style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
+                <i class="bi bi-robot" style="font-size: 3ex; color: white;"></i> <!-- 아이콘 색상을 흰색으로 설정 -->
+              </button>
+            </div>
           </div>
 
+
+          <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
+          <!-- 매물 리스트 사이드바 -->
+          <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: hidden; height: 100%; display: flex; flex-direction: column;">
+  <div class="property-container" style="flex: 1;">
+    <div class="property-list" style="overflow-y: auto; min-height: 300vh; flex: 1;">
+      <ul class="property-items">
+        <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
+          <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
+          
+          <!-- 이미지 위에 반투명 텍스트 -->
+          <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
+            믿음집
+          </div>   
+          <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">
+            방주인
+          </div>
+          <button type="button" class="btn btn-primary btn-sm"
+              style="font-size: smaller; border: 1px solid #0d6efd; background-color: white; color: #0d6efd; margin-top: 1ex; margin-bottom: 1ex; margin-left: 1ex; padding: 5px; width: 30ex; display: inline-block; border-radius: 4px; border-width: 1px; justify-content: center;"
+              onmouseover="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
+              onmouseout="this.style.color='#0d6efd'; this.style.backgroundColor='white';"
+              onmousedown="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
+              onmouseup="this.style.color='#0d6efd'; this.style.backgroundColor='white';">
+            <i></i>상세보기
+          </button>
+
+        </li>
+      </ul> 
+    </div>
+  </div>
+</div>
 
             <!-- 상세 정보 사이드바 -->
             <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 60px; height: calc(100vh - 60px); width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
@@ -304,37 +308,42 @@
               </div>
 
               <!-- 매물 상세정보 -->
-              <p style="margin-top: 3ex; margin-bottom: 1ex; font-size: large; font-weight: bolder; color: darkgray;">
-                <strong style="color: black;">매물</strong>{{ selectedSalesDetails.prpPrice }} 
-                  <i style="color: black; margin-left: 5ex; font-size: large;" class="bi bi-share"></i><i style="color: black; margin-left: 2ex; font-size: large;" class="bi bi-heart-fill"></i></p>
+              <div class="property-details-section" v-if="selectedSalesDetails" style="flex: 1; overflow-y: auto; height: 100%; padding-left: 20px;">
+                  <p style="margin-top: 3ex; margin-bottom: 1ex; font-size: large; font-weight: bolder; color: darkgray;">
+                      <strong style="color: black;">매물</strong>{{ selectedSalesDetails.prpPrice }} 
+                      <i style="color: black; margin-left: 5ex; font-size: large;" class="bi bi-share"></i><i style="color: black; margin-left: 2ex; font-size: large;" class="bi bi-heart-fill"></i>
+                  </p>
 
-              <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
-              <div class="detail-header" style="font-size: small; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid #ccc; padding: 5px; display: inline-block; border-radius: 6px; border-width: 2px;">
-                매물번호{{ selectedSalesDetails.prpPrice }}
-              </div>
+                  <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
+                  <div class="detail-header" style="font-size: small; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid #ccc; padding: 5px; display: inline-block; border-radius: 6px; border-width: 2px;">
+                      매물번호{{ selectedSalesDetails.prpPrice }}
+                  </div>
 
-              <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
-              <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex;">{{ selectedSalesDetails.prpDesc }}</p>
-              <p style="margin-top: 4ex;">{{ selectedSalesDetails.prpName }}</p>       
-              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-pin-map-fill"></i></strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
-              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-rulers"></i></strong> {{ selectedSalesDetails.prpExclArea }}</p>
-              
-              <button type="button" class="btn btn-primary btn-sm" 
-                style="border: 1px solid  #0d6efd; background-color: white; color: #0d6efd; margin-top: 3ex; width: 40ex"
-                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';">
-                <i class="bi bi-cash-coin"
-                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>실거래가 보러가기
-                <i class="bi bi-arrow-right"
-                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>
-              </button>
+                  <p style="margin-top: 2ex; font-size: large; font-weight: bolder;">
+                      <strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}
+                  </p>
+                  <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex;">{{ selectedSalesDetails.prpDesc }}</p>
+                  <p style="margin-top: 4ex;">{{ selectedSalesDetails.prpName }}</p>       
+                  <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-pin-map-fill"></i></strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
+                  <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-rulers"></i></strong> {{ selectedSalesDetails.prpExclArea }}</p>
 
-              <div style="margin-top: 3ex; display: flex; align-items: center;">
-                <i class="bi bi-telephone-fill" style="font-size: 22px; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
-                <i class="bi bi-chat-fill" style="font-size: 22px; margin-left: 1ex; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
-                <button type="button" class="btn btn-primary" style="width: 14ex; margin-left: 1ex; font-size: 19px; padding: 10px 20px; border-radius: 0; line-height: 2;">채팅하기</button>
+                  <button type="button" class="btn btn-primary btn-sm" 
+                      style="border: 1px solid  #0d6efd; background-color: white; color: #0d6efd; margin-top: 3ex; width: 40ex"
+                      onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                      onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';">
+                      <i class="bi bi-cash-coin"
+                      onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                      onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>실거래가 보러가기
+                      <i class="bi bi-arrow-right"
+                      onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                      onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>
+                  </button>
+
+                  <div style="margin-top: 3ex; display: flex; align-items: center;">
+                      <i class="bi bi-telephone-fill" style="font-size: 22px; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
+                      <i class="bi bi-chat-fill" style="font-size: 22px; margin-left: 1ex; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
+                      <button type="button" class="btn btn-primary" style="width: 14ex; margin-left: 1ex; font-size: 19px; padding: 10px 20px; border-radius: 0; line-height: 2;">채팅하기</button>
+                  </div>
               </div>
             </div>
           </div>
@@ -684,7 +693,7 @@ const submitAiGPT = () => {
   position: fixed; /* 사이드바를 화면에 고정 */
   left: 350px !important; /* 오른쪽에 배치 */
   top: 75px !important; /* 헤더의 높이만큼 아래로 배치 */
-  width: 300px; /* 사이드바 너비 */
+  width: 320px !important; /* 사이드바 너비 */
   padding: 1em; /* 내부 여백 */
   background: white; /* 배경색 */
   border-left: 1px solid #ddd; /* 왼쪽 경계선 */
