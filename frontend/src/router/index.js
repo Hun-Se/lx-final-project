@@ -78,10 +78,15 @@ const router = createRouter({
       component: () => import("../views/MobileMyPageView.vue")
     },
     {
+      path: "/report_detail",
+      name: "report_detail",
+      component: () => import("../views/ReportDetailView.vue"),
+    },
+    {
       path: "/report_document",
       name: "report_document",
       component: () => import("../views/CreateReportDocumentView.vue"),
-    }
+    },
   ],
 });
 

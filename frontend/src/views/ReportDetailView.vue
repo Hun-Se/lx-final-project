@@ -1,4 +1,148 @@
-<script setup></script>
+<script setup>
+import { ref, reactive, onMounted, onUnmounted } from "vue";
+import PdfViewer from "@/components/PdfViewer.vue";
+
+// Reactive 상태 선언
+const audioPlayer = ref(null);
+const isPlaying = ref(false);
+const audioSource = ref(
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+);
+const currentTime = ref("00:00");
+const duration = ref("00:00");
+const progress = ref(0);
+
+// messages 배열을 reactive로 관리
+const messages = reactive([
+  { text: "안녕하세요! 집있나요?", time: "10:00 AM", isUser: true },
+  {
+    text: "안녕하세요! 아쉽게도 그 집은 계약되고 없어요.",
+    time: "10:01 AM",
+    isUser: false,
+  },
+  { text: "이미 계약된 집인가요?.", time: "10:01 AM", isUser: true },
+  {
+    text: "네. 대신 비슷한 집들 보여드릴테니 방문해주세요.",
+    time: "10:01 AM",
+    isUser: false,
+  },
+]);
+
+// 메서드 정의
+const fetchInfo = () => {
+  // 정보 조회 함수 로직
+};
+
+const deleteInfo = () => {
+  // 정보 삭제 함수 로직
+};
+
+const togglePlay = () => {
+  if (audioPlayer.value) {
+    if (isPlaying.value) {
+      audioPlayer.value.pause();
+    } else {
+      audioPlayer.value.play();
+    }
+    isPlaying.value = !isPlaying.value;
+  }
+};
+
+const setDuration = () => {
+  if (audioPlayer.value) {
+    duration.value = formatTime(audioPlayer.value.duration);
+  }
+};
+
+const updateProgress = () => {
+  if (audioPlayer.value) {
+    currentTime.value = formatTime(audioPlayer.value.currentTime);
+    progress.value =
+      (audioPlayer.value.currentTime / audioPlayer.value.duration) * 100 || 0;
+  }
+};
+
+const seekAudio = () => {
+  if (audioPlayer.value) {
+    audioPlayer.value.currentTime =
+      (progress.value / 100) * audioPlayer.value.duration;
+  }
+};
+
+const formatTime = (seconds) => {
+  const minutes = Math.floor(seconds / 60)
+    .toString()
+    .padStart(2, "0");
+  const secs = Math.floor(seconds % 60)
+    .toString()
+    .padStart(2, "0");
+  return `${minutes}:${secs}`;
+};
+
+const onAudioEnded = () => {
+  isPlaying.value = false;
+  progress.value = 0;
+  currentTime.value = "00:00";
+};
+
+// 오디오 이벤트 등록 및 해제
+onMounted(() => {
+  if (audioPlayer.value) {
+    audioPlayer.value.addEventListener("loadedmetadata", setDuration);
+    audioPlayer.value.addEventListener("timeupdate", updateProgress);
+    audioPlayer.value.addEventListener("ended", onAudioEnded);
+  }
+});
+
+onUnmounted(() => {
+  if (audioPlayer.value) {
+    audioPlayer.value.removeEventListener("loadedmetadata", setDuration);
+    audioPlayer.value.removeEventListener("timeupdate", updateProgress);
+    audioPlayer.value.removeEventListener("ended", onAudioEnded);
+  }
+});
+
+let map;
+onMounted(() => {
+  const script = document.createElement("script");
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.onload = () => {
+    initMap();
+  };
+  document.head.appendChild(script);
+});
+
+async function initMap() {
+  map = new naver.maps.Map("map", {
+    center: new naver.maps.LatLng(37.516042, 127.034881),
+    zoom: 17,
+    zoomControl: false,
+    mapTypeControl: true,
+  });
+}
+
+function zoomIn() {
+  if (map) {
+    map.setZoom(map.getZoom() + 1);
+  }
+}
+
+function zoomOut() {
+  if (map) {
+    map.setZoom(map.getZoom() - 1);
+  }
+}
+
+function resetMap() {
+  if (map) {
+    // 초기 위치와 줌 레벨로 지도를 리셋
+    map.setCenter(
+      new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng),
+    );
+    map.setZoom(this.initialZoom);
+  }
+}
+</script>
 
 <template>
   <nav>
@@ -78,270 +222,105 @@
   <section class="overlay"></section>
   <div class="p-10" style="margin-top: 5rem; margin-left: 300px">
     <div class="row">
-      <div class="col-7">
-        <div class="card mb-5 mb-xl-10">
-          <div class="card-body pt-9">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap flex-sm-nowrap">
-              <!--begin: Pic-->
-              <!--end::Pic-->
-              <!--begin::Info-->
-              <div class="flex-grow-1">
-                <!--begin::Title-->
-                <div
-                  class="d-flex justify-content-between align-items-start flex-wrap mb-2"
-                >
-                  <!--begin::User-->
-                  <div class="d-flex flex-column" style="height: 385px">
-                    <!--begin::Name-->
-                    <div class="d-flex align-items-center mb-2">
-                      <span
-                        class="badge p-5 rounded-pill text-bg-primary fs-2 fw-bold me-1 text-white"
-                        >신고접수번호 C51743</span
-                      >
-                    </div>
-                    <!--end::Name-->
-                    <!--begin::Info-->
-                    <div class="d-flex flex-column mt-5">
-                      <!--begin::Label-->
-
-                      <!--end::Label-->
-                      <!--begin::Item-->
-                      <div class="d-flex text-gray-800 mb-3 fs-6">
-                        <!--begin::Accountname-->
-                        <div class="fw-semibold pe-5">신고일자:</div>
-                        <!--end::Accountname-->
-                        <!--begin::Label-->
-                        <div class="text-end fw-norma">2024-11-01</div>
-                        <!--end::Label-->
-                      </div>
-                      <!--end::Item-->
-                      <!--begin::Item-->
-                      <div class="d-flex text-gray-800 mb-3 fs-6">
-                        <!--begin::Accountnumber-->
-                        <div class="fw-semibold pe-5">신고사유:</div>
-                        <!--end::Accountnumber-->
-                        <!--begin::Number-->
-                        <span
-                          class="badge badge-light-danger fw-bold me-2 px-4 py-3"
-                          >명시의무 위반</span
-                        >
-                        <span
-                          class="badge badge-light-warning fw-bold me-2 px-4 py-3"
-                          >중개사무소</span
-                        >
-                        <span
-                          class="badge badge-light-success fw-bold me-2 px-4 py-3"
-                          >상호명시 위반</span
-                        >
-                        <!--end::Number-->
-                      </div>
-                      <!--end::Item-->
-                      <!--begin::Item-->
-                      <div class="d-flex text-gray-800 fs-6">
-                        <!--begin::Code-->
-                        <div class="fw-semibold pe-5">증빙자료:</div>
-                        <!--end::Code-->
-                        <!--begin::Label-->
-                        <table class="styled-table">
-                          <thead>
-                            <tr>
-                              <th>광고화면</th>
-                              <th>녹취</th>
-                              <th>문자내용</th>
-                              <th>기타자료</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>Dom</td>
-                              <td>6000</td>
-                            </tr>
-                            <tr class="active-row">
-                              <td>Melissa</td>
-                              <td>5150</td>
-                            </tr>
-                            <!-- and so on... -->
-                          </tbody>
-                        </table>
-                        <!--end::Label-->
-                      </div>
-                      <!--end::Item-->
-                    </div>
-                    <!--end::Info-->
-                  </div>
-                  <!--end::User-->
-                  <!--begin::Actions-->
-                  <div class="d-flex my-4 mty">
-                    <a
-                      href="#"
-                      class="btn btn-sm btn-light me-2"
-                      id="kt_user_follow_button"
-                    >
-                      <i class="ki-duotone ki-check fs-3 d-none"></i>
-                      <!--begin::Indicator label-->
-                      <span class="indicator-label">수정</span>
-                      <!--end::Indicator label-->
-                      <!--begin::Indicator progress-->
-                      <!--end::Indicator progress-->
-                    </a>
-                    <!--begin::Menu-->
-                    <div class="me-0">
-                      <button
-                        class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                        data-kt-menu-trigger="click"
-                        data-kt-menu-placement="bottom-end"
-                      >
-                        <i class="ki-solid ki-dots-horizontal fs-2x"></i>
-                      </button>
-                      <!--begin::Menu 3-->
-                      <div
-                        class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3"
-                        data-kt-menu="true"
-                      >
-                        <!--begin::Heading-->
-                        <div class="menu-item px-3">
-                          <div
-                            class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase"
-                          >
-                            Payments
-                          </div>
-                        </div>
-                        <!--end::Heading-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3">
-                          <a href="#" class="menu-link px-3">Create Invoice</a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3">
-                          <a href="#" class="menu-link flex-stack px-3"
-                            >Create Payment
-                            <span
-                              class="ms-2"
-                              data-bs-toggle="tooltip"
-                              aria-label="Specify a target name for future usage and reference"
-                              data-bs-original-title="Specify a target name for future usage and reference"
-                              data-kt-initialized="1"
-                            >
-                              <i class="ki-duotone ki-information fs-6">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                              </i> </span
-                          ></a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3">
-                          <a href="#" class="menu-link px-3">Generate Bill</a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div
-                          class="menu-item px-3"
-                          data-kt-menu-trigger="hover"
-                          data-kt-menu-placement="right-end"
-                        >
-                          <a href="#" class="menu-link px-3">
-                            <span class="menu-title">Subscription</span>
-                            <span class="menu-arrow"></span>
-                          </a>
-                          <!--begin::Menu sub-->
-                          <div class="menu-sub menu-sub-dropdown w-175px py-4">
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <a href="#" class="menu-link px-3">Plans</a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <a href="#" class="menu-link px-3">Billing</a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <a href="#" class="menu-link px-3">Statements</a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu separator-->
-                            <div class="separator my-2"></div>
-                            <!--end::Menu separator-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <div class="menu-content px-3">
-                                <!--begin::Switch-->
-                                <label
-                                  class="form-check form-switch form-check-custom form-check-solid"
-                                >
-                                  <!--begin::Input-->
-                                  <input
-                                    class="form-check-input w-30px h-20px"
-                                    type="checkbox"
-                                    value="1"
-                                    checked="checked"
-                                    name="notifications"
-                                  />
-                                  <!--end::Input-->
-                                  <!--end::Label-->
-                                  <span class="form-check-label text-muted fs-6"
-                                    >Recuring</span
-                                  >
-                                  <!--end::Label-->
-                                </label>
-                                <!--end::Switch-->
-                              </div>
-                            </div>
-                            <!--end::Menu item-->
-                          </div>
-                          <!--end::Menu sub-->
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3 my-1">
-                          <a href="#" class="menu-link px-3">Settings</a>
-                        </div>
-                        <!--end::Menu item-->
-                      </div>
-                      <!--end::Menu 3-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Actions-->
+      <div class="col-5">
+        <div class="d-flex flex-column justify-content-between h-100">
+          <div style="flex: 1; margin-bottom: 20px" class="card">
+            <div class="card-body pt-9">
+              <div class="">
+                <div class="d-flex align-items-center mb-2">
+                  <a href="#" class="tag fs-1"> 신고접수번호 C51743 </a>
+                  <span class="arrow"></span>
                 </div>
-                <!--end::Title-->
-                <!--begin::Stats-->
-                <!--end::Stats-->
+                <div class="d-flex flex-column container-left">
+                  <div class="mt-5">
+                    <div class="d-flex text-gray-800">
+                      <div class="fw-semibold pe-5">신고일자:</div>
+                      <div class="text-end fw-norma">2024-11-01</div>
+                      <!--end::Label-->
+                    </div>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <div class="d-flex text-gray-800 mt-5 mb-3 container-badge">
+                      <!--begin::Accountnumber-->
+                      <div class="fw-semibold pe-5">신고사유:</div>
+                      <!--end::Accountnumber-->
+                      <!--begin::Number-->
+                      <span
+                        class="badge signal badge-light-danger fw-bold me-2 px-4 py-3"
+                        >명시의무 위반</span
+                      >
+                      <span
+                        class="badge signal badge-light-warning fw-bold me-2 px-4 py-3"
+                        >중개사무소</span
+                      >
+                      <span
+                        class="badge signal badge-light-success fw-bold me-2 px-4 py-3"
+                        >상호명시 위반</span
+                      >
+                      <!--end::Number-->
+                    </div>
+                    <div class="d-flex text-gray-800 mt-5">
+                      <div class="fw-semibold pe-5" style="white-space: nowrap">
+                        증빙자료:
+                      </div>
+                      <table class="styled-table">
+                        <thead>
+                          <tr>
+                            <th>광고화면</th>
+                            <th>녹취</th>
+                            <th>문자내용</th>
+                            <th>기타자료</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="text-center tr-table-list">
+                            <td></td>
+                            <td></td>
+                            <td>
+                              <i
+                                class="bi bi-check-circle-fill text-success"
+                              ></i>
+                            </td>
+                            <td></td>
+                          </tr>
+                          <!-- and so on... -->
+                        </tbody>
+                      </table>
+                      <!--end::Label-->
+                    </div>
+                    <div class="d-flex text-gray-800 mt-5">
+                      <div clss="fw-semibold pe-5" style="white-space: nowrap">
+                        첨부파일:
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <!--end::Info-->
             </div>
-            <!--end::Details-->
+          </div>
+          <div style="flex: 1" class="card">
+            <div class="card-body pt-9">
+              <h4>공적장부 열람</h4>
+              <div class="btn-group-public">
+                <button type="button" class="btn btn-light">등기부등본</button>
+                <button type="button" class="btn btn-light">등기부등본</button>
+                <button type="button" class="btn btn-light">등기부등본</button>
+                <button type="button" class="btn btn-light">등기부등본</button>
+              </div>
+            </div>
+            <div>
+              <h4></h4>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-5">
-        <div class="card mb-5 mb-xl-10">
+
+      <div class="col-7">
+        <div class="card">
           <div class="card-body pt-9">
-            <!--begin::Details-->
-            <div class="d-flex flex-wrap flex-sm-nowrap h-100">
-              <!--begin: Pic-->
-              <div class="me-7 mb-4">
-                <div
-                  class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative"
-                >
-                  <img src="assets/media/avatars/300-1.jpg" alt="image" />
-                  <div
-                    class="position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-body h-20px w-20px"
-                  ></div>
-                </div>
-              </div>
-              <!--end::Pic-->
-              <!--begin::Info-->
-              <div class="flex-grow-1">
-                <!--begin::Title-->
-                <div
-                  class="d-flex justify-content-between align-items-start flex-wrap mb-2"
-                >
+            <div class="row h-100">
+              <div class="col-6">
+                <div class="">
                   <!--begin::User-->
                   <div class="d-flex flex-column">
                     <div class="d-flex">
@@ -377,219 +356,48 @@
                         </label>
                       </div>
                     </div>
-                    <!--begin::Name-->
-                    <div class="d-flex align-items-center mt-3 mb-2">
-                      <a
-                        href="#"
-                        class="text-gray-900 text-hover-primary fs-2 fw-bold me-1"
-                        >김중개</a
-                      >
-                      <a href="#">
-                        <i class="ki-duotone ki-verify fs-1 text-primary">
-                          <span class="path1"></span>
-                          <span class="path2"></span>
-                        </i>
-                      </a>
-                    </div>
-                    <!--end::Name-->
-                    <!--begin::Info-->
-                    <div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
-                      <a
-                        href="#"
-                        class="d-flex align-items-center text-gray-500 text-hover-primary me-5 mb-2"
-                      >
-                        <i class="ki-duotone ki-profile-circle fs-4 me-1">
-                          <span class="path1"></span>
-                          <span class="path2"></span>
-                          <span class="path3"></span> </i
-                        >한마음공인중개사</a
-                      >
-                      <a
-                        href="#"
-                        class="d-flex align-items-center text-gray-500 text-hover-primary me-5 mb-2"
-                      >
-                        <i class="ki-duotone ki-geolocation fs-4 me-1">
-                          <span class="path1"></span>
-                          <span class="path2"></span> </i
-                        >강남구 언주로 703</a
-                      >
-                      <a
-                        href="#"
-                        class="d-flex align-items-center text-gray-500 text-hover-primary mb-2"
-                      >
-                        <i class="ki-duotone ki-sms fs-4">
-                          <span class="path1"></span>
-                          <span class="path2"></span> </i
-                        >kim72840@gmail.com</a
-                      >
-                    </div>
-                    <!--end::Info-->
                   </div>
-                  <!--end::User-->
-                  <!--begin::Actions-->
-                  <div class="d-flex my-4">
-                    <div class="me-0">
-                      <button
-                        class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                        data-kt-menu-trigger="click"
-                        data-kt-menu-placement="bottom-end"
-                      >
-                        <i class="ki-solid ki-dots-horizontal fs-2x"></i>
-                      </button>
-                      <!--begin::Menu 3-->
-                      <div
-                        class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3"
-                        data-kt-menu="true"
-                      >
-                        <!--begin::Heading-->
-                        <div class="menu-item px-3">
-                          <div
-                            class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase"
-                          >
-                            Payments
-                          </div>
-                        </div>
-                        <!--end::Heading-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3">
-                          <a href="#" class="menu-link px-3">Create Invoice</a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3">
-                          <a href="#" class="menu-link flex-stack px-3"
-                            >Create Payment
-                            <span
-                              class="ms-2"
-                              data-bs-toggle="tooltip"
-                              aria-label="Specify a target name for future usage and reference"
-                              data-bs-original-title="Specify a target name for future usage and reference"
-                              data-kt-initialized="1"
-                            >
-                              <i class="ki-duotone ki-information fs-6">
-                                <span class="path1"></span>
-                                <span class="path2"></span>
-                                <span class="path3"></span>
-                              </i> </span
-                          ></a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3">
-                          <a href="#" class="menu-link px-3">Generate Bill</a>
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div
-                          class="menu-item px-3"
-                          data-kt-menu-trigger="hover"
-                          data-kt-menu-placement="right-end"
-                        >
-                          <a href="#" class="menu-link px-3">
-                            <span class="menu-title">Subscription</span>
-                            <span class="menu-arrow"></span>
-                          </a>
-                          <!--begin::Menu sub-->
-                          <div class="menu-sub menu-sub-dropdown w-175px py-4">
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <a href="#" class="menu-link px-3">Plans</a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <a href="#" class="menu-link px-3">Billing</a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <a href="#" class="menu-link px-3">Statements</a>
-                            </div>
-                            <!--end::Menu item-->
-                            <!--begin::Menu separator-->
-                            <div class="separator my-2"></div>
-                            <!--end::Menu separator-->
-                            <!--begin::Menu item-->
-                            <div class="menu-item px-3">
-                              <div class="menu-content px-3">
-                                <!--begin::Switch-->
-                                <label
-                                  class="form-check form-switch form-check-custom form-check-solid"
-                                >
-                                  <!--begin::Input-->
-                                  <input
-                                    class="form-check-input w-30px h-20px"
-                                    type="checkbox"
-                                    value="1"
-                                    checked="checked"
-                                    name="notifications"
-                                  />
-                                  <!--end::Input-->
-                                  <!--end::Label-->
-                                  <span class="form-check-label text-muted fs-6"
-                                    >Recuring</span
-                                  >
-                                  <!--end::Label-->
-                                </label>
-                                <!--end::Switch-->
-                              </div>
-                            </div>
-                            <!--end::Menu item-->
-                          </div>
-                          <!--end::Menu sub-->
-                        </div>
-                        <!--end::Menu item-->
-                        <!--begin::Menu item-->
-                        <div class="menu-item px-3 my-1">
-                          <a href="#" class="menu-link px-3">Settings</a>
-                        </div>
-                        <!--end::Menu item-->
-                      </div>
-                      <!--end::Menu 3-->
-                    </div>
-                    <!--end::Menu-->
-                  </div>
-                  <!--end::Actions-->
                 </div>
                 <div>
-                  <div>
-                    <span class="fs-3"
-                      ><span
-                        class="p-3 fs-3 badge rounded-pill text-bg-primary text-white"
-                        >중개사번호</span
-                      >
-                      12345</span
-                    >
-                    <span class="ms-5 badge badge-light-info fw-bold px-4 py-3">
-                      신고회수 17</span
-                    >
-                  </div>
-                  <div class="mt-5">
-                    <span class="fs-3"
-                      ><span
-                        class="p-3 fs-3 badge rounded-pill text-bg-primary text-white"
-                        >중개사무소 주소</span
-                      >
-                      강남구 언주로 703</span
-                    >
-                  </div>
-                  <div class="mt-5">
-                    <span class="fs-3"
-                      ><span
-                        class="p-3 fs-3 badge rounded-pill text-bg-primary text-white"
-                        >중개사무소명</span
-                      >
-                      한마음 공인중개사
-                    </span>
-                  </div>
-                  <div class="mt-5">
-                    <span class="fs-3"
-                      ><span
-                        class="p-3 fs-3 badge rounded-pill text-bg-primary text-white"
-                        >중개사무소 연락처</span
-                      >
-                      010-5004-8626</span
-                    >
+                  <div class="mt-10 pb-5 content-list">
+                    <!--begin::Details item-->
+                    <div class="fw-bold mt-5 mb-3">
+                      중개사 번호: <span class="text-gray-600 ms-1">12345</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      이메일:
+                      <span class="ms-1 text-gray-600">
+                        <a href="#" class="text-gray-600 text-hover-primary"
+                          >kim72840@gmail.com</a
+                        >
+                      </span>
+                    </div>
+
+                    <!--begin::Details item-->
+                    <!--begin::Details item-->
+                    <div class="fw-bold mt-5 mb-3">
+                      중개사무소 소재지:
+                      <span class="text-gray-600 ms-1">강남구 언주로 703</span>
+                    </div>
+
+                    <!--begin::Details item-->
+                    <!--begin::Details item-->
+                    <div class="fw-bold mt-5 mb-3">
+                      중개사무소명:
+                      <span class="text-gray-600 ms-1">한마음공인중개사</span>
+                    </div>
+
+                    <!--begin::Details item-->
+                    <!--begin::Details item-->
+                    <div class="fw-bold mt-5 mb-3">
+                      중개사무소 연락처:
+                      <span class="ms-1 text-gray-600">010-1234-1234</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      대표중개사명:
+                      <span class="ms-1 text-gray-600">김세훈</span>
+                    </div>
+                    <!--begin::Details item-->
                   </div>
                 </div>
                 <!--end::Title-->
@@ -597,20 +405,25 @@
 
                 <!--end::Stats-->
               </div>
-              <!--end::Info-->
+              <!--    지도    -->
+              <div class="container-map col-6">
+                <div class="map-container">
+                  <div id="map"></div>
+                  <div class="zoom-controls">
+                    <button @click="zoomIn" class="zoom-button">+</button>
+                    <button @click="zoomOut" class="zoom-button">-</button>
+                  </div>
+                </div>
+              </div>
+              <!-- 지도 끝 -->
             </div>
-            <!--end::Details-->
-            <!--begin::Navs-->
-
-            <!--begin::Navs-->
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row mt-5">
       <div class="col-7" style="height: 600px">
         <div class="card h-100" id="kt_chat_messenger">
-          <!--begin::Card header-->
           <div class="card-header" id="kt_chat_messenger_header">
             <!--begin::Title-->
             <div class="card-title">
@@ -754,10 +567,7 @@
             </div>
             <!--end::Card toolbar-->
           </div>
-          <!--end::Card header-->
-          <!--begin::Card body-->
           <div class="card-body" id="kt_chat_messenger_body">
-            <!--begin::Messages-->
             <div
               class="scroll-y me-n5 pe-5 h-100 h-lg-auto"
               data-kt-element="messages"
@@ -767,16 +577,9 @@
               data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_messenger_body"
               data-kt-scroll-offset="5px"
             >
-              <!--begin::Message(in)-->
               <div class="d-flex justify-content-start mb-10">
-                <!--begin::Wrapper-->
                 <div class="d-flex flex-column align-items-start">
-                  <!--begin::User-->
                   <div class="d-flex align-items-center mb-2">
-                    <!--begin::Avatar-->
-
-                    <!--end::Avatar-->
-                    <!--begin::Details-->
                     <div class="ms-3">
                       <a
                         href="#"
@@ -784,10 +587,7 @@
                         >중개인</a
                       >
                     </div>
-                    <!--end::Details-->
                   </div>
-                  <!--end::User-->
-                  <!--begin::Text-->
                   <div
                     class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
                     data-kt-element="message-text"
@@ -795,141 +595,194 @@
                     문의 주신 매물은 없고요, 제가 다른 매물 보여드릴께요 일단
                     한번 오시겠어요??
                   </div>
-                  <!--end::Text-->
                 </div>
-                <!--end::Wrapper-->
               </div>
 
               <div class="d-flex justify-content-end mb-10">
-                <!--begin::Wrapper-->
                 <div class="d-flex flex-column align-items-end">
-                  <!--begin::User-->
                   <div class="d-flex align-items-center mb-2">
-                    <!--begin::Details-->
                     <div class="me-3">
-                      <span class="text-muted fs-7 mb-1">2 Hours</span>
                       <a
                         href="#"
                         class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
                         >신고자</a
                       >
                     </div>
-                    <!--end::Details-->
-                    <!--begin::Avatar-->
-
-                    <!--end::Avatar-->
                   </div>
-                  <!--end::User-->
-                  <!--begin::Text-->
                   <div
                     class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
                     data-kt-element="message-text"
                   >
                     아니요 허위 매물 신고 하겠습니다.
                   </div>
-                  <!--end::Text-->
                 </div>
-                <!--end::Wrapper-->
               </div>
             </div>
-            <!--end::Messages-->
           </div>
-          <!--end::Card body-->
-          <!--begin::Card footer-->
-          <div class="card-footer pt-4" id="kt_chat_messenger_footer">
-            <!--begin::Input-->
-            <textarea
-              class="form-control form-control-flush mb-3"
-              rows="1"
-              data-kt-element="input"
-              placeholder="Type a message"
-            ></textarea>
-            <!--end::Input-->
-            <!--begin:Toolbar-->
-            <div class="d-flex flex-stack">
-              <!--begin::Actions-->
-              <div class="d-flex align-items-center me-2">
-                <button
-                  class="btn btn-sm btn-icon btn-active-light-primary me-1"
-                  type="button"
-                  data-bs-toggle="tooltip"
-                  aria-label="Coming soon"
-                  data-bs-original-title="Coming soon"
-                  data-kt-initialized="1"
-                >
-                  <i class="ki-duotone ki-paper-clip fs-3"></i>
-                </button>
-                <button
-                  class="btn btn-sm btn-icon btn-active-light-primary me-1"
-                  type="button"
-                  data-bs-toggle="tooltip"
-                  aria-label="Coming soon"
-                  data-bs-original-title="Coming soon"
-                  data-kt-initialized="1"
-                >
-                  <i class="ki-duotone ki-exit-up fs-3">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                </button>
-              </div>
-              <!--end::Actions-->
-              <!--begin::Send-->
-              <button
-                class="btn btn-primary"
-                type="button"
-                data-kt-element="send"
-              >
-                Send
-              </button>
-              <!--end::Send-->
+          <!-- 오디오 재생/정지 툴바 -->
+          <div class="audio-toolbar p-5">
+            <audio
+              ref="audioPlayer"
+              :src="audioSource"
+              @timeupdate="updateProgress"
+              @loadedmetadata="setDuration"
+              @ended="onAudioEnded"
+            ></audio>
+
+            <!-- 재생/정지 버튼 -->
+            <button @click="togglePlay" class="play-button">
+              {{ isPlaying ? "정지" : "재생" }}
+            </button>
+
+            <!-- 진행 바 및 시간 표시 -->
+            <div class="progress-container">
+              <span class="time">{{ currentTime }}</span>
+              <input
+                type="range"
+                class="progress-bar"
+                min="0"
+                max="100"
+                v-model="progress"
+                @input="seekAudio"
+              />
+              <span class="time">{{ duration }}</span>
             </div>
-            <!--end::Toolbar-->
           </div>
           <!--end::Card footer-->
         </div>
       </div>
       <div class="col-5">
         <div class="card h-xl-100" dir="ltr">
-          <!--begin::Body-->
-          <div class="card-body d-flex flex-column flex-center">
-            <!--begin::Heading-->
-            <div class="mb-2">
-              <!--begin::Title-->
-              <h1 class="fw-semibold text-gray-800 text-center lh-lg">
-                Have you tried <br />new
-                <span class="fw-bolder">Mobile Application ?</span>
-              </h1>
-              <!--end::Title-->
-              <!--begin::Illustration-->
-              <div class="py-10 text-center">
-                <img
-                  src="assets/media/svg/illustrations/easy/1.svg"
-                  class="theme-light-show w-200px"
-                  alt=""
-                />
-                <img
-                  src="assets/media/svg/illustrations/easy/1-dark.svg"
-                  class="theme-dark-show w-200px"
-                  alt=""
-                />
+          <div class="card-header" id="kt_chat_messenger_header">
+            <!--begin::Title-->
+            <div class="card-title">
+              <!--begin::Users-->
+              <div class="symbol-group symbol-hover"></div>
+              <h3>의견서 작성</h3>
+            </div>
+            <!--end::Title--><!--begin::Card toolbar-->
+            <div class="card-toolbar">
+              <!--begin::Menu-->
+              <div class="me-n3">
+                <button
+                  class="btn btn-sm btn-icon btn-active-light-primary"
+                  data-kt-menu-trigger="click"
+                  data-kt-menu-placement="bottom-end"
+                >
+                  <i class="ki-duotone ki-dots-square fs-2"
+                    ><span class="path1"></span><span class="path2"></span
+                    ><span class="path3"></span><span class="path4"></span
+                  ></i></button
+                ><!--begin::Menu 3-->
+                <div
+                  class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3"
+                  data-kt-menu="true"
+                >
+                  <!--begin::Heading-->
+                  <div class="menu-item px-3">
+                    <div
+                      class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase"
+                    >
+                      Contacts
+                    </div>
+                  </div>
+                  <!--end::Heading--><!--begin::Menu item-->
+                  <div class="menu-item px-3">
+                    <a
+                      href="#"
+                      class="menu-link px-3"
+                      data-bs-toggle="modal"
+                      data-bs-target="#kt_modal_users_search"
+                      >Add Contact</a
+                    >
+                  </div>
+                  <!--end::Menu item--><!--begin::Menu item-->
+                  <div class="menu-item px-3">
+                    <a
+                      href="#"
+                      class="menu-link flex-stack px-3"
+                      data-bs-toggle="modal"
+                      data-bs-target="#kt_modal_invite_friends"
+                      >Invite Contacts
+                      <span
+                        class="ms-2"
+                        data-bs-toggle="tooltip"
+                        aria-label="Specify a contact email to send an invitation"
+                        data-bs-original-title="Specify a contact email to send an invitation"
+                        data-kt-initialized="1"
+                        ><i class="ki-duotone ki-information fs-7"
+                          ><span class="path1"></span><span class="path2"></span
+                          ><span class="path3"></span></i></span
+                    ></a>
+                  </div>
+                  <!--end::Menu item--><!--begin::Menu item-->
+                  <div
+                    class="menu-item px-3"
+                    data-kt-menu-trigger="hover"
+                    data-kt-menu-placement="right-start"
+                  >
+                    <a href="#" class="menu-link px-3"
+                      ><span class="menu-title">Groups</span
+                      ><span class="menu-arrow"></span></a
+                    ><!--begin::Menu sub-->
+                    <div class="menu-sub menu-sub-dropdown w-175px py-4">
+                      <!--begin::Menu item-->
+                      <div class="menu-item px-3">
+                        <a
+                          href="#"
+                          class="menu-link px-3"
+                          data-bs-toggle="tooltip"
+                          data-bs-original-title="Coming soon"
+                          data-kt-initialized="1"
+                          >Create Group</a
+                        >
+                      </div>
+                      <!--end::Menu item--><!--begin::Menu item-->
+                      <div class="menu-item px-3">
+                        <a
+                          href="#"
+                          class="menu-link px-3"
+                          data-bs-toggle="tooltip"
+                          data-bs-original-title="Coming soon"
+                          data-kt-initialized="1"
+                          >Invite Members</a
+                        >
+                      </div>
+                      <!--end::Menu item--><!--begin::Menu item-->
+                      <div class="menu-item px-3">
+                        <a
+                          href="#"
+                          class="menu-link px-3"
+                          data-bs-toggle="tooltip"
+                          data-bs-original-title="Coming soon"
+                          data-kt-initialized="1"
+                          >Settings</a
+                        >
+                      </div>
+                      <!--end::Menu item-->
+                    </div>
+                    <!--end::Menu sub-->
+                  </div>
+                  <!--end::Menu item--><!--begin::Menu item-->
+                  <div class="menu-item px-3 my-1">
+                    <a
+                      href="#"
+                      class="menu-link px-3"
+                      data-bs-toggle="tooltip"
+                      data-bs-original-title="Coming soon"
+                      data-kt-initialized="1"
+                      >Settings</a
+                    >
+                  </div>
+                </div>
               </div>
-              <!--end::Illustration-->
             </div>
-            <!--end::Heading-->
-            <!--begin::Links-->
-            <div class="text-center mb-1">
-              <!--begin::Link-->
-              <a
-                class="btn btn-sm btn-primary me-2"
-                data-bs-target="#kt_modal_new_card"
-                data-bs-toggle="modal"
-                >접수하기</a
-              >
-            </div>
-            <!--end::Links-->
           </div>
-          <!--end::Body-->
+          <div class="card-body d-flex flex-column flex-center">
+            <div class="" style="width: 25rem; height: 100%; background: grey">
+              <PdfViewer></PdfViewer>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1040,16 +893,15 @@ nav.open ~ .overlay {
 }
 
 .styled-table {
+  width: 100%;
   border-collapse: collapse;
   font-size: 0.9em;
-  font-family: sans-serif;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .styled-table thead tr {
+  text-align: center;
   background-color: var(--color-bg-blue3);
   color: #ffffff;
-  text-align: left;
 }
 
 .styled-table th,
@@ -1065,12 +917,127 @@ nav.open ~ .overlay {
   background-color: #f3f3f3;
 }
 
-.styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid #009879;
+.tr-table-list {
+  border-left: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
 }
 
-.styled-table tbody tr.active-row {
-  font-weight: bold;
-  color: #009879;
+.container-map {
+  display: flex;
+  justify-content: center;
+  height: auto;
+}
+
+.container-map .map-container {
+  width: 500px;
+  height: 100%;
+  display: block;
+  position: initial;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
+.zoom-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.zoom-button {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  margin-top: 5px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.zoom-button:hover {
+  background-color: #f0f0f0;
+}
+
+.content-list div {
+  font-size: 1.2rem;
+}
+
+.btn-group-public {
+  display: flex;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: no-wrap;
+  gap: 1rem;
+  margin-top: 16px;
+}
+
+.btn-group-public button {
+  width: 120px;
+  height: 50px;
+  flex: 0 0 auto;
+}
+
+.content-list div {
+  padding: 1rem;
+  border-bottom: 1px solid rgb(245, 245, 245);
+}
+
+.container-left {
+  font-size: 1rem;
+}
+
+.badge.signal {
+  font-size: 1rem !important;
+}
+
+.container-badge {
+  overflow: auto;
+  white-space: nowrap;
+}
+
+/* 오디오 재생/정지 툴바 */
+.audio-toolbar {
+  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-top: 1px solid var(--bs-card-border-color);
+}
+
+.play-button {
+  padding: 5px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+}
+
+.play-button:hover {
+  background-color: #0056b3;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.time {
+  font-size: 12px;
+  color: #555;
+}
+
+.progress-bar {
+  flex: 1;
+  cursor: pointer;
 }
 </style>
