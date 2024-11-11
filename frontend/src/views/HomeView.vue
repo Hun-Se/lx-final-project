@@ -215,7 +215,6 @@
 
   </div>
 
-  <div v-if="userName" class="d-flex">{{ userName }}님 안녕하세요.</div>
 
 </template>
 
