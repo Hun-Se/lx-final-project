@@ -2,9 +2,9 @@
   <component :is="computedHeader" id="headerPart" />
 
   <div id="mainPage">
-    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
-      <div id="kt_app" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }"
-      :style="{ position: 'fixed', top: '70px', left: isOpen ? '0' : '-300px', height: 'calc(100vh - 70px)', overflowY: 'auto', width: '350px', transition: 'left 0.3s'}">
+    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper" >
+      <div id="kt_app" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }" 
+      :style="{ position: 'fixed', top: '70px', left: isOpen ? '0' : '-300px', height: 'calc(100vh - 70px)', overflowY: 'hidden', width: '350px', transition: 'left 0.3s'}">
       
         <div id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
@@ -254,29 +254,30 @@
 
         <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
             <!-- 매물 리스트 사이드바 -->
-            <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: auto;">
-              <div class="property-container">
-                <div class="property-list">
-                  <ul class="property-items">
-                    <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
-                      <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
-                      
-                      <!-- 이미지 위에 반투명 텍스트 -->
-                      <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
-                        믿음집
-                      </div>
+            <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: auto; height: 100%; display: flex; flex-direction: column;">
+              <div class="property-container" style="flex: 1;">
+                  <div class="property-list" style="overflow-y: auto; min-height: 240vh; flex: 1;">
+                      <ul class="property-items">
+                          <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
+                              <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
+                              
+                              <!-- 이미지 위에 반투명 텍스트 -->
+                              <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
+                                  믿음집
+                              </div>
 
-                      <div class="property-details">
-                        <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
-                        <p style="margin-top: 2ex;">{{ selectedSalesDetails.prpExclArea }}㎡</p>
-                        <p class="property-content" style="margin-top: 1ex;">{{ item.prpDesc }}</p>
-                        <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">방주인</div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+                              <div v-if="selectedSalesDetails" class="property-details">
+                                  <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
+                                  <p style="margin-top: 2ex;">{{ selectedSalesDetails.prpExclArea }}㎡</p>
+                                  <p class="property-content" style="margin-top: 1ex;">{{ item.prpDesc }}</p>
+                                  <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">방주인</div>
+                              </div>
+                          </li>
+                      </ul>
+                  </div>
               </div>
-            </div>
+          </div>
+
 
             <!-- 상세 정보 사이드바 -->
             <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 60px; height: calc(100vh - 60px); width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
@@ -354,6 +355,7 @@ import NaverMap from "@/components/NaverMap.vue";
 import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
+import axios from "axios";
 
 // isMobile 변수 정의 (화면 크기를 기준으로)
 const isMobile = ref(window.innerWidth <= 768);
@@ -371,6 +373,7 @@ const computedHeader = computed(() => {
 const router = useRouter();
 const store = useSaleStore();
 const { sales, selectedSalesDetails } = storeToRefs(store);
+
 
 onMounted(() => {
   init();
@@ -457,16 +460,28 @@ const toggleSidebar = () => {
 // 선택된 매물 ID 및 상세 정보
 const selectedSalesId = ref(null);
 
-// 매물 상세 정보 토글 함수
-function toggleSalesDetail(prpPk) {
+// 매물 상세 정보 토글 함수 (Axios 사용)
+async function toggleSalesDetail(prpPk) {
   if (prpPk) {
     selectedSalesId.value = prpPk;
-    selectedSalesDetails.value = sales.value.find(item => item.prpPk === prpPk);
+
+    try {
+      // 서버로부터 매물 상세 정보를 가져옴
+      const response = await axios.get(`/api/properties/${prpPk}`);
+      
+      // 서버로부터 받은 데이터를 selectedSalesDetails에 저장
+      selectedSalesDetails.value = response.data;
+    } catch (error) {
+      console.error("매물 상세 정보를 가져오는 데 실패했습니다:", error);
+      selectedSalesDetails.value = {}; // 오류 발생 시 빈 객체 할당
+    }
   } else {
+    // 매물 상세보기를 닫을 때
     selectedSalesId.value = null;
     selectedSalesDetails.value = {};
   }
 }
+
 
 // 모달 상태 관리
 const isModalOpen = ref(false);
