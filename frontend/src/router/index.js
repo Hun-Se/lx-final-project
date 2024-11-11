@@ -69,6 +69,14 @@ const router = createRouter({
       name: "report",
       component: () => import("../views/ReportView.vue"),
     },
+    {path: "/m.home",
+      name: "m.home",
+      component: () => import("../views/MobileHomeView.vue")
+    },
+    {path: "/m.my_page",
+      name: "m.my_page",
+      component: () => import("../views/MobileMyPageView.vue")
+    },
     {
       path: "/report_document",
       name: "report_document",
