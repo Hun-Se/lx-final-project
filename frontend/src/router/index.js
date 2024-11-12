@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import("../views/MapView.vue"),
     },
     {
+      path: "/mobilemap",
+      name: "mobilemap",
+      component: () => import("../views/MapView_mobile.vue"),
+    },
+    {
       path: "/broker_auction",
       name: "broker_acution",
       component: () => import("../views/BrokerAuctionView.vue"),
@@ -52,7 +57,12 @@ const router = createRouter({
     {
       path: "/ai_real_estate",
       name: "ai_real_estate",
-      component: () => import("../views/AI_real_estate.vue"),
+      component: () => import("../views/AI_real_estate_mobile.vue"),
+    },
+    {
+      path: "/ai_real_estate_mobile",
+      name: "ai_real_estate_mobile",
+      component: () => import("../views/AI_real_estate_mobile.vue"),
     },
     {
       path: "/board",
