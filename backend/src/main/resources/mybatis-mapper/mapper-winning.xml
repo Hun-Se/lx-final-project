@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.winning.WinningDAO">
+
+	<select id="getWinningPropertiesByUserPk" parameterType="int"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT
+		p.prp_pk,
+		p.prp_name,
+		p.prp_type,
+		p.prp_price,
+		w.winning_time
+		FROM
+		winning w
+		JOIN bid b ON w.bid_pk = b.bid_pk
+		JOIN auction a ON b.auction_pk = a.auction_pk
+		JOIN prp p ON a.prp_pk = p.prp_pk
+		WHERE
+		b.agent_pk = (
+		SELECT agent_pk
+		FROM agent
+		WHERE user_pk = #{userPk}
+		)
+	</select>
+
+
+</mapper>

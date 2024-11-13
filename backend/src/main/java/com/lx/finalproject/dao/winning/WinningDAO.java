@@ -1,11 +1,11 @@
-package com.lx.finalproject.dao.bid;
+package com.lx.finalproject.dao.winning;
 
 import com.lx.finalproject.dto.bid.BidDTO;
 import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface BidDAO {
+public interface WinningDAO {
 	void insertBid(BidDTO BidDTO);
 
 	List<BidDTO> getBidsByAuctionPk(int auctionPk);

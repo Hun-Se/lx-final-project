@@ -6,9 +6,8 @@ public class AgencyVO {
     private String agencyName;
     private String agencyMobile;
     private String agencyLicense;
+    private String agencyLocation;
     private Integer regionPk;
-    
-    // Getters and Setters
 	public Integer getAgencyPk() {
 		return agencyPk;
 	}
@@ -39,6 +38,12 @@ public class AgencyVO {
 	public void setAgencyLicense(String agencyLicense) {
 		this.agencyLicense = agencyLicense;
 	}
+	public String getAgencyLocation() {
+		return agencyLocation;
+	}
+	public void setAgencyLocation(String agencyLocation) {
+		this.agencyLocation = agencyLocation;
+	}
 	public Integer getRegionPk() {
 		return regionPk;
 	}
@@ -46,12 +51,11 @@ public class AgencyVO {
 		this.regionPk = regionPk;
 	}
 	
-	// ToString
 	@Override
 	public String toString() {
 		return "AgencyVO [agencyPk=" + agencyPk + ", agencyImg=" + agencyImg + ", agencyName=" + agencyName
-				+ ", agencyMobile=" + agencyMobile + ", agencyLicense=" + agencyLicense + ", regionPk=" + regionPk
-				+ "]";
+				+ ", agencyMobile=" + agencyMobile + ", agencyLicense=" + agencyLicense + ", agencyLocation="
+				+ agencyLocation + ", regionPk=" + regionPk + "]";
 	}
-
+    
 }

@@ -1,9 +1,9 @@
-package com.lx.finalproject.service.bid;
+package com.lx.finalproject.service.winning;
 
 import com.lx.finalproject.dto.bid.BidDTO;
 import java.util.List;
 
-public interface BidService {
+public interface WinningService {
 	void placeBid(BidDTO agentBidDTO);
 
 	List<BidDTO> getBidsForAuction(int auctionPk);
