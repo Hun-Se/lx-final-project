@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.chat.ChatDAO">
+
+	<resultMap id="ChatMessageMap"
+		type="com.lx.finalproject.dto.chat.ChatMessageDTO">
+		<result property="chatmesPk" column="chatmes_pk" />
+		<result property="chatmesDatetime" column="chatmes_datetime" />
+		<result property="chatmesContent" column="chatmes_content" />
+		<result property="senderType" column="sender_type" />
+	</resultMap>
+
+	<select id="findMessagesByFlrPk" parameterType="int"
+		resultMap="ChatMessageMap">
+		SELECT cm.chatmes_pk, cm.chatmes_datetime, cm.chatmes_content,
+        CASE WHEN cm.user_pk_sender IS NOT NULL THEN '신고자'
+        WHEN cm.agent_pk_sender IS NOT NULL THEN '피신고대상자'
+        ELSE '알수없음' END AS sender_type
+        FROM chatmes cm
+        WHERE cm.chat_pk = (SELECT chat_pk FROM flr WHERE flr_pk = #{flrPk})
+        ORDER BY cm.chatmes_datetime ASC
+	</select>
+	
+	<!-- flrPk를 사용해 chatPk 조회 -->
+    <select id="findChatPkByFlrPk" parameterType="int" resultType="int">
+        SELECT chat_pk
+        FROM flr
+        WHERE flr_pk = #{flrPk}
+    </select>
+    
+    <select id="findProblematicMessagesByFlrPk" parameterType="int" resultType="int">
+    	SELECT chatmes_pk 
+        FROM chatai 
+        WHERE aidecs_pk IN (
+            SELECT aidecs_pk 
+            FROM aidecs 
+            WHERE chat_pk = (SELECT chat_pk FROM flr WHERE flr_pk = #{flrPk})
+        )
+    </select>
+	
+
+</mapper>

@@ -31,10 +31,40 @@
 		SELECT agent_pk FROM agent WHERE user_pk = #{userPk}
 	</select>
 
-	<!-- 특정 사용자의 입찰 목록 조회 -->
+	<!-- 특정 사용자의 입찰 목록 조회 / 낙찰된 매물제외 -->
 	<select id="getBidsByUserPk" parameterType="int"
 		resultType="com.lx.finalproject.dto.bid.BidDTO">
-		SELECT * FROM bid WHERE agent_pk = #{userPk} ORDER BY bid_time DESC
+		SELECT b.*, p.prp_name, p.prp_price
+		FROM bid b
+		JOIN auction a
+		ON b.auction_pk = a.auction_pk
+		JOIN prp p ON a.prp_pk = p.prp_pk
+		WHERE
+		b.agent_pk = (
+		SELECT agent_pk FROM agent WHERE user_pk = #{userPk}
+		)
+		AND b.bid_pk NOT IN (
+		SELECT bid_pk FROM winning
+		)
+		ORDER BY b.bid_time
+		DESC;
+
 	</select>
+
+	<!-- 특정 사용자의 입찰 목록 개수 조회 / 낙찰된 매물 제외 -->
+	<select id="getBidCountByUserPk" parameterType="int"
+		resultType="int">
+		SELECT COUNT(*)
+		FROM bid b
+		JOIN auction a ON b.auction_pk = a.auction_pk
+		JOIN prp p ON a.prp_pk = p.prp_pk
+		WHERE b.agent_pk = (
+		SELECT agent_pk FROM agent WHERE user_pk = #{userPk}
+		)
+		AND b.bid_pk NOT IN (
+		SELECT bid_pk FROM winning
+		)
+	</select>
+
 
 </mapper>

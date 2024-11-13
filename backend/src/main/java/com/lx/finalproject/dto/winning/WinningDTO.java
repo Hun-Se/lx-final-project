@@ -1,7 +1,7 @@
-package com.lx.finalproject.dto.bid;
+package com.lx.finalproject.dto.winning;
 
 
-public class BidDTO {
+public class WinningDTO {
 	
     private Integer bidPk;
     private Integer bidAmount;

@@ -32,7 +32,7 @@ const router = createRouter({
     {
       path: "/user_auction",
       name: "user_acution",
-      component: () => import("../views/userAuctionView.vue"),
+      component: () => import("../views/UserAuctionView.vue"),
     },
     {
       path: "/login",
@@ -97,6 +97,11 @@ const router = createRouter({
       name: "report_document",
       component: () => import("../views/CreateReportDocumentView.vue"),
     },
+    {
+      path: "/flr",
+      name: "flr",
+      component: () => import("../views/AI_Flr.vue")
+    }
   ],
 });
 

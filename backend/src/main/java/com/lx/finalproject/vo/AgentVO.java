@@ -2,7 +2,6 @@ package com.lx.finalproject.vo;
 
 public class AgentVO {
     private Integer agentPk;
-    private String agentLicense;
     private Integer userPk;
     private Integer agencyPk;
     
@@ -12,12 +11,6 @@ public class AgentVO {
 	}
 	public void setAgentPk(Integer agentPk) {
 		this.agentPk = agentPk;
-	}
-	public String getAgentLicense() {
-		return agentLicense;
-	}
-	public void setAgentLicense(String agentLicense) {
-		this.agentLicense = agentLicense;
 	}
 	public Integer getUserPk() {
 		return userPk;
@@ -35,7 +28,7 @@ public class AgentVO {
 	// ToString
 	@Override
 	public String toString() {
-		return "AgentVO [agentPk=" + agentPk + ", agentLicense=" + agentLicense + ", userPk=" + userPk + ", agencyPk="
+		return "AgentVO [agentPk=" + agentPk + ", userPk=" + userPk + ", agencyPk="
 				+ agencyPk + "]";
 	}
 	   

@@ -32,10 +32,22 @@ public class BidController {
 			return "Failed to place bid: " + e.getMessage();
 		}
 	}
+	
+	// userPk를 기반으로 agentPk 가져오기
+	@GetMapping("/agent/{userPk}")
+	public Integer getAgentPkByUserPk(@PathVariable int userPk) {
+	    return bidDAO.getAgentPkByUserPk(userPk);
+	}
 
 	// 특정 사용자의 입찰 목록 조회
 	@GetMapping("/user/{userPk}")
 	public List<BidDTO> getBidsByUserPk(@PathVariable int userPk) {
 		return bidDAO.getBidsByUserPk(userPk);
 	}
+	
+	// 특정 사용자의 입찰 개수 조회
+    @GetMapping("/count/user/{userPk}")
+    public int getBidCountByUserPk(@PathVariable int userPk) {
+        return bidDAO.getBidCountByUserPk(userPk);
+    }
 }
