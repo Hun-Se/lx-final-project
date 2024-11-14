@@ -1,10 +1,10 @@
 <template>
   <header class="header">
     <div class="logo cursor-pointer" @click="goToHome">
-      <h1>믿음집</h1>
+      <img class="img-logo" src="/assets/img/logo.png" alt="" />
     </div>
 
-    <nav class="navigation"></nav>
+    <i class="bi bi-bell-fill"></i>
   </header>
 </template>
 
@@ -53,9 +53,9 @@ function goToHome() {
   width: 100%;
   z-index: 1000;
   display: flex;
+  padding: 0.5rem;
   justify-content: space-between;
   align-items: center;
-  padding: 1.2rem;
   background-color: var(--color-bg-blue1);
   border-bottom: 1px solid #ddd;
 }
@@ -114,5 +114,10 @@ function goToHome() {
 .nav-center li a:hover,
 .nav-right li a:hover {
   color: #d81f26;
+}
+
+.img-logo {
+  width: 3rem;
+  height: 3rem;
 }
 </style>

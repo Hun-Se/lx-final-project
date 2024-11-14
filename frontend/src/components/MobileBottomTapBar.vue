@@ -61,6 +61,7 @@ onMounted(() => {
   width: 100%;
   //height: 50px;
   background-color: var(--color-bg-white);
+  z-index: 9999;
 }
 
 .container-bottom-nav {
@@ -130,7 +131,7 @@ nav {
   left: 34px;
   height: 24px;
   width: 24px;
-  background-color: var(--color-bg-blue1);
+  background-color: var(--color-bg-third);
   border: 6px solid #fff;
   border-radius: 50%;
   transform: translateX(-50%);

@@ -147,13 +147,15 @@ function onClickOpenPublicLedgerModal(docName) {
 <template>
   <nav>
     <div>
-      <div class="logo">
-        <span class="logo-name">믿음집</span>
-      </div>
+      <div class="logo"></div>
       <div class="sidebar">
         <div class="logo">
           <i class="bx bx-menu menu-icon"></i>
-          <span class="logo-name">믿음집</span>
+          <img
+            class="ms-10"
+            src="/assets/img/logo_white.png"
+            style="width: 70px"
+          />
         </div>
         <div class="sidebar-content">
           <ul class="lists">
@@ -814,7 +816,7 @@ nav {
   width: 100%;
   display: flex;
   align-items: center;
-  background: #4070f4;
+  background: var(--color-bg-blue1);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 nav .logo {
@@ -838,7 +840,7 @@ nav .sidebar {
   top: 0;
   /* left: 100%; */
   height: 100%;
-  width: 260px;
+  width: 240px;
   padding: 20px 0;
   background-color: #fff;
   box-shadow: 0 5px 1px rgba(0, 0, 0, 0.1);
@@ -907,7 +909,7 @@ nav.open ~ .overlay {
 
 .styled-table thead tr {
   text-align: center;
-  background-color: var(--color-bg-blue3);
+  background-color: var(--color-bg-blue1);
   color: #ffffff;
 }
 

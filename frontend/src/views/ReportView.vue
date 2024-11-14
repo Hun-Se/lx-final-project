@@ -9,7 +9,11 @@
       <div class="sidebar">
         <div class="logo">
           <i class="bx bx-menu menu-icon"></i>
-          <span class="logo-name">믿음집</span>
+          <img
+            class="ms-10"
+            src="/assets/img/logo_white.png"
+            style="width: 70px"
+          />
         </div>
         <div class="sidebar-content">
           <ul class="lists">
@@ -933,7 +937,7 @@ nav {
   width: 100%;
   display: flex;
   align-items: center;
-  background: #4070f4;
+  background: var(--color-bg-blue1);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 nav .logo {

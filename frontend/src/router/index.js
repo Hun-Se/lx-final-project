@@ -104,6 +104,11 @@ const router = createRouter({
       name: "flr",
       component: () => import("../views/AI_Flr.vue"),
     },
+    {
+      path: "/mobile_chat",
+      name: "mobile_chat",
+      component: () => import("../views/MobileChatView.vue"),
+    },
   ],
 });
 

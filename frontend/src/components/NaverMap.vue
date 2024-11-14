@@ -135,4 +135,30 @@ export default {
 .zoom-button:hover {
   background-color: #f0f0f0;
 }
+
+@media (max-width: 700px) {
+  .zoom-controls {
+    position: absolute;
+    top: 4rem;
+    right: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .zoom-button {
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    margin-top: 5px;
+    background-color: var(--color-bg-blue1);
+    border: 1px solid #ccc;
+    color: var(--color-bg-white);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .zoom-button:hover {
+    background-color: var(--color-bg-third);
+  }
+}
 </style>
