@@ -82,7 +82,7 @@ async function removeInterestPrp(prpPk) {
 
 .property-price {
   font-size: 14px;
-  color: var(--color-bg-blue2);
+  color: var(--color-bg-second);
 }
 
 .card-body {

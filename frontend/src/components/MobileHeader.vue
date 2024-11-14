@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="logo cursor-pointer" @click="goToHome">
-      <h1>내매물받아줘</h1>
+      <h1>믿음집</h1>
     </div>
 
     <nav class="navigation"></nav>
@@ -55,7 +55,7 @@ function goToHome() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 1.2rem;
   background-color: var(--color-bg-blue1);
   border-bottom: 1px solid #ddd;
 }

@@ -2,10 +2,11 @@
   --color-bg-white: #fff;
   --color-bg-black: #000000;
   --color-text-grey: #808080;
-  --color-bg-blue1: #0c2bb2;
-  --color-bg-blue2: #3e69da;
-  --color-bg-blue3: #3a8ff3;
-  --color-bg-blue4: #93d0fc;
+  --color-bg-blue1: #0e3c5a;
+  /* --color-bg-blue1: #133E87; */
+  --color-bg-second: #15242e;
+  --color-bg-third: #F66B0E;
+  --color-bg-fourh: #EFEFEF;
 }
 
 #app {
