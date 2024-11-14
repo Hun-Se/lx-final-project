@@ -1,42 +1,72 @@
 <template>
   <header class="header">
-    <span class="logo cursor-pointer" id="logo_h1" @click="goToHome">믿음집</span>
-
-
+    <span class="logo cursor-pointer" id="logo_h1" @click="goToHome"
+      >믿음집</span
+    >
 
     <!--등시간 검색-->
-    <div style="font-size: 20px;">
-      <div style="display: flex; align-items: center;">
-        <input class="input-location text-center" style="margin-right: 10px; margin-left: 10px; width: 400px;"
-        v-model="location" placeholder="위치를 입력해주세요">
+    <div style="font-size: 20px">
+      <div style="display: flex; align-items: center">
+        <input
+          class="input-location text-center"
+          style="margin-right: 10px; margin-left: 10px; width: 400px"
+          v-model="location"
+          placeholder="위치를 입력해주세요"
+        />
         에서
 
-        <select v-model="selectedTransport" style=" font-size: 20px; height: 40px; border-radius: 10px ; margin-right: 10px; margin-left: 20px;">
+        <select
+          v-model="selectedTransport"
+          style="
+            font-size: 20px;
+            height: 40px;
+            border-radius: 10px;
+            margin-right: 10px;
+            margin-left: 20px;
+          "
+        >
           <option disabled selected>이동수단</option>
           <option value="walking">도보</option>
           <option value="driving">자차</option>
-          <option value="public_transport">대중교통</option>
-        </select>로
+          <option value="public_transport">대중교통</option></select
+        >로
 
-        <input class="input-time text-center" type="number" v-model.number="hours" placeholder="0" min="0">
+        <input
+          class="input-time text-center"
+          type="number"
+          v-model.number="hours"
+          placeholder="0"
+          min="0"
+        />
         시간
 
-        <input class="input-time text-center" type="number" v-model.number="minutes" placeholder="0" min="0" max="59">
+        <input
+          class="input-time text-center"
+          type="number"
+          v-model.number="minutes"
+          placeholder="0"
+          min="0"
+          max="59"
+        />
         분
 
-        <span style="margin-left: 10px; margin-right: 20px;">내에 있는 매물</span>
-        <button @click="submit" type="button" class="btn btn-primary btn-lg">검색</button>
+        <span style="margin-left: 10px; margin-right: 20px"
+          >내에 있는 매물</span
+        >
+        <button @click="submit" type="button" class="btn btn-primary btn-lg">
+          검색
+        </button>
       </div>
-
     </div>
 
-
-    <div style="display: flex; align-items: center;">
-
+    <div style="display: flex; align-items: center">
       <a @click="goToMypage" class="cursor-pointer">
-        <i class="bi bi-box2-heart-fill" style="color: #007bff; font-size: 24px;"></i>
+        <i
+          class="bi bi-box2-heart-fill"
+          style="color: #007bff; font-size: 24px"
+        ></i>
       </a>
-      <span style="font-weight: bold; margin-left: 80px;">{{ username }}님</span>
+      <span style="font-weight: bold; margin-left: 80px">{{ username }}님</span>
     </div>
   </header>
 </template>
@@ -44,7 +74,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import axios from 'axios';
+import axios from "axios";
 
 const router = useRouter();
 const isLoggedIn = ref(false);
@@ -64,7 +94,8 @@ onMounted(() => {
 });
 // 검색 및 폴리곤 그리기
 function submit() {
-  const totalMinutes = (parseInt(hours.value) || 0) * 3600 + (parseInt(minutes.value) || 0) * 60;
+  const totalMinutes =
+    (parseInt(hours.value) || 0) * 3600 + (parseInt(minutes.value) || 0) * 60;
 
   if (!location.value || !selectedTransport.value || totalMinutes === 0) {
     alert("모든 필드를 올바르게 입력해주세요.");
@@ -128,7 +159,7 @@ function drawIsochrone(data) {
   }
 
   const coords = data.results[0].shapes[0].shell.map(
-    (point) => new naver.maps.LatLng(point.lat, point.lng)
+    (point) => new naver.maps.LatLng(point.lat, point.lng),
   );
   isochrone.value = new naver.maps.Polygon({
     map: window.mapInstance,
@@ -177,7 +208,6 @@ function goToBoard() {
 }
 </script>
 
-
 <style scoped>
 /* 헤더 */
 .header {
@@ -208,7 +238,6 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 
 .input-time {
   height: 40px;

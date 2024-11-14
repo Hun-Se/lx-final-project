@@ -48,17 +48,21 @@ function goToHome() {
 <style scoped>
 /* 헤더 */
 .header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem;
-  background-color: #fff;
+  padding: 1rem;
+  background-color: var(--color-bg-blue1);
   border-bottom: 1px solid #ddd;
 }
 
 .logo h1 {
   font-weight: bold;
-  color: rgb(0, 119, 255);
+  color: var(--color-bg-white);
   cursor: pointer;
 }
 

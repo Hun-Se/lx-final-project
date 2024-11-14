@@ -8,8 +8,12 @@
       
         <div id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
-          @click="toggleSidebar">
-          <i class="ki-duotone ki-black-left-line fs-3" :class="{ 'rotate-180': isOpen }">
+          @click="toggleSidebar"
+        >
+          <i
+            class="ki-duotone ki-black-left-line fs-3"
+            :class="{ 'rotate-180': isOpen }"
+          >
             <span class="path1"></span>
             <span class="path2"></span>
           </i>
@@ -19,25 +23,67 @@
         <div id="sort-options" class="sort-options">
           <div class="btn-group">
             <!-- 버튼 클릭 시 드롭다운 토글 -->
-            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('dealTarget')"
-              style="border: 1px solid blue; background-color: white; color: blue;"
+            <button
+              type="button"
+              class="btn btn-primary btn-sm dropdown-toggle"
+              @click="toggleDropdown('dealTarget')"
+              style="
+                border: 1px solid blue;
+                background-color: white;
+                color: blue;
+              "
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
-              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
+            >
               기타 | 주택 | 오피스텔
             </button>
-            <ul class="dropdown-menu" v-show="dropdownState.isDealTargetDropdownOpen" style="display: flex; justify-content: space-between;">
+            <ul
+              class="dropdown-menu"
+              v-show="dropdownState.isDealTargetDropdownOpen"
+              style="display: flex; justify-content: space-between"
+            >
               <li style="margin-left: 3ex">
-                <a href="#" class="btn" :class="filters.dealTarget === '기타' ? 'btn-primary' : 'btn-secondary'" @click.prevent="updateDealTarget('기타')" style="width: 10ex; margin-left: -2ex;">
+                <a
+                  href="#"
+                  class="btn"
+                  :class="
+                    filters.dealTarget === '기타'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click.prevent="updateDealTarget('기타')"
+                  style="width: 10ex; margin-left: -2ex"
+                >
                   기타
                 </a>
               </li>
               <li style="margin-left: 3ex">
-                <a href="#" class="btn" :class="filters.dealTarget === '주택' ? 'btn-primary' : 'btn-secondary'" @click.prevent="updateDealTarget('주택')" style="width: 10ex">
+                <a
+                  href="#"
+                  class="btn"
+                  :class="
+                    filters.dealTarget === '주택'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click.prevent="updateDealTarget('주택')"
+                  style="width: 10ex"
+                >
                   주택
                 </a>
               </li>
               <li style="margin-left: 3ex">
-                <a href="#" class="btn" :class="filters.dealTarget === '오피스텔' ? 'btn-primary' : 'btn-secondary'" @click.prevent="updateDealTarget('오피스텔')" style="width: 14ex">
+                <a
+                  href="#"
+                  class="btn"
+                  :class="
+                    filters.dealTarget === '오피스텔'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click.prevent="updateDealTarget('오피스텔')"
+                  style="width: 14ex"
+                >
                   오피스텔
                 </a>
               </li>
@@ -45,45 +91,88 @@
           </div>
 
           <!-- 전세, 월세, 매매 버튼 -->
-          <div class="btn-group" style="margin-left: 3ex;">
+          <div class="btn-group" style="margin-left: 3ex">
             <!-- 버튼 클릭 시 드롭다운 토글 -->
-            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('dealType')"
-              style="border: 1px solid blue; background-color: white; color: blue;"
+            <button
+              type="button"
+              class="btn btn-primary btn-sm dropdown-toggle"
+              @click="toggleDropdown('dealType')"
+              style="
+                border: 1px solid blue;
+                background-color: white;
+                color: blue;
+              "
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
-              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
-
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
+            >
               월세 | 전세 | 매매
             </button>
-            <ul class="dropdown-menu"  v-show="dropdownState.isDealTypeDropdownOpen">
-            <ul style="display: flex; list-style-type: none; padding: 0; margin-bottom: 1ex;">
-              <li style="margin-right: 10px;">
-            <button type="button" class="btn" :class="activeInput === 'jeonse' ? 'btn-primary' : 'btn-secondary'"
-              @click="updateDealType('jeonse')">
-              전세
-            </button>
-              </li>
-              <li style="margin-right: 10px;">
-                <button type="button" class="btn" :class="activeInput === 'wolse' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateDealType('wolse')">
-                  월세
-                </button>
-              </li>
-              <li style="margin-right: 10px;">
-                <button type="button" class="btn" :class="activeInput === 'maemae' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateDealType('maemae')">
-                  매매
-                </button>
-              </li>
-            </ul>
+            <ul
+              class="dropdown-menu"
+              v-show="dropdownState.isDealTypeDropdownOpen"
+            >
+              <ul
+                style="
+                  display: flex;
+                  list-style-type: none;
+                  padding: 0;
+                  margin-bottom: 1ex;
+                "
+              >
+                <li style="margin-right: 10px">
+                  <button
+                    type="button"
+                    class="btn"
+                    :class="
+                      activeInput === 'jeonse' ? 'btn-primary' : 'btn-secondary'
+                    "
+                    @click="updateDealType('jeonse')"
+                  >
+                    전세
+                  </button>
+                </li>
+                <li style="margin-right: 10px">
+                  <button
+                    type="button"
+                    class="btn"
+                    :class="
+                      activeInput === 'wolse' ? 'btn-primary' : 'btn-secondary'
+                    "
+                    @click="updateDealType('wolse')"
+                  >
+                    월세
+                  </button>
+                </li>
+                <li style="margin-right: 10px">
+                  <button
+                    type="button"
+                    class="btn"
+                    :class="
+                      activeInput === 'maemae' ? 'btn-primary' : 'btn-secondary'
+                    "
+                    @click="updateDealType('maemae')"
+                  >
+                    매매
+                  </button>
+                </li>
+              </ul>
 
               <!-- 전세금, 월세, 매매금액 입력 -->
-              <div v-if="activeInput === 'jeonse' || activeInput === 'all'" >
+              <div v-if="activeInput === 'jeonse' || activeInput === 'all'">
                 <nav class="navbar navbar-light bg-light">
                   <form class="form-inline">
                     <h3 style="margin-left: 3ex; margin-top: 3ex">전세금</h3>
-                    <input v-model="filters.jeonse.min" style="margin-left: 3ex; width: 15ex" placeholder="최소값" />
+                    <input
+                      v-model="filters.jeonse.min"
+                      style="margin-left: 3ex; width: 15ex"
+                      placeholder="최소값"
+                    />
                     ~
-                    <input v-model="filters.jeonse.max" style="width: 15ex" placeholder="최대값" />
+                    <input
+                      v-model="filters.jeonse.max"
+                      style="width: 15ex"
+                      placeholder="최대값"
+                    />
                   </form>
                 </nav>
               </div>
@@ -91,9 +180,17 @@
                 <nav class="navbar navbar-light bg-light">
                   <form class="form-inline">
                     <h3 style="margin-left: 3ex; margin-top: 3ex">보증금</h3>
-                    <input v-model="filters.wolse.min" style="margin-left: 3ex; width: 15ex" placeholder="최소값" />
+                    <input
+                      v-model="filters.wolse.min"
+                      style="margin-left: 3ex; width: 15ex"
+                      placeholder="최소값"
+                    />
                     ~
-                    <input v-model="filters.wolse.max" style="width: 15ex" placeholder="최대값" />
+                    <input
+                      v-model="filters.wolse.max"
+                      style="width: 15ex"
+                      placeholder="최대값"
+                    />
                   </form>
                 </nav>
               </div>
@@ -101,9 +198,17 @@
                 <nav class="navbar navbar-light bg-light">
                   <form class="form-inline">
                     <h3 style="margin-left: 3ex; margin-top: 3ex">매매 금액</h3>
-                    <input v-model="filters.maemae.min" style="margin-left: 3ex; width: 15ex" placeholder="최소값" />
+                    <input
+                      v-model="filters.maemae.min"
+                      style="margin-left: 3ex; width: 15ex"
+                      placeholder="최소값"
+                    />
                     ~
-                    <input v-model="filters.maemae.max" style="width: 15ex" placeholder="최대값" />
+                    <input
+                      v-model="filters.maemae.max"
+                      style="width: 15ex"
+                      placeholder="최대값"
+                    />
                   </form>
                 </nav>
               </div>
@@ -111,35 +216,82 @@
           </div>
 
           <!-- 구조 버튼-->
-          <div class="btn-group" style="margin-top: 2ex;">
-            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('structure')"
-              style="border: 1px solid blue; background-color: white; color: blue;"
+          <div class="btn-group" style="margin-top: 2ex">
+            <button
+              type="button"
+              class="btn btn-primary btn-sm dropdown-toggle"
+              @click="toggleDropdown('structure')"
+              style="
+                border: 1px solid blue;
+                background-color: white;
+                color: blue;
+              "
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
-              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
+            >
               구조
             </button>
-            <ul class="dropdown-menu" v-show="dropdownState.isStructureDropdownOpen">
-              <li style="display: inline; margin-left: 3ex;">
-                <button type="button" class="btn" :class="filters.structure === '전체' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateStructure('전체')" style="width: 10ex;">
+            <ul
+              class="dropdown-menu"
+              v-show="dropdownState.isStructureDropdownOpen"
+            >
+              <li style="display: inline; margin-left: 3ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.structure === '전체'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click="updateStructure('전체')"
+                  style="width: 10ex"
+                >
                   전체
                 </button>
               </li>
-              <li style="display: inline; margin-left: 2ex;">
-                <button type="button" class="btn" :class="filters.structure === '복층' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateStructure('복층')" style="width: 10ex;">
+              <li style="display: inline; margin-left: 2ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.structure === '복층'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click="updateStructure('복층')"
+                  style="width: 10ex"
+                >
                   복층
                 </button>
               </li>
-              <li style="display: inline; margin-left: 2ex;">
-                <button type="button" class="btn" :class="filters.structure === '오픈방' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateStructure('오픈방')" style="width: 13ex;">
+              <li style="display: inline; margin-left: 2ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.structure === '오픈방'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click="updateStructure('오픈방')"
+                  style="width: 13ex"
+                >
                   오픈방
                 </button>
               </li>
-              <li style="display: inline; margin-left: 3ex;">
-                <button type="button" class="btn" :class="filters.structure === '분리형' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateStructure('분리형')" style="width: 13ex;  margin-top: 1ex;">
+              <li style="display: inline; margin-left: 3ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.structure === '분리형'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click="updateStructure('분리형')"
+                  style="width: 13ex; margin-top: 1ex"
+                >
                   분리형
                 </button>
               </li>
@@ -147,94 +299,180 @@
           </div>
 
           <!-- 층수 버튼-->
-          <div class="btn-group" style="margin-left: 1ex; margin-top: 2ex;">
-            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('floor')"
-              style="border: 1px solid blue; background-color: white; color: blue;"
+          <div class="btn-group" style="margin-left: 1ex; margin-top: 2ex">
+            <button
+              type="button"
+              class="btn btn-primary btn-sm dropdown-toggle"
+              @click="toggleDropdown('floor')"
+              style="
+                border: 1px solid blue;
+                background-color: white;
+                color: blue;
+              "
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
-              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
+            >
               층수
             </button>
-            <ul class="dropdown-menu" v-show="dropdownState.isFloorDropdownOpen">
-              <li style="display: inline; margin-left: 3ex;">
-                <button type="button" class="btn" :class="filters.floor === '전체' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateFloor('전체')" style="width: 10ex;">
+            <ul
+              class="dropdown-menu"
+              v-show="dropdownState.isFloorDropdownOpen"
+            >
+              <li style="display: inline; margin-left: 3ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.floor === '전체' ? 'btn-primary' : 'btn-secondary'
+                  "
+                  @click="updateFloor('전체')"
+                  style="width: 10ex"
+                >
                   전체
                 </button>
               </li>
-              <li style="display: inline; margin-left: 1ex;">
-                <button type="button" class="btn" :class="filters.floor === '옥탑방' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateFloor('옥탑방')" style="width: 13ex;">
+              <li style="display: inline; margin-left: 1ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.floor === '옥탑방' ? 'btn-primary' : 'btn-secondary'
+                  "
+                  @click="updateFloor('옥탑방')"
+                  style="width: 13ex"
+                >
                   옥탑방
                 </button>
               </li>
-              <li style="display: inline; margin-left: 1ex;">
-                <button type="button" class="btn" :class="filters.floor === '반지하층' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateFloor('반지하층')" style="width: 13ex;">
+              <li style="display: inline; margin-left: 1ex">
+                <button
+                  type="button"
+                  class="btn"
+                  :class="
+                    filters.floor === '반지하층'
+                      ? 'btn-primary'
+                      : 'btn-secondary'
+                  "
+                  @click="updateFloor('반지하층')"
+                  style="width: 13ex"
+                >
                   반지하층
                 </button>
               </li>
-              <li style="display: inline; margin-left: 3ex;">
-                <button type="button" style="width: 13ex; margin-top: 1ex;" class="btn" :class="filters.floor === '지상층' ? 'btn-primary' : 'btn-secondary'"
-                  @click="updateFloor('지상층')" >
+              <li style="display: inline; margin-left: 3ex">
+                <button
+                  type="button"
+                  style="width: 13ex; margin-top: 1ex"
+                  class="btn"
+                  :class="
+                    filters.floor === '지상층' ? 'btn-primary' : 'btn-secondary'
+                  "
+                  @click="updateFloor('지상층')"
+                >
                   지상층
                 </button>
               </li>
             </ul>
           </div>
 
-
           <!-- 전용 면적 버튼과 모달 버튼을 포함한 그룹 -->
-          <div class="btn-group" style="margin-left: 1ex; margin-top: 2ex; height: 5ex;">
+          <div
+            class="btn-group"
+            style="margin-left: 1ex; margin-top: 2ex; height: 5ex"
+          >
             <!-- 전용 면적 버튼 -->
-            <button type="button" class="btn btn-primary btn-sm dropdown-toggle" @click="toggleDropdown('area')"
-              style="border: 1px solid blue; background-color: white; color: blue;"
+            <button
+              type="button"
+              class="btn btn-primary btn-sm dropdown-toggle"
+              @click="toggleDropdown('area')"
+              style="
+                border: 1px solid blue;
+                background-color: white;
+                color: blue;
+              "
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
-              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';">
+              onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
+            >
               전용 면적
             </button>
-            <ul class="dropdown-menu" v-show="dropdownState.isAreaDropdownOpen" >
-              <table class="table table-bordered text-center" style="margin-left: 3ex; width: 40ex; margin-top: 2ex;">
+            <ul class="dropdown-menu" v-show="dropdownState.isAreaDropdownOpen">
+              <table
+                class="table table-bordered text-center"
+                style="margin-left: 3ex; width: 40ex; margin-top: 2ex"
+              >
                 <tbody>
                   <tr>
                     <td class="table-primary" style="vertical-align: middle">
-                      <button type="button" @click="updateArea('전체')" class="btn btn-link text-black">
+                      <button
+                        type="button"
+                        @click="updateArea('전체')"
+                        class="btn btn-link text-black"
+                      >
                         전체
                       </button>
                     </td>
                     <td>
-                      <button type="button" @click="updateArea('10평 이하')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('10평 이하')"
+                        class="btn btn-link"
+                      >
                         10평 이하
                       </button>
                     </td>
                     <td>
-                      <button type="button" @click="updateArea('10평대')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('10평대')"
+                        class="btn btn-link"
+                      >
                         10평대
                       </button>
                     </td>
                     <td>
-                      <button type="button" @click="updateArea('20평대')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('20평대')"
+                        class="btn btn-link"
+                      >
                         20평대
                       </button>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <button type="button" @click="updateArea('30평대')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('30평대')"
+                        class="btn btn-link"
+                      >
                         30평대
                       </button>
                     </td>
                     <td>
-                      <button type="button" @click="updateArea('40평대')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('40평대')"
+                        class="btn btn-link"
+                      >
                         40평대
                       </button>
                     </td>
                     <td>
-                      <button type="button" @click="updateArea('50평대')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('50평대')"
+                        class="btn btn-link"
+                      >
                         50평대
                       </button>
                     </td>
                     <td>
-                      <button type="button" @click="updateArea('60평 이상')" class="btn btn-link">
+                      <button
+                        type="button"
+                        @click="updateArea('60평 이상')"
+                        class="btn btn-link"
+                      >
                         60평 이상
                       </button>
                     </td>
@@ -243,13 +481,30 @@
               </table>
             </ul>
 
-              <!-- 모달 버튼 -->
-              <button type="button" class="btn btn-primary" @click="openModal"
-                style="margin-left: 1ex; margin-top: -6px; width: 70px; height: 45px; border-radius: 10%; display: flex; align-items: center; justify-content: center; background-color: #007bff; border-color: #007bff; color: white;">
-                <i class="bi bi-robot" style="font-size: 3ex; color: white;"></i> <!-- 아이콘 색상을 흰색으로 설정 -->
-              </button>
-            </div>
+            <!-- 모달 버튼 -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              @click="openModal"
+              style="
+                margin-left: 1ex;
+                margin-top: -6px;
+                width: 70px;
+                height: 45px;
+                border-radius: 10%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #007bff;
+                border-color: #007bff;
+                color: white;
+              "
+            >
+              <i class="bi bi-robot" style="font-size: 3ex; color: white"></i>
+              <!-- 아이콘 색상을 흰색으로 설정 -->
+            </button>
           </div>
+        </div>
 
 
           <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
@@ -283,29 +538,89 @@
   </div>
 </div>
 
-            <!-- 상세 정보 사이드바 -->
-            <div v-if="selectedSalesId" class="app-sidebar-detail" style="position: fixed; right: 0; top: 60px; height: calc(100vh - 60px); width: 300px; padding: 1em; overflow-y: auto; background: white; border-left: 1px solid #ddd;">
-              
-              <!-- btn-close 버튼 -->
-              <button type="button" class="btn-close" style="position: absolute; top: 10px; right: 10px; background-color: white; border-radius: 30%; border: 1px solid #ddd;" @click="toggleSalesDetail(null)"></button>
+          <!-- 상세 정보 사이드바 -->
+          <div
+            v-if="selectedSalesId"
+            class="app-sidebar-detail"
+            style="
+              position: fixed;
+              right: 0;
+              top: 60px;
+              height: calc(100vh - 60px);
+              width: 300px;
+              padding: 1em;
+              overflow-y: auto;
+              background: white;
+              border-left: 1px solid #ddd;
+            "
+          >
+            <!-- btn-close 버튼 -->
+            <button
+              type="button"
+              class="btn-close"
+              style="
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background-color: white;
+                border-radius: 30%;
+                border: 1px solid #ddd;
+              "
+              @click="toggleSalesDetail(null)"
+            ></button>
 
-              <!-- AI Chat -->            
-              <div v-if="isModalOpen" class="modal-content"
-                style="position: relative; top: 0; left: 0; max-width: 330px; width: 100%; margin-top: 3ex; margin-left: 0.5ex; border: 1px solid #007bff; border-radius: 0.5rem; padding: 1rem;">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" style="margin-left: 1ex; font-weight: bolder;">AI Chat 서비스</h1>                
-                </div>
-                <div class="modal-body">
-                  <!-- 모달 내용 -->
-                </div>
-                <div class="input-group mb-3" style="max-width: 300px; margin-left: 0.5ex; margin-top: 1ex;">
-                  <input type="text" name="AiGPT" placeholder="원하시는 매물 조건을 입력해주세요." class="form-control">
-                  <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" @click="closeModal">닫기</button>
-                </div>
+            <!-- AI Chat -->
+            <div
+              v-if="isModalOpen"
+              class="modal-content"
+              style="
+                position: relative;
+                top: 0;
+                left: 0;
+                max-width: 330px;
+                width: 100%;
+                margin-top: 3ex;
+                margin-left: 0.5ex;
+                border: 1px solid #007bff;
+                border-radius: 0.5rem;
+                padding: 1rem;
+              "
+            >
+              <div class="modal-header">
+                <h1
+                  class="modal-title fs-5"
+                  style="margin-left: 1ex; font-weight: bolder"
+                >
+                  AI Chat 서비스
+                </h1>
               </div>
+              <div class="modal-body">
+                <!-- 모달 내용 -->
+              </div>
+              <div
+                class="input-group mb-3"
+                style="max-width: 300px; margin-left: 0.5ex; margin-top: 1ex"
+              >
+                <input
+                  type="text"
+                  name="AiGPT"
+                  placeholder="원하시는 매물 조건을 입력해주세요."
+                  class="form-control"
+                />
+                <button @click="submitAiGPT" class="btn btn-primary btn-sm">
+                  문의
+                </button>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="closeModal"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
 
               <!-- 매물 상세정보 -->
               <div class="property-details-section" v-if="selectedSalesDetails" style="flex: 1; overflow-y: auto; height: 100%; padding-left: 20px;">
@@ -314,30 +629,28 @@
                       <i style="color: black; margin-left: 5ex; font-size: large;" class="bi bi-share"></i><i style="color: black; margin-left: 2ex; font-size: large;" class="bi bi-heart-fill"></i>
                   </p>
 
-                  <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
-                  <div class="detail-header" style="font-size: small; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid #ccc; padding: 5px; display: inline-block; border-radius: 6px; border-width: 2px;">
-                      매물번호{{ selectedSalesDetails.prpPrice }}
-                  </div>
+              <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
+              <div class="detail-header" style="font-size: small; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid #ccc; padding: 5px; display: inline-block; border-radius: 6px; border-width: 2px;">
+                매물번호{{ selectedSalesDetails.prpPrice }}
+              </div>
 
-                  <p style="margin-top: 2ex; font-size: large; font-weight: bolder;">
-                      <strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}
-                  </p>
-                  <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex;">{{ selectedSalesDetails.prpDesc }}</p>
-                  <p style="margin-top: 4ex;">{{ selectedSalesDetails.prpName }}</p>       
-                  <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-pin-map-fill"></i></strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
-                  <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-rulers"></i></strong> {{ selectedSalesDetails.prpExclArea }}</p>
-
-                  <button type="button" class="btn btn-primary btn-sm" 
-                      style="border: 1px solid  #0d6efd; background-color: white; color: #0d6efd; margin-top: 3ex; width: 40ex"
-                      onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                      onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';">
-                      <i class="bi bi-cash-coin"
-                      onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                      onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>실거래가 보러가기
-                      <i class="bi bi-arrow-right"
-                      onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                      onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>
-                  </button>
+              <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
+              <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex;">{{ selectedSalesDetails.prpDesc }}</p>
+              <p style="margin-top: 4ex;">{{ selectedSalesDetails.prpName }}</p>       
+              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-pin-map-fill"></i></strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
+              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-rulers"></i></strong> {{ selectedSalesDetails.prpExclArea }}</p>
+              
+              <button type="button" class="btn btn-primary btn-sm" 
+                style="border: 1px solid  #0d6efd; background-color: white; color: #0d6efd; margin-top: 3ex; width: 40ex"
+                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';">
+                <i class="bi bi-cash-coin"
+                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>실거래가 보러가기
+                <i class="bi bi-arrow-right"
+                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>
+              </button>
 
                   <div style="margin-top: 3ex; display: flex; align-items: center;">
                       <i class="bi bi-telephone-fill" style="font-size: 22px; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
@@ -350,10 +663,10 @@
         </div>
       </div>
 
-          <div id="modalBackground">
-            <NaverMap></NaverMap>
-          </div>
-        </div>
+    <div id="modalBackground">
+      <NaverMap></NaverMap>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -392,7 +705,6 @@ const init = () => {
   store.fetchSalesList();
   console.log(sales.value);
 };
-
 
 // 필터 상태를 관리할 reactive 객체
 const filters = reactive({
@@ -512,7 +824,6 @@ const submitAiGPT = () => {
 };
 </script>
 
-
 <style scoped>
 .dropdown-menu {
   padding: 10px;
@@ -523,14 +834,12 @@ const submitAiGPT = () => {
   left: 0;
   width: 340px;
   z-index: 9999;
-
 }
 
 .dropdown-menu.show {
   display: block;
   z-index: 9999;
 }
-
 
 /*===== begin::헤더,메인,푸터 기본화면 =====*/
 #mainPage {
@@ -653,7 +962,6 @@ const submitAiGPT = () => {
   border: 1px solid #000;
 }
 
-
 .divider {
   border-bottom: 1px solid #ccc;
   margin: 1ex 0;
@@ -699,8 +1007,6 @@ const submitAiGPT = () => {
   border-left: 1px solid #ddd; /* 왼쪽 경계선 */
 }
 
-
-
 /* 매물 리스트 스타일 */
 .property-items {
   list-style-type: none; /* 리스트 스타일 제거 */
@@ -721,5 +1027,4 @@ const submitAiGPT = () => {
 .property-details {
   margin-left: 10px; /* 내용 여백 */
 }
-
 </style>

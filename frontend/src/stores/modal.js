@@ -7,13 +7,30 @@ export const useRegisterPrpModalStore = defineStore("registerPrpModal", () => {
 
   function openModal() {
     isModalOpen.value = true;
-    console.log(isModalOpen);
   }
 
   function closeModal() {
     isModalOpen.value = false;
-    console.log("클릭");
   }
 
   return { isModalOpen, openModal, closeModal, selected };
 });
+
+export const usePublicLedgerModalStore = defineStore(
+  "publicLedgerModal",
+  () => {
+    const isModalOpen = ref(false);
+    const docNameRef = ref("");
+
+    function openModal() {
+      isModalOpen.value = true;
+    }
+
+    function closeModal() {
+      isModalOpen.value = false;
+      docNameRef.value = ""; // 모달닫기시 초기화 필요함
+    }
+
+    return { isModalOpen, docNameRef, openModal, closeModal };
+  },
+);

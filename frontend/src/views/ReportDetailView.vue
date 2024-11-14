@@ -1,7 +1,9 @@
 <script setup>
 import { ref, reactive, onMounted, onUnmounted } from "vue";
 import PdfViewer from "@/components/PdfViewer.vue";
-
+import PublicLedgerModal from "@/components/PublicLedgerModal.vue";
+import { usePublicLedgerModalStore } from "@/stores/modal.js";
+import { storeToRefs } from "pinia";
 // Reactive 상태 선언
 const audioPlayer = ref(null);
 const isPlaying = ref(false);
@@ -11,22 +13,6 @@ const audioSource = ref(
 const currentTime = ref("00:00");
 const duration = ref("00:00");
 const progress = ref(0);
-
-// messages 배열을 reactive로 관리
-const messages = reactive([
-  { text: "안녕하세요! 집있나요?", time: "10:00 AM", isUser: true },
-  {
-    text: "안녕하세요! 아쉽게도 그 집은 계약되고 없어요.",
-    time: "10:01 AM",
-    isUser: false,
-  },
-  { text: "이미 계약된 집인가요?.", time: "10:01 AM", isUser: true },
-  {
-    text: "네. 대신 비슷한 집들 보여드릴테니 방문해주세요.",
-    time: "10:01 AM",
-    isUser: false,
-  },
-]);
 
 // 메서드 정의
 const fetchInfo = () => {
@@ -50,6 +36,7 @@ const togglePlay = () => {
 
 const setDuration = () => {
   if (audioPlayer.value) {
+    npm;
     duration.value = formatTime(audioPlayer.value.duration);
   }
 };
@@ -114,10 +101,15 @@ onMounted(() => {
 
 async function initMap() {
   map = new naver.maps.Map("map", {
-    center: new naver.maps.LatLng(37.516042, 127.034881),
+    center: new naver.maps.LatLng(37.516042, 127.034881), // 데이터로 변경 필요
     zoom: 17,
     zoomControl: false,
     mapTypeControl: true,
+  });
+
+  var marker = new naver.maps.Marker({
+    position: new naver.maps.LatLng(37.516042, 127.034881), // 데이터로 변경필요
+    map: map,
   });
 }
 
@@ -141,6 +133,14 @@ function resetMap() {
     );
     map.setZoom(this.initialZoom);
   }
+}
+
+// 모달 관련 함수
+const publicLedgerStore = usePublicLedgerModalStore();
+const { docNameRef } = storeToRefs(publicLedgerStore);
+function onClickOpenPublicLedgerModal(docName) {
+  docNameRef.value = docName;
+  publicLedgerStore.openModal();
 }
 </script>
 
@@ -302,7 +302,13 @@ function resetMap() {
             <div class="card-body pt-9">
               <h4>공적장부 열람</h4>
               <div class="btn-group-public">
-                <button type="button" class="btn btn-light">등기부등본</button>
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  @click="onClickOpenPublicLedgerModal('토지대장')"
+                >
+                  토지대장
+                </button>
                 <button type="button" class="btn btn-light">등기부등본</button>
                 <button type="button" class="btn btn-light">등기부등본</button>
                 <button type="button" class="btn btn-light">등기부등본</button>
@@ -330,6 +336,7 @@ function resetMap() {
                           type="radio"
                           name="flexRadioDefault"
                           id="flexRadioDefault1"
+                          checked
                         />
                         <label
                           class="form-check-label"
@@ -345,7 +352,6 @@ function resetMap() {
                           type="radio"
                           name="flexRadioDefault"
                           id="flexRadioDefault2"
-                          checked
                         />
                         <label
                           class="form-check-label"
@@ -658,7 +664,7 @@ function resetMap() {
             <div class="card-title">
               <!--begin::Users-->
               <div class="symbol-group symbol-hover"></div>
-              <h3>의견서 작성</h3>
+              <h3>의견서</h3>
             </div>
             <!--end::Title--><!--begin::Card toolbar-->
             <div class="card-toolbar">
@@ -778,14 +784,15 @@ function resetMap() {
               </div>
             </div>
           </div>
-          <div class="card-body d-flex flex-column flex-center">
-            <div class="" style="width: 25rem; height: 100%; background: grey">
+          <div class="card-body d-flex flex-column">
+            <div class="" style="width: 100%; height: 100%">
               <PdfViewer></PdfViewer>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <PublicLedgerModal></PublicLedgerModal>
   </div>
 </template>
 

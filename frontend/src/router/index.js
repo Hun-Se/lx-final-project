@@ -20,8 +20,8 @@ const router = createRouter({
       component: () => import("../views/MapView.vue"),
     },
     {
-      path: "/mobilemap",
-      name: "mobilemap",
+      path: "/mobile_map",
+      name: "mobile_map",
       component: () => import("../views/MapView_mobile.vue"),
     },
     {
@@ -79,13 +79,15 @@ const router = createRouter({
       name: "report",
       component: () => import("../views/ReportView.vue"),
     },
-    {path: "/m.home",
+    {
+      path: "/m.home",
       name: "m.home",
-      component: () => import("../views/MobileHomeView.vue")
+      component: () => import("../views/MobileHomeView.vue"),
     },
-    {path: "/m.my_page",
+    {
+      path: "/m.my_page",
       name: "m.my_page",
-      component: () => import("../views/MobileMyPageView.vue")
+      component: () => import("../views/MobileMyPageView.vue"),
     },
     {
       path: "/report_detail",
@@ -100,8 +102,8 @@ const router = createRouter({
     {
       path: "/flr",
       name: "flr",
-      component: () => import("../views/AI_Flr.vue")
-    }
+      component: () => import("../views/AI_Flr.vue"),
+    },
   ],
 });
 
