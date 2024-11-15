@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.user.UserDao">
+
+    <!-- 조회 예시 -->
+    <select id="getAllExamples1" resultType="com.lx.finalproject.vo.UserVo">
+        SELECT * FROM example
+    </select>
+    <!-- 사용자 정보 조회 -->
+	<select id="getUserByUserId" parameterType="String" resultType="int">
+	    SELECT user_pk FROM users WHERE user_id = #{userId}
+	</select>
+	<!-- 로그인 -->
+	<select id="loginUser" parameterType="com.lx.finalproject.vo.UserVo" resultType="com.lx.finalproject.vo.UserVo">
+	    SELECT user_id FROM users 
+	    WHERE user_id = #{userId} 
+	    AND user_pw = #{userPassword}
+	</select>
+	<!-- 이름 출력 -->
+	<select id="getUserNameByUserPk" parameterType="int" resultType="String">
+	    SELECT user_name FROM users 
+	    WHERE user_pk = #{userPk}
+	</select>
+	    <select id="checkUserId" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM users WHERE user_id = #{userId}
+    </select>
+
+
+    <!-- 등록 예시 -->
+    <insert id="createExample1" parameterType="com.lx.finalproject.vo.UserVo">
+        INSERT INTO example (name, description) 
+        VALUES (#{name}, #{description})
+    </insert>
+    <!-- 사용자 등록 -->
+	<insert id="createUser" parameterType="com.lx.finalproject.vo.UserVo">
+	    INSERT INTO users (
+	        user_img, user_id, user_pw, user_perm, user_name, user_ssn, 
+	        user_mobile, user_email, region_pk, region_pk2
+	    )
+	    VALUES (
+	        #{userImg}, #{userId}, #{userPw}, #{userPerm}, #{userName}, #{userSsn}, 
+	        #{userMobile}, #{userEmail}, #{regionPk}, #{regionPk2}
+	    )
+	</insert>
+
+
+    <!-- 수정 -->
+    <update id="updateExample1" parameterType="com.lx.finalproject.vo.UserVo">
+        UPDATE example
+        SET name = #{name}, description = #{description}
+        WHERE id = #{id}
+    </update>
+    
+
+    <!-- 삭제 -->
+    <delete id="deleteExample1" parameterType="Long">
+        DELETE FROM example WHERE id = #{id}
+    </delete>
+
+</mapper>

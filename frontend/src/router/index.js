@@ -57,12 +57,7 @@ const router = createRouter({
     {
       path: "/ai_real_estate",
       name: "ai_real_estate",
-      component: () => import("../views/AI_real_estate_mobile.vue"),
-    },
-    {
-      path: "/ai_real_estate_mobile",
-      name: "ai_real_estate_mobile",
-      component: () => import("../views/AI_real_estate_mobile.vue"),
+      component: () => import("../views/AI_real_estateView.vue"),
     },
     {
       path: "/board",
@@ -88,6 +83,14 @@ const router = createRouter({
       path: "/m.my_page",
       name: "m.my_page",
       component: () => import("../views/MobileMyPageView.vue"),
+    },
+    {path: "/mobile_ai_real_estate",
+      name: "mobile_ai_real_estate",
+      component: () => import("../views/MobileAI_real_estateView.vue")
+    },
+    {path: "/mobile_ai_real_estate",
+      name: "mobile_ai_real_estate",
+      component: () => import("../views/MobileAI_real_estateView.vue")
     },
     {
       path: "/report_detail",

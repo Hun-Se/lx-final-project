@@ -42,7 +42,8 @@ def get_real_estate_data(service_key, region_code, year, start_month=1, end_mont
                     '지번': item.findtext("jibun"),
                     'area': item.findtext("excluUseAr"),
                     'transaction_price': item.findtext("dealAmount"),
-                    'construction_year': item.findtext("buildYear")
+                    'construction_year': item.findtext("buildYear"),
+                    'deal_year': item.findtext("dealYear")
                 })
         else:
             print(f"API 호출 실패: {response.status_code}, {response.text}")
@@ -496,7 +497,7 @@ latlon_client_id = "65axbgtkif"
 latlon_client_secret = "KDkhC7N8r6VIT6aSS3Zu0cAzrP9fo5K3Er14ArPo"
 kakao_api_key = "88911399f394d4bf0c2c7434b9563ca2"
 region_code = "11110"  # 종로구 지역 코드
-year = [2021,2022,2023]
+year = [2020,2021,2022]
 
 # JSON 파일에서 시공사 데이터 로드
 construction_data = load_construction_data('C:\\lx\\final_project\\lx-final-project\\python\\apt_bldr.json')
@@ -531,5 +532,5 @@ if df_result is not None:
     print(df_result.head(50))
 
 # df_result를 CSV 파일로 저장
-df_result.to_csv("real_estate_data3.csv", index=False, encoding='cp949')
-print("3년치 데이터 CSV 파일로 저장 완료: real_estate_data_2021_2023.csv")
+df_result.to_csv("real_estate_data2.csv", index=False, encoding='cp949')
+print("3년치 데이터 CSV 파일로 저장 완료: real_estate_data2.csv")
