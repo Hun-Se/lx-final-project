@@ -1,7 +1,7 @@
 <template>
   <div class="map-container">
     <div id="map"></div>
-    
+
     <div class="zoom-controls">
       <!--<button class="btn btn-primary" onclick="showCesium()">3D</button>-->
       <button @click="zoomIn" class="zoom-button">+</button>
@@ -34,7 +34,7 @@ export default {
         center: new naver.maps.LatLng(37.516042, 127.034881),
         zoom: 17,
         zoomControl: false,
-        mapTypeControl: true,
+        //mapTypeControl: true,
       });
       window.mapInstance = this.map; // 전역 변수 설정
 
@@ -65,10 +65,7 @@ export default {
         `;
 
         new naver.maps.Marker({
-          position: new naver.maps.LatLng(
-            location.latitude,
-            location.longitude,
-          ),
+          position: new naver.maps.LatLng(location.latitude, location.longitude),
           map: this.map,
           icon: {
             content: content,
@@ -92,7 +89,7 @@ export default {
       if (this.map) {
         // 초기 위치와 줌 레벨로 지도를 리셋
         this.map.setCenter(
-          new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng),
+          new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng)
         );
         this.map.setZoom(this.initialZoom);
       }
