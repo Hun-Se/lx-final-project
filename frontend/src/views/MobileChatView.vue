@@ -7,9 +7,9 @@
         <!--begin: Pic-->
         <div class="me-7 mb-4">
           <div
-            class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative"
+            class="symbol symbol-100px symbol-lg-160px symbol-fixed position-relative profile-image"
           >
-            <img src="assets/img/agent_example.webp" alt="image" />
+            <img src="assets/img/agent_example.png" alt="image" />
             <div
               class="position-absolute translate-middle bottom-0 start-100 bg-success rounded-circle border border-4 border-body h-20px w-20px"
             ></div>
@@ -23,22 +23,24 @@
             <!--begin::User-->
             <div class="d-flex flex-column">
               <!--begin::Name-->
-              <div class="d-flex align-items-center mb-2">
+              <div class="d-flex align-items-center mt-2 mb-2">
                 <a
                   href="#"
                   class="text-gray-900 text-hover-primary fs-2 fw-bold me-1"
                   >김중개</a
                 >
-                <a href="#">
-                  <i class="ki-duotone ki-verify fs-1 text-primary">
-                    <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i>
-                </a>
               </div>
               <!--end::Name-->
               <!--begin::Info-->
-              <div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
+              <div class="d-flex flex-wrap fw-semibold fs-6 mb-2 pe-2">
+                <a href="#" class="text-warning d-flex align-items-center mb-4" data-v-6a7b5a7d="">
+                  <i class="ki-duotone ki-verify fs-1 text-warning" data-v-6a7b5a7d="">
+                    <span class="path1" data-v-6a7b5a7d="">
+                    </span>
+                    <span class="path2" data-v-6a7b5a7d="">
+                    </span>
+                  </i>
+                <span data-v-6a7b5a7d="">착한공인중개사</span></a>
                 <a
                   href="#"
                   class="d-flex align-items-center text-gray-500 text-hover-primary me-5 mb-2 fs-7"
@@ -62,23 +64,17 @@
                   href="#"
                   class="d-flex align-items-center text-gray-500 text-hover-primary mb-2"
                 >
-                  <i class="ki-duotone ki-sms fs-4">
+                  <i class="ki-duotone ki-sms fs-4 me-2">
                     <span class="path1"></span>
-                    <span class="path2"></span> </i
+                    <span class="path2"></span>
+                  </i
                   >kim72840@gamil.com</a
                 >
               </div>
               <!--end::Info-->
             </div>
             <div class="me-0">
-              <button
-                class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary"
-                data-kt-menu-trigger="click"
-                data-kt-menu-placement="bottom-end"
-              >
-                <i class="ki-solid ki-dots-horizontal fs-2x"></i>
-              </button>
-              <!--begin::Menu 3-->
+              <button class="btn btn-sm btn-icon btn-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-v-6a7b5a7d=""><i class="ki-duotone ki-dots-square fs-2" data-v-6a7b5a7d=""><span class="path1" data-v-6a7b5a7d=""></span><span class="path2" data-v-6a7b5a7d=""></span><span class="path3" data-v-6a7b5a7d=""></span><span class="path4" data-v-6a7b5a7d=""></span></i></button>
               <div
                 class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3"
                 data-kt-menu="true"
@@ -382,7 +378,7 @@
                 <div class="d-flex align-items-center mb-2">
                   <!--begin::Avatar-->
                   <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-25.jpg" />
+                    <img alt="Pic" src="assets/img/agent_example.png" />
                   </div>
                   <!--end::Avatar-->
                   <!--begin::Details-->
@@ -392,7 +388,7 @@
                       class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
                       >김중개</a
                     >
-                    <span class="text-muted fs-7 mb-1">2 mins</span>
+                    <span class="text-muted fs-7 mb-1">1시간전</span>
                   </div>
                   <!--end::Details-->
                 </div>
@@ -402,8 +398,7 @@
                   class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
                   data-kt-element="message-text"
                 >
-                  How likely are 김지은 to recommend our company to 김지은r
-                  friends and family ?
+                  안녕하세요  한마음 공인중개사 입니다. 
                 </div>
                 <!--end::Text-->
               </div>
@@ -418,7 +413,7 @@
                 <div class="d-flex align-items-center mb-2">
                   <!--begin::Details-->
                   <div class="me-3">
-                    <span class="text-muted fs-7 mb-1">5 mins</span>
+                    <span class="text-muted fs-7 mb-1">1분전</span>
                     <a
                       href="#"
                       class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
@@ -428,7 +423,7 @@
                   <!--end::Details-->
                   <!--begin::Avatar-->
                   <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-1.jpg" />
+                    <img alt="Pic" src="assets/img/user_example.png" />
                   </div>
                   <!--end::Avatar-->
                 </div>
@@ -438,8 +433,7 @@
                   class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
                   data-kt-element="message-text"
                 >
-                  Hey there, we’re just writing to let 김지은 know that
-                  김지은’ve been subscribed to a repository on GitHub.
+                  OO방보고 연락했는데요, 혹시 방 볼 수 있을까요?
                 </div>
                 <!--end::Text-->
               </div>
@@ -454,7 +448,7 @@
                 <div class="d-flex align-items-center mb-2">
                   <!--begin::Avatar-->
                   <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-25.jpg" />
+                    <img alt="Pic" src="assets/img/agent_example.png" />
                   </div>
                   <!--end::Avatar-->
                   <!--begin::Details-->
@@ -464,7 +458,7 @@
                       class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
                       >김중개</a
                     >
-                    <span class="text-muted fs-7 mb-1">1 Hour</span>
+                    <span class="text-muted fs-7 mb-1">1분전</span>
                   </div>
                   <!--end::Details-->
                 </div>
@@ -474,231 +468,12 @@
                   class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
                   data-kt-element="message-text"
                 >
-                  Ok, Understood!
+                  네! 언제든지 사무실 찾아 주시면 친절하게 안내해 드리곘습니다!
                 </div>
                 <!--end::Text-->
               </div>
               <!--end::Wrapper-->
             </div>
-            <!--end::Message(in)-->
-            <!--begin::Message(out)-->
-            <div class="d-flex justify-content-end mb-10">
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-end">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Details-->
-                  <div class="me-3">
-                    <span class="text-muted fs-7 mb-1">2 Hours</span>
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                      >김지은</a
-                    >
-                  </div>
-                  <!--end::Details-->
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-1.jpg" />
-                  </div>
-                  <!--end::Avatar-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
-                  data-kt-element="message-text"
-                >
-                  김지은’ll receive notifications for all issues, pull requests!
-                </div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(out)-->
-            <!--begin::Message(in)-->
-            <div class="d-flex justify-content-start mb-10">
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-start">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-25.jpg" />
-                  </div>
-                  <!--end::Avatar-->
-                  <!--begin::Details-->
-                  <div class="ms-3">
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                      >김중개</a
-                    >
-                    <span class="text-muted fs-7 mb-1">3 Hours</span>
-                  </div>
-                  <!--end::Details-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
-                  data-kt-element="message-text"
-                >
-                  김지은 can unwatch this repository immediately by clicking
-                  here:
-                  <a href="https://keenthemes.com">Keenthemes.com</a>
-                </div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(in)-->
-            <!--begin::Message(out)-->
-            <div class="d-flex justify-content-end mb-10">
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-end">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Details-->
-                  <div class="me-3">
-                    <span class="text-muted fs-7 mb-1">4 Hours</span>
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                      >김지은</a
-                    >
-                  </div>
-                  <!--end::Details-->
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-1.jpg" />
-                  </div>
-                  <!--end::Avatar-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
-                  data-kt-element="message-text"
-                >
-                  Most purchased Business courses during this sale!
-                </div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(out)-->
-            <!--begin::Message(in)-->
-            <div class="d-flex justify-content-start mb-10">
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-start">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-25.jpg" />
-                  </div>
-                  <!--end::Avatar-->
-                  <!--begin::Details-->
-                  <div class="ms-3">
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                      >김중개</a
-                    >
-                    <span class="text-muted fs-7 mb-1">5 Hours</span>
-                  </div>
-                  <!--end::Details-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
-                  data-kt-element="message-text"
-                >
-                  Company BBQ to celebrate the last quater achievements and
-                  goals. Food and drinks provided
-                </div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(in)-->
-            <!--begin::Message(template for out)-->
-            <div
-              class="d-flex justify-content-end mb-10 d-none"
-              data-kt-element="template-out"
-            >
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-end">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Details-->
-                  <div class="me-3">
-                    <span class="text-muted fs-7 mb-1">Just now</span>
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                      >김지은</a
-                    >
-                  </div>
-                  <!--end::Details-->
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-1.jpg" />
-                  </div>
-                  <!--end::Avatar-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
-                  data-kt-element="message-text"
-                ></div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(template for out)-->
-            <!--begin::Message(template for in)-->
-            <div
-              class="d-flex justify-content-start mb-10 d-none"
-              data-kt-element="template-in"
-            >
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-start">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/media/avatars/300-25.jpg" />
-                  </div>
-                  <!--end::Avatar-->
-                  <!--begin::Details-->
-                  <div class="ms-3">
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                      >김중개</a
-                    >
-                    <span class="text-muted fs-7 mb-1">Just now</span>
-                  </div>
-                  <!--end::Details-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
-                  data-kt-element="message-text"
-                >
-                  Right before vacation season we have the next Big Deal for
-                  김지은.
-                </div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(template for in)-->
           </div>
           <!--end::Messages-->
         </div>
@@ -710,7 +485,7 @@
             class="form-control form-control-flush mb-3"
             rows="1"
             data-kt-element="input"
-            placeholder="Type a message"
+            placeholder="채팅내용 입력"
           ></textarea>
           <!--end::Input-->
           <!--begin:Toolbar-->
@@ -718,7 +493,7 @@
             <!--begin::Actions-->
             <div class="d-flex align-items-center me-2">
               <button
-                class="btn btn-sm btn-icon btn-active-light-primary me-1"
+                class="btn btn-sm btn-icon btn-light-primary me-1"
                 type="button"
                 data-bs-toggle="tooltip"
                 aria-label="Coming soon"
@@ -728,7 +503,7 @@
                 <i class="ki-duotone ki-paper-clip fs-3"></i>
               </button>
               <button
-                class="btn btn-sm btn-icon btn-active-light-primary me-1"
+                class="btn btn-sm btn-icon btn-light-primary me-1"
                 type="button"
                 data-bs-toggle="tooltip"
                 aria-label="Coming soon"
@@ -744,11 +519,11 @@
             <!--end::Actions-->
             <!--begin::Send-->
             <button
-              class="btn btn-primary"
+              class="btn btn-primary btn-message"
               type="button"
               data-kt-element="send"
             >
-              Send
+            <i class="bi bi-send"></i>
             </button>
             <!--end::Send-->
           </div>
@@ -847,7 +622,7 @@ input {
 
 button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: var(--color-bg-second);
   color: white;
   border: none;
   border-radius: 5px;
@@ -856,5 +631,9 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.btn-message {
+  background-color: var(--color-bg-blue1);
 }
 </style>

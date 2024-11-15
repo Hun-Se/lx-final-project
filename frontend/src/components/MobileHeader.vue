@@ -3,8 +3,6 @@
     <div class="logo cursor-pointer" @click="goToHome">
       <img class="img-logo" src="/assets/img/logo.png" alt="" />
     </div>
-
-    <i class="bi bi-bell-fill"></i>
   </header>
 </template>
 
