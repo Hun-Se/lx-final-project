@@ -17,8 +17,7 @@ database = "real_estate_data"
 
 # SQLAlchemy 엔진 생성 및 데이터 불러오기
 engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
-df = pd.read_sql("SELECT * FROM transaction_data3", con=engine)
-dumy = pd.read_sql("SELECT * FROM prp_dumy_data", con=engine)
+df = pd.read_sql("SELECT * FROM transaction_data", con=engine)
 
 # 데이터 전처리
 df = df.dropna()  # 결측치 제거
@@ -42,30 +41,14 @@ def categorize_subway_distance(distance):
 # 기존 df 데이터에 대해 subway_distance를 바탕으로 새로운 가변수 추가
 df['subway_proximity'] = df['subway_distance'].apply(categorize_subway_distance)
 
-# subway_distance를 기준으로 역세권, 초역세권, 비역세권으로 범주화하여 가변수 생성
-def categorize_school_distance(distance):
-    if pd.isnull(distance):  # None 값 확인
-        return 0  # None 값은 1500m 이상으로 간주하여 부정적 영향을 줌
-    elif distance <= 250:
-        return 2  # 초학군지 (200m 이내)
-    elif distance <= 400:
-        return 1  # 학군지 (500m 이내)
-    elif distance <= 1500:
-        return 0  # 비학군지 (1500m 이내)
-
-# 기존 df 데이터에 대해 subway_distance를 바탕으로 새로운 가변수 추가
-df['school_proximity'] = df['school_distance'].apply(categorize_school_distance)
-
 # 2024년도 모델 (deal_year 컬럼 없이)
 df['price_per_area_2024'] = df['price_per_area']
-X_2024 = df[['area', 'floor', 'construction_year', 'school_proximity', 'subway_proximity', 
+X_2024 = df[['area', 'floor', 'construction_year', 'school_distance', 'subway_proximity', 
              'total_floors', 'number_of_buildings']]
 y_2024 = df[['price_per_area_2024']]
 
 # 2024년 데이터 정규화
 scaler_2024 = MinMaxScaler()
-# '알 수 없음'을 NaN으로 변환
-X_2024.replace('알 수 없음', np.nan, inplace=True)
 X_2024_scaled = scaler_2024.fit_transform(X_2024)
 
 # 데이터 분할
@@ -98,7 +81,7 @@ print("R²:", r2_2024)
 
 # 새로운 데이터 예측 (2024년)
 new_data_2024 = pd.DataFrame({'area': [59.9426], 'floor': [18], 'construction_year': [2009],
-                              'school_proximity': [189], 'subway_proximity': [189], 
+                              'school_distance': [189], 'subway_proximity': [189], 
                               'total_floors': [13], 'number_of_buildings': [6]})
 # 주요 건설사 리스트 정의
 major_construction_companies = ['삼성물산', '현대건설', 'GS건설', '롯데건설', 'HDC현대건설', '대우건설', '한화건설', '현대엔지니어링', '디엘이앤씨', '포크소이앤씨', '에스케이에코플랜트']  # 주요 건설사 이름 리스트
@@ -120,14 +103,12 @@ print("\nPredicted Total Transaction Price for New Data (2024):", predicted_tota
 
 # 2025년도 모델 (deal_year 컬럼 포함)
 df['price_per_area_2025'] = df['price_per_area']
-X_2025 = df[['area', 'floor', 'construction_year', 'deal_year', 'school_proximity', 
+X_2025 = df[['area', 'floor', 'construction_year', 'deal_year', 'school_distance', 
              'subway_proximity', 'total_floors', 'number_of_buildings']]
 y_2025 = df[['price_per_area_2025']]
 
 # 2025년 데이터 정규화
 scaler_2025 = MinMaxScaler()
-# '알 수 없음'을 NaN으로 변환
-X_2025.replace('알 수 없음', np.nan, inplace=True)
 X_2025_scaled = scaler_2025.fit_transform(X_2025)
 
 # 데이터 분할
@@ -160,7 +141,7 @@ print("R²:", r2_2025)
 
 # 2025년 새 데이터 예측
 new_data_2025 = pd.DataFrame({'area': [59.9426], 'floor': [18], 'construction_year': [2009], 'deal_year' : [2023],
-                              'school_proximity': [189], 'subway_proximity': [189], 
+                              'school_distance': [189], 'subway_proximity': [189], 
                               'total_floors': [13], 'number_of_buildings': [6]})
 # 주요 건설사 리스트 정의
 major_construction_companies = ['삼성물산', '현대건설', 'GS건설', '롯데건설', 'HDC현대건설', '대우건설', '한화건설', '현대엔지니어링', 'LH', '풍림산업', '삼성건설']  # 주요 건설사 이름 리스트
@@ -199,26 +180,4 @@ plt.figure(figsize=(12, 6))
 plt.barh(feature_names, xgb_feature_importances, align='center', alpha=0.7, color='orange')
 plt.xlabel("Feature Importance")
 plt.title("Feature Importance in XGBoost (2024 Model)")
-plt.show()
-
-# 특성 이름 설정
-feature_names2 = X_2025.columns
-
-# RandomForest 모델에서 변수 중요도 확인
-rf_feature_importances2 = rf_model_2025.feature_importances_
-xgb_feature_importances2 = xgb_model_2025.feature_importances_
-
-
-# RandomForest 중요도 시각화
-plt.figure(figsize=(12, 6))
-plt.barh(feature_names2, rf_feature_importances2, align='center', alpha=0.7)
-plt.xlabel("Feature Importance")
-plt.title("Feature Importance in RandomForest (2025 Model)")
-plt.show()
-
-# XGBoost 중요도 시각화
-plt.figure(figsize=(12, 6))
-plt.barh(feature_names2, xgb_feature_importances2, align='center', alpha=0.7, color='orange')
-plt.xlabel("Feature Importance")
-plt.title("Feature Importance in XGBoost (2025 Model)")
 plt.show()
