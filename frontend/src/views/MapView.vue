@@ -510,33 +510,32 @@
           <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
           <!-- 매물 리스트 사이드바 -->
           <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: hidden; height: 100%; display: flex; flex-direction: column;">
-  <div class="property-container" style="flex: 1;">
-    <div class="property-list" style="overflow-y: auto; min-height: 300vh; flex: 1;">
-      <ul class="property-items">
-        <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
-          <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
-          
-          <!-- 이미지 위에 반투명 텍스트 -->
-          <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
-            믿음집
-          </div>   
-          <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">
-            방주인
+            <div class="property-container" style="flex: 1;">
+              <div class="property-list" style="overflow-y: auto; min-height: 300vh; flex: 1;">
+                <ul class="property-items">
+                  <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
+                    <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
+                    
+                    <!-- 이미지 위에 반투명 텍스트 -->
+                    <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
+                      믿음집
+                    </div>   
+                    <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">
+                      방주인
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm"
+                        style="font-size: smaller; border: 1px solid #0d6efd; background-color: white; color: #0d6efd; margin-top: 1ex; margin-bottom: 1ex; margin-left: 1ex; padding: 5px; width: 30ex; display: inline-block; border-radius: 4px; border-width: 1px; justify-content: center;"
+                        onmouseover="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
+                        onmouseout="this.style.color='#0d6efd'; this.style.backgroundColor='white';"
+                        onmousedown="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
+                        onmouseup="this.style.color='#0d6efd'; this.style.backgroundColor='white';">
+                      <i></i>상세보기
+                    </button>
+                  </li>
+                </ul> 
+              </div>
+            </div>
           </div>
-          <button type="button" class="btn btn-primary btn-sm"
-              style="font-size: smaller; border: 1px solid #0d6efd; background-color: white; color: #0d6efd; margin-top: 1ex; margin-bottom: 1ex; margin-left: 1ex; padding: 5px; width: 30ex; display: inline-block; border-radius: 4px; border-width: 1px; justify-content: center;"
-              onmouseover="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
-              onmouseout="this.style.color='#0d6efd'; this.style.backgroundColor='white';"
-              onmousedown="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
-              onmouseup="this.style.color='#0d6efd'; this.style.backgroundColor='white';">
-            <i></i>상세보기
-          </button>
-
-        </li>
-      </ul> 
-    </div>
-  </div>
-</div>
 
           <!-- 상세 정보 사이드바 -->
           <div

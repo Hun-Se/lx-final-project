@@ -12,14 +12,14 @@
         <a class="fab-action fab-action-1">
           <i class="bi bi-search"></i>
         </a>
-        <a class="fab-action fab-action-2">
+        <a class="fab-action fab-action-2" @click="toggleChatView">
           <img class="ai-image" src="/assets/img/ai_icon.svg" alt="" />
         </a>
         <a class="fab-action fab-action-3">
           <i class="bi bi-funnel"></i>
         </a>
         <a class="fab-action fab-action-4">
-          <i class="bi bi-question-lg"></i>
+          3D
         </a>
       </div>
     </div>
@@ -45,12 +45,70 @@
           draggable="true"
           style="width: 30px; background-color: rgb(223, 223, 223)"
         ></div>
+  
         <div class="jtFEOu">
-          <button class="styled__Tab-sc-1bidayn-1 cjOCPb">매물</button>
+          <button class="styled__Tab-sc-1bidayn-1 cjOCPb"  @click="toggleChatView">{{ buttonText }}</button>
         </div>
-      </div>
+
+        <div
+          class="kKaHnd"
+          draggable="true"
+          style="width: 30px; background-color: rgb(223, 223, 223)"
+        ></div>
+      </div>   
+
+      <!-- 매물 -->
       <div class="styled_Container hjmZNO" style="overflow-y: auto">
         <ul class="styled_RoomList jbrqZi">
+
+        <!-- AI 채팅 -->
+        <div v-if="isChatViewActive">
+
+        <!-- 매물 조건 박스들 (상단 문단) -->
+        <div>
+          <div style="display: flex; padding-left: 8ex; margin-top:1ex;">
+            <div class="info-box" style="margin-right: 2ex;">
+              <i class="bi bi-backpack3-fill"></i>
+               주변 학교있는 매물
+            </div>
+            <div class="info-box">
+              <i class="bi bi-tree-fill"></i>
+                500m 내 공원
+            </div>
+          </div>
+
+          <div style="display: flex; padding-left: 2ex;">
+            <div class="info-box" style="margin-right: 2ex;">
+              <i class="bi bi-train-lightrail-front-fill"></i>
+               15분 거리 지하철
+            </div>          
+            <div class="info-box">
+              <i class="bi bi-shop"></i>
+              1Km 내에 대형 마켓
+            </div>
+          </div>
+        </div>
+
+        <!-- 입력창 및 버튼 (하단 문단) -->
+        <div style="display: flex; align-items: center; width: 53ex; margin-left: 2ex;">
+        <input
+          type="text"
+          name="AiGPT"
+          placeholder="원하는 매물 조건을 입력해주세요."
+          class="form-control"
+          style="flex-grow: 1; margin-right: 0.5ex; width: 15ex;" 
+        />
+        <button @click="submitAiGPT" class="btn btn custom-btn" style="width: 10ex; margin-left: 1ex; color: white;">
+          문의
+        </button>
+        </div>
+
+
+        </div>
+
+
+          <!-- 매물 리스트 -->
+        <ul v-if="!isChatViewActive">
           <li
             v-for="(item, index) in sales"
             :key="item.prpPk"
@@ -81,6 +139,7 @@
                 <p class="styled__RoomDesc-sc-1b8f2kq-7 hVDije">
                   {{ item.prpDesc }}
                 </p>
+                
                 <div class="styled__TagContainer-sc-1b8f2kq-8 jZjxOL">
                   <div class="animated_badge animated_badge_5 hide">
                     <div class="animated_stars">
@@ -258,6 +317,7 @@
             </a>
           </li>
         </ul>
+      </ul>
       </div>
     </section>
     <NaverMap></NaverMap>
@@ -274,6 +334,32 @@ import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
+import { useChatStore } from '@/stores/chat';
+
+
+//********채팅**********
+const chatStore = useChatStore();
+const isChatViewActive = ref(false); // 상태 관리
+
+// AI GPT 제출
+const submitAiGPT = () => {
+  // 문의 로직 구현
+  console.log("AI GPT 문의 제출");
+};
+
+// 버튼 텍스트에 대한 반응형 값 계산
+const buttonText = computed(() => (isChatViewActive.value ? "AI Chat" : "매물"));
+
+// 채팅 보기 토글
+const toggleChatView = () => {
+  isChatViewActive.value = !isChatViewActive.value;
+};
+
+
+// **********매물**********
+function goToAuction() {
+  router.push({ path: "/user_auction" });
+}
 
 // isMobile 변수 정의 (화면 크기를 기준으로)
 const isMobile = ref(window.innerWidth <= 768);
@@ -396,11 +482,6 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-// AI GPT 제출
-const submitAiGPT = () => {
-  // 문의 로직 구현
-  console.log("AI GPT 문의 제출");
-};
 
 // 매물 하단바 드래그앤드롭 및 선택
 // 상태 관리
@@ -770,4 +851,31 @@ const handleDrop = (event) => {
   column-gap: 14px;
   padding: 16px 20px;
 }
+
+.custom-btn {
+    background-color: #373773;
+    border-color: #373773;
+}
+
+.custom-btn:hover {
+    background-color: #FA7000 !important;
+    border-color: #FA7000 !important; 
+}
+
+.info-box {
+  background-color: #f4965c; 
+  border-radius: 20px; 
+  padding: 10px 15px; 
+  margin-bottom: 10px; 
+  display: flex;
+  align-items: center; 
+  gap: 10px; 
+}
+
+.info-box i {
+  font-size: 1.5rem; 
+  color: #373773; 
+}
+
+
 </style>

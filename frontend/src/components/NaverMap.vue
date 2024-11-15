@@ -1,7 +1,9 @@
 <template>
   <div class="map-container">
     <div id="map"></div>
+    
     <div class="zoom-controls">
+      <!--<button class="btn btn-primary" onclick="showCesium()">3D</button>-->
       <button @click="zoomIn" class="zoom-button">+</button>
       <button @click="zoomOut" class="zoom-button">-</button>
     </div>
