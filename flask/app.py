@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 import mysql.connector
+import psycopg2
 import json
 import google.generativeai as genai
 import re
 from flask_cors import CORS
+from psycopg2.extras import DictCursor
 
 # API 설정
 genai.configure(api_key="AIzaSyCCli_Zt0gxb16rl8s6HrRISFVZ5nSgd9U")
@@ -14,14 +16,24 @@ app = Flask(__name__)
 CORS(app)
 
 # MySQL 데이터베이스 연결 설정
+# postgreSQL로 전환으로 인한 주석
+# def get_db_connection():
+#     connection = mysql.connector.connect(
+#         host='localhost',
+#         user='root',
+#         password='rootroot',
+#         database='real_estate',
+#         charset='utf8',
+#         use_pure=True
+#     )
+#     return connection
+
 def get_db_connection():
-    connection = mysql.connector.connect(
+    connection = psycopg2.connect(
         host='localhost',
-        user='root',
-        password='rootroot',
         database='real_estate',
-        charset='utf8',
-        use_pure=True
+        user='postgres',
+        password='postgis'
     )
     return connection
 
@@ -34,7 +46,7 @@ def home():
 @app.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor(cursor_factory=DictCursor) 
     cursor.execute('SELECT * FROM users WHERE id = %s', (user_id,))
     user = cursor.fetchone()
     cursor.close()
@@ -47,7 +59,7 @@ def get_user(user_id):
 @app.route('/chat/flr/<int:flr_pk>', methods=['GET'])
 def get_chat_by_flr(flr_pk):
     connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
+    cursor = connection.cursor(cursor_factory=DictCursor) 
 
     try:
         # flr_pk로부터 chat_pk를 조회

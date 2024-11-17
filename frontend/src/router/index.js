@@ -112,6 +112,16 @@ const router = createRouter({
       name: "mobile_chat",
       component: () => import("../views/MobileChatView.vue"),
     },
+    {
+      path: "/mobile_prp_detail",
+      name: "mobile_prp_detail",
+      component: () => import("../views/MobilePrpDetailView.vue"),
+    },
+    {
+      path: "/mobile_prp_report",
+      name: "mobile_prp_report",
+      component: () => import("../views/MobilePrpReportView.vue"),
+    },
   ],
 });
 

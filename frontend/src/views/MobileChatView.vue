@@ -29,18 +29,27 @@
                   class="text-gray-900 text-hover-primary fs-2 fw-bold me-1"
                   >김중개</a
                 >
+                <span class="badge badge-light-primary">신고 26회</span>
               </div>
               <!--end::Name-->
               <!--begin::Info-->
               <div class="d-flex flex-wrap fw-semibold fs-6 mb-2 pe-2">
-                <a href="#" class="text-warning d-flex align-items-center mb-4" data-v-6a7b5a7d="">
-                  <i class="ki-duotone ki-verify fs-1 text-warning" data-v-6a7b5a7d="">
-                    <span class="path1" data-v-6a7b5a7d="">
-                    </span>
-                    <span class="path2" data-v-6a7b5a7d="">
-                    </span>
+                <a
+                  href="#"
+                  class="text-warning d-flex align-items-center mb-4"
+                  data-v-6a7b5a7d=""
+                >
+                  <i
+                    class="ki-duotone ki-verify fs-1 text-danger"
+                    data-v-6a7b5a7d=""
+                  >
+                    <span class="path1" data-v-6a7b5a7d=""> </span>
+                    <span class="path2" data-v-6a7b5a7d=""> </span>
                   </i>
-                <span data-v-6a7b5a7d="">착한공인중개사</span></a>
+                  <span data-v-6a7b5a7d="" class="text-danger"
+                    >신뢰지수: 38%</span
+                  ></a
+                >
                 <a
                   href="#"
                   class="d-flex align-items-center text-gray-500 text-hover-primary me-5 mb-2 fs-7"
@@ -66,15 +75,26 @@
                 >
                   <i class="ki-duotone ki-sms fs-4 me-2">
                     <span class="path1"></span>
-                    <span class="path2"></span>
-                  </i
+                    <span class="path2"></span> </i
                   >kim72840@gamil.com</a
                 >
               </div>
               <!--end::Info-->
             </div>
             <div class="me-0">
-              <button class="btn btn-sm btn-icon btn-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-v-6a7b5a7d=""><i class="ki-duotone ki-dots-square fs-2" data-v-6a7b5a7d=""><span class="path1" data-v-6a7b5a7d=""></span><span class="path2" data-v-6a7b5a7d=""></span><span class="path3" data-v-6a7b5a7d=""></span><span class="path4" data-v-6a7b5a7d=""></span></i></button>
+              <button
+                class="btn btn-sm btn-icon btn-light-primary"
+                data-kt-menu-trigger="click"
+                data-kt-menu-placement="bottom-end"
+                data-v-6a7b5a7d=""
+              >
+                <i class="ki-duotone ki-dots-square fs-2" data-v-6a7b5a7d=""
+                  ><span class="path1" data-v-6a7b5a7d=""></span
+                  ><span class="path2" data-v-6a7b5a7d=""></span
+                  ><span class="path3" data-v-6a7b5a7d=""></span
+                  ><span class="path4" data-v-6a7b5a7d=""></span
+                ></i>
+              </button>
               <div
                 class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3"
                 data-kt-menu="true"
@@ -370,41 +390,6 @@
             data-kt-scroll-offset="5px"
             style="max-height: 274px"
           >
-            <!--begin::Message(in)-->
-            <div class="d-flex justify-content-start mb-10">
-              <!--begin::Wrapper-->
-              <div class="d-flex flex-column align-items-start">
-                <!--begin::User-->
-                <div class="d-flex align-items-center mb-2">
-                  <!--begin::Avatar-->
-                  <div class="symbol symbol-35px symbol-circle">
-                    <img alt="Pic" src="assets/img/agent_example.png" />
-                  </div>
-                  <!--end::Avatar-->
-                  <!--begin::Details-->
-                  <div class="ms-3">
-                    <a
-                      href="#"
-                      class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                      >김중개</a
-                    >
-                    <span class="text-muted fs-7 mb-1">1시간전</span>
-                  </div>
-                  <!--end::Details-->
-                </div>
-                <!--end::User-->
-                <!--begin::Text-->
-                <div
-                  class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
-                  data-kt-element="message-text"
-                >
-                  안녕하세요  한마음 공인중개사 입니다. 
-                </div>
-                <!--end::Text-->
-              </div>
-              <!--end::Wrapper-->
-            </div>
-            <!--end::Message(in)-->
             <!--begin::Message(out)-->
             <div class="d-flex justify-content-end mb-10">
               <!--begin::Wrapper-->
@@ -433,7 +418,8 @@
                   class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
                   data-kt-element="message-text"
                 >
-                  OO방보고 연락했는데요, 혹시 방 볼 수 있을까요?
+                  안녕하세요. OO아파트 매물 광고를 보았습니다. 이 매물은
+                  매도인이 직접 의뢰한 것인가요?
                 </div>
                 <!--end::Text-->
               </div>
@@ -468,7 +454,45 @@
                   class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
                   data-kt-element="message-text"
                 >
-                  네! 언제든지 사무실 찾아 주시면 친절하게 안내해 드리곘습니다!
+                  안녕하세요! 아쉽게도 그 매물은 현재 계약이 완료된 상태입니다.
+                  대신 OO아파트 근처에 비슷한 가격대의 좋은 매물이 많이
+                  있습니다. 바로 안내드릴 수 있는데, 관심 있으신가요?
+                </div>
+                <!--end::Text-->
+              </div>
+              <!--end::Wrapper-->
+            </div>
+
+            <div class="d-flex justify-content-start mb-10">
+              <!--begin::Wrapper-->
+              <div class="d-flex flex-column align-items-start">
+                <!--begin::User-->
+                <div class="d-flex align-items-center mb-2">
+                  <!--begin::Avatar-->
+                  <div class="symbol symbol-35px symbol-circle">
+                    <img alt="Pic" src="assets/img/agent_example.png" />
+                  </div>
+                  <!--end::Avatar-->
+                  <!--begin::Details-->
+                  <div class="ms-3">
+                    <a
+                      href="#"
+                      class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
+                      >김중개</a
+                    >
+                    <span class="text-muted fs-7 mb-1">1분전</span>
+                  </div>
+                  <!--end::Details-->
+                </div>
+                <!--end::User-->
+                <!--begin::Text-->
+                <div
+                  class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
+                  data-kt-element="message-text"
+                >
+                  안녕하세요! 아쉽게도 그 매물은 현재 계약이 완료된 상태입니다.
+                  대신 OO아파트 근처에 비슷한 가격대의 좋은 매물이 많이
+                  있습니다. 바로 안내드릴 수 있는데, 관심 있으신가요?
                 </div>
                 <!--end::Text-->
               </div>
@@ -523,7 +547,7 @@
               type="button"
               data-kt-element="send"
             >
-            <i class="bi bi-send"></i>
+              <i class="bi bi-send"></i>
             </button>
             <!--end::Send-->
           </div>

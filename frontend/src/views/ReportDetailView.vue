@@ -788,6 +788,12 @@ function onClickOpenPublicLedgerModal(docName) {
           </div>
           <div class="card-body d-flex flex-column">
             <div class="" style="width: 100%; height: 100%">
+              <div class="fw-bold fs-3 mb-3">
+                AI 의견 내용:
+                <span class="text-gray-600 fs-3 ms-1 badge badge-light-primary"
+                  >부합</span
+                >
+              </div>
               <PdfViewer></PdfViewer>
             </div>
           </div>
