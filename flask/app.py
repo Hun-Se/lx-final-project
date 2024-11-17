@@ -118,17 +118,35 @@ def get_chat_by_flr(flr_pk):
             + "전체 대화를 검토하고, 신고 내용과 증빙자료가 실제로 부합하는지 판단해줘. 만약 증빙자료가 신고 내용과 실제로 부합하지 않는다면 그 이유도 설명해줘."
             + "부합 여부가 명확하지 않을 경우에도 반드시 '미부합'으로 간주해."
             + "출력 형식은 반드시 JSON 형식으로만 출력해줘. 예를 들어 {'부합여부': '부합 또는 미부합', '이유': '설명', '증빙자료에서 추출된 부합내용': '내용 또는 미부합'} 형식으로. 증빙자료에서 추출된 부합내용은 반드시 대화내용부분을 사용해줘 신고자와 피신고대상자도 구분해서 그리고 신고자와 피신고대상자 앞에있는 숫자도 그대로 가져와줘")
-            
-        response_text = response.text.strip("```json").strip("```").strip()
-        response_data = {}
-        response_data = json.loads(response_text)
+       
+        response_text = response.text
+
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[-1].split("```")[0].strip()
+
+        try:
+            response_data = json.loads(response_text)
+            print("Parsed JSON Data:", response_data)
+        except json.JSONDecodeError as e:
+            print("JSON Decode Error:", str(e))
+            print("Final Processed Text:", response_text)
+            raise
 
         flr_decstatus = response_data.get('부합여부')
         flr_decscontent = response_data.get('이유')
         chatmes = response_data.get('증빙자료에서 추출된 부합내용')
-        print(chatmes)
-        numbers = re.findall(r'\b(\d+)(?=\.(피신고대상자|신고자))', chatmes)  # 정규표현식
-        numbers = [int(num[0]) for num in numbers]  # 튜플의 첫 번째 요소만 가져와 숫자로 변환
+        print("chatmes:", chatmes)
+        print("chatmes type:", type(chatmes))
+
+        if isinstance(chatmes, dict):
+            # 딕셔너리 키-값을 문자열로 병합
+            combined_chatmes = ' '.join([f"{key}: {value}" for key, value in chatmes.items()])
+        else:
+            # 이미 문자열인 경우 그대로 사용
+            combined_chatmes = chatmes
+
+        numbers = re.findall(r'\b(\d+)(?=\.(피신고대상자|신고자))', combined_chatmes)  # 정규표현식
+        number_list = [int(num[0]) for num in numbers]  # 튜플의 첫 번째 요소만 가져와 숫자로 변환
         print(numbers)
 
 
@@ -151,7 +169,7 @@ def get_chat_by_flr(flr_pk):
             INSERT INTO chatai (aidecs_pk, chatmes_pk)
             VALUES (%s, %s)
         '''
-        for number in numbers:
+        for number in number_list:
             cursor.execute(insert_chatai, (aidecs_pk, number))
         connection.commit()
 
