@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import mysql.connector
 import psycopg2
 import json
 import google.generativeai as genai
