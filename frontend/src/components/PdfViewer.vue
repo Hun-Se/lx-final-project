@@ -128,7 +128,7 @@ onMounted(() => {
   <div class="d-flex justify-content-around">
     <div
       ref="previewContainer"
-      class="preview-container overflow-auto d-flex flex-column gap-3 bg-gray-200 pt-1 pb-1"
+      class="preview-container overflow-auto d-flex flex-column gap-3 bg-gray-200 pt-1 pb-1 " style="height: 450px;"
     ></div>
     <div ref="viewerContainer" class="viewer-container"></div>
   </div>

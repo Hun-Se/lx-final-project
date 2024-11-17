@@ -663,7 +663,8 @@
       </div>
 
     <div id="modalBackground">
-      <NaverMap></NaverMap>
+      <CesiumMap></CesiumMap>
+<!--       <NaverMap></NaverMap>-->
     </div>
   </div>
 </template>
@@ -677,6 +678,7 @@ import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import axios from "axios";
+import CesiumMap from "@/components/CesiumMap.vue";
 
 // isMobile 변수 정의 (화면 크기를 기준으로)
 const isMobile = ref(window.innerWidth <= 768);

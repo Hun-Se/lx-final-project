@@ -585,7 +585,27 @@ function onClickOpenPublicLedgerModal(docName) {
               data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_messenger_body"
               data-kt-scroll-offset="5px"
             >
-              <div class="d-flex justify-content-start mb-10">
+              <div class="d-flex justify-content-end mb-10">
+                <div class="d-flex flex-column align-items-end">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="me-3">
+                      <span class="me-3">2024-11-12 13:30:54</span>
+                      <a
+                          href="#"
+                          class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
+                      >신고자</a
+                      >
+                    </div>
+                  </div>
+                  <div
+                      class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
+                      data-kt-element="message-text"
+                  >
+                    안녕하세요. OO아파트 매물 확인하고 싶어서 연락드렸습니다. 이 매물 아직 볼 수 있을까요?
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex justify-content-start mb-10 p-1">
                 <div class="d-flex flex-column align-items-start">
                   <div class="d-flex align-items-center mb-2">
                     <div class="ms-3">
@@ -594,37 +614,58 @@ function onClickOpenPublicLedgerModal(docName) {
                         class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
                         >중개인</a
                       >
+                      <span class="me-3">2024-11-12 13:30:58</span>
                     </div>
                   </div>
                   <div
                     class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
                     data-kt-element="message-text"
                   >
-                    문의 주신 매물은 없고요, 제가 다른 매물 보여드릴께요 일단
-                    한번 오시겠어요??
+                    안녕하세요! 아쉽게도 그 매물은 현재 계약이 완료된 상태입니다. 대신 OO아파트 근처에 비슷한 가격대의 좋은 매물이 많이 있습니다. 바로 안내드릴 수 있는데, 관심 있으신가요?
                   </div>
                 </div>
               </div>
-
               <div class="d-flex justify-content-end mb-10">
                 <div class="d-flex flex-column align-items-end">
                   <div class="d-flex align-items-center mb-2">
                     <div class="me-3">
+                      <span class="me-3">2024-11-12 13:31:02</span>
                       <a
-                        href="#"
-                        class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                        >신고자</a
+                          href="#"
+                          class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
+                      >신고자</a
                       >
                     </div>
                   </div>
                   <div
-                    class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
-                    data-kt-element="message-text"
+                      class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
+                      data-kt-element="message-text"
                   >
-                    아니요 허위 매물 신고 하겠습니다.
+                    아… 저는 그 아파트 매물에 관심이 있어서요. 같은 매물이 올라오면 알려주실 수 있나요?
                   </div>
                 </div>
               </div>
+              <div class="d-flex justify-content-start mb-10 p-1">
+                <div class="d-flex flex-column align-items-start">
+                  <div class="d-flex align-items-center mb-2">
+                    <div class="ms-3">
+                      <a
+                          href="#"
+                          class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
+                      >중개인</a
+                      >
+                      <span class="me-3">2024-11-12 13:31:14</span>
+                    </div>
+                  </div>
+                  <div
+                      class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
+                      data-kt-element="message-text"
+                  >
+                    그 매물은 당분간 나오기 어려울 것 같네요. 대신 비슷한 조건의 XX아파트나 XX빌라 매물을 추천드립니다. 지금 둘러보시면 좋은 매물도 발견하실 수 있을 거예요!
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
           <!-- 오디오 재생/정지 툴바 -->
@@ -793,6 +834,9 @@ function onClickOpenPublicLedgerModal(docName) {
                 <span class="text-gray-600 fs-3 ms-1 badge badge-light-primary"
                   >부합</span
                 >
+              </div>
+              <div class="fw-bold fs-3 mt-3 mb-3">
+                부동산 광고시장 감시센터 공문 <span></span>
               </div>
               <PdfViewer></PdfViewer>
             </div>
