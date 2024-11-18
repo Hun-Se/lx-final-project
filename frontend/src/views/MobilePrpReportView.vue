@@ -81,6 +81,15 @@
       </ul>
     </div>
     <label class="fs-4 fw-semibold form-label mt-10">
+      <span class="required">신고내용 입력</span>
+    </label>
+    <div class="mt-3 mb-3">
+      <div class="form-floating">
+        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+        <label for="floatingTextarea" style="color: grey">신고내용의 정확한 확인을 위해서 구체적으로 기재해 주세요.</label>
+      </div>
+    </div>
+    <label class="fs-4 fw-semibold form-label mt-5">
       <span class="required">증빙자료 선택</span>
       <div class="fw-semibold mt-3 fs-7 text-muted">
         광고화면과 문자내용은 어플 내에서 자동으로 취합하여 전송됩니다.
@@ -135,13 +144,14 @@
         </label>
       </div>
     </div>
-    <label class="fs-4 fw-semibold form-label mt-10">
+
+    <label class="fs-4 fw-semibold form-label mt-5">
       <span class="">자료 첨부</span>
     </label>
     <div class="mt-3 mb-3">
       <input class="form-control" type="file" id="formFileMultiple" multiple />
     </div>
-    <div class="btn-group d-flex justify-content-center p-10">
+    <div class="btn-group d-flex justify-content-center mt-6">
       <button class="btn btn-light-dark">취소</button>
       <button class="btn btn-report">확인</button>
     </div>
@@ -242,5 +252,9 @@ onMounted(() => {
 .form-check-input:checked {
   background-color: var(--color-bg-third);
   border-color: var(--color-bg-third);
+}
+
+.btn-group {
+  padding-bottom: 7rem;
 }
 </style>
