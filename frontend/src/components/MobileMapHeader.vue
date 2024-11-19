@@ -11,7 +11,7 @@
         />
         <span>에서</span>
         <select
-            class="form-control mobile-search-input "
+            class="form-control mobile-search-input-type "
             v-model="selectedTransport"
         >
           <option value="" disabled selected>이동수단</option>
@@ -22,7 +22,7 @@
       <span>로</span>
       <input
           class="form-control mobile-time-input"
-          type="number"
+          type="text"
           v-model.number="hours"
           placeholder="0"
           min="0"
@@ -30,7 +30,7 @@
       <span>시간</span>
       <input
           class="form-control mobile-time-input"
-          type="number"
+          type="text"
           v-model.number="minutes"
           placeholder="0"
           min="0"
@@ -157,7 +157,7 @@ function goToHome() {
 }
 
 .mobile-search-input {
-  width: 50px;
+  width: 70px;
   height: 20px;
   padding: 0;
   text-align: center;
@@ -169,8 +169,17 @@ function goToHome() {
 }
 
 .mobile-time-input {
+  padding: 0;
   width: 20px;
   height: 20px;
+  text-align: center;
+}
+
+.mobile-search-input-type {
+  padding: 0;
+  width: 40px;
+  height: 20px;
+  text-align: center;
 }
 
 .container-search span{
