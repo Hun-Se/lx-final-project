@@ -3,7 +3,6 @@
     <div id="map"></div>
 
     <div class="zoom-controls">
-      <!--<button class="btn btn-primary" onclick="showCesium()">3D</button>-->
       <button @click="zoomIn" class="zoom-button">+</button>
       <button @click="zoomOut" class="zoom-button">-</button>
     </div>
@@ -12,6 +11,7 @@
 
 <script>
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 export default {
   data() {
@@ -34,7 +34,7 @@ export default {
         center: new naver.maps.LatLng(37.516042, 127.034881),
         zoom: 17,
         zoomControl: false,
-        //mapTypeControl: true,
+        mapTypeControl: true,
       });
       window.mapInstance = this.map; // 전역 변수 설정
 
