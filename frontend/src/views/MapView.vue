@@ -2,18 +2,27 @@
   <component :is="computedHeader" id="headerPart" />
 
   <div id="mainPage">
-    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper" >
-      <div id="kt_app" class="app-sidebar flex-column custom-sidebar" :class="{ open: isOpen }" 
-      :style="{ position: 'fixed', top: '70px', left: isOpen ? '0' : '-300px', height: 'calc(100vh - 70px)', overflowY: 'hidden', width: '350px', transition: 'left 0.3s'}">
-      
-        <div id="kt_app_sidebar_toggle"
+    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+      <div
+        id="kt_app"
+        class="app-sidebar flex-column custom-sidebar"
+        :class="{ open: isOpen }"
+        :style="{
+          position: 'fixed',
+          top: '70px',
+          left: isOpen ? '0' : '-300px',
+          height: 'calc(100vh - 70px)',
+          overflowY: 'hidden',
+          width: '350px',
+          transition: 'left 0.3s',
+        }"
+      >
+        <div
+          id="kt_app_sidebar_toggle"
           class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 end-0 translate-middle-y"
           @click="toggleSidebar"
         >
-          <i
-            class="ki-duotone ki-black-left-line fs-3"
-            :class="{ 'rotate-180': isOpen }"
-          >
+          <i class="ki-duotone ki-black-left-line fs-3" :class="{ 'rotate-180': isOpen }">
             <span class="path1"></span>
             <span class="path2"></span>
           </i>
@@ -27,11 +36,7 @@
               type="button"
               class="btn btn-primary btn-sm dropdown-toggle"
               @click="toggleDropdown('dealTarget')"
-              style="
-                border: 1px solid blue;
-                background-color: white;
-                color: blue;
-              "
+              style="border: 1px solid blue; background-color: white; color: blue"
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
               onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
             >
@@ -46,11 +51,7 @@
                 <a
                   href="#"
                   class="btn"
-                  :class="
-                    filters.dealTarget === '기타'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
-                  "
+                  :class="filters.dealTarget === '기타' ? 'btn-primary' : 'btn-secondary'"
                   @click.prevent="updateDealTarget('기타')"
                   style="width: 10ex; margin-left: -2ex"
                 >
@@ -61,11 +62,7 @@
                 <a
                   href="#"
                   class="btn"
-                  :class="
-                    filters.dealTarget === '주택'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
-                  "
+                  :class="filters.dealTarget === '주택' ? 'btn-primary' : 'btn-secondary'"
                   @click.prevent="updateDealTarget('주택')"
                   style="width: 10ex"
                 >
@@ -77,9 +74,7 @@
                   href="#"
                   class="btn"
                   :class="
-                    filters.dealTarget === '오피스텔'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
+                    filters.dealTarget === '오피스텔' ? 'btn-primary' : 'btn-secondary'
                   "
                   @click.prevent="updateDealTarget('오피스텔')"
                   style="width: 14ex"
@@ -97,20 +92,13 @@
               type="button"
               class="btn btn-primary btn-sm dropdown-toggle"
               @click="toggleDropdown('dealType')"
-              style="
-                border: 1px solid blue;
-                background-color: white;
-                color: blue;
-              "
+              style="border: 1px solid blue; background-color: white; color: blue"
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
               onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
             >
               월세 | 전세 | 매매
             </button>
-            <ul
-              class="dropdown-menu"
-              v-show="dropdownState.isDealTypeDropdownOpen"
-            >
+            <ul class="dropdown-menu" v-show="dropdownState.isDealTypeDropdownOpen">
               <ul
                 style="
                   display: flex;
@@ -123,9 +111,7 @@
                   <button
                     type="button"
                     class="btn"
-                    :class="
-                      activeInput === 'jeonse' ? 'btn-primary' : 'btn-secondary'
-                    "
+                    :class="activeInput === 'jeonse' ? 'btn-primary' : 'btn-secondary'"
                     @click="updateDealType('jeonse')"
                   >
                     전세
@@ -135,9 +121,7 @@
                   <button
                     type="button"
                     class="btn"
-                    :class="
-                      activeInput === 'wolse' ? 'btn-primary' : 'btn-secondary'
-                    "
+                    :class="activeInput === 'wolse' ? 'btn-primary' : 'btn-secondary'"
                     @click="updateDealType('wolse')"
                   >
                     월세
@@ -147,9 +131,7 @@
                   <button
                     type="button"
                     class="btn"
-                    :class="
-                      activeInput === 'maemae' ? 'btn-primary' : 'btn-secondary'
-                    "
+                    :class="activeInput === 'maemae' ? 'btn-primary' : 'btn-secondary'"
                     @click="updateDealType('maemae')"
                   >
                     매매
@@ -221,29 +203,18 @@
               type="button"
               class="btn btn-primary btn-sm dropdown-toggle"
               @click="toggleDropdown('structure')"
-              style="
-                border: 1px solid blue;
-                background-color: white;
-                color: blue;
-              "
+              style="border: 1px solid blue; background-color: white; color: blue"
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
               onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
             >
               구조
             </button>
-            <ul
-              class="dropdown-menu"
-              v-show="dropdownState.isStructureDropdownOpen"
-            >
+            <ul class="dropdown-menu" v-show="dropdownState.isStructureDropdownOpen">
               <li style="display: inline; margin-left: 3ex">
                 <button
                   type="button"
                   class="btn"
-                  :class="
-                    filters.structure === '전체'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
-                  "
+                  :class="filters.structure === '전체' ? 'btn-primary' : 'btn-secondary'"
                   @click="updateStructure('전체')"
                   style="width: 10ex"
                 >
@@ -254,11 +225,7 @@
                 <button
                   type="button"
                   class="btn"
-                  :class="
-                    filters.structure === '복층'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
-                  "
+                  :class="filters.structure === '복층' ? 'btn-primary' : 'btn-secondary'"
                   @click="updateStructure('복층')"
                   style="width: 10ex"
                 >
@@ -270,9 +237,7 @@
                   type="button"
                   class="btn"
                   :class="
-                    filters.structure === '오픈방'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
+                    filters.structure === '오픈방' ? 'btn-primary' : 'btn-secondary'
                   "
                   @click="updateStructure('오픈방')"
                   style="width: 13ex"
@@ -285,9 +250,7 @@
                   type="button"
                   class="btn"
                   :class="
-                    filters.structure === '분리형'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
+                    filters.structure === '분리형' ? 'btn-primary' : 'btn-secondary'
                   "
                   @click="updateStructure('분리형')"
                   style="width: 13ex; margin-top: 1ex"
@@ -304,27 +267,18 @@
               type="button"
               class="btn btn-primary btn-sm dropdown-toggle"
               @click="toggleDropdown('floor')"
-              style="
-                border: 1px solid blue;
-                background-color: white;
-                color: blue;
-              "
+              style="border: 1px solid blue; background-color: white; color: blue"
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
               onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
             >
               층수
             </button>
-            <ul
-              class="dropdown-menu"
-              v-show="dropdownState.isFloorDropdownOpen"
-            >
+            <ul class="dropdown-menu" v-show="dropdownState.isFloorDropdownOpen">
               <li style="display: inline; margin-left: 3ex">
                 <button
                   type="button"
                   class="btn"
-                  :class="
-                    filters.floor === '전체' ? 'btn-primary' : 'btn-secondary'
-                  "
+                  :class="filters.floor === '전체' ? 'btn-primary' : 'btn-secondary'"
                   @click="updateFloor('전체')"
                   style="width: 10ex"
                 >
@@ -335,9 +289,7 @@
                 <button
                   type="button"
                   class="btn"
-                  :class="
-                    filters.floor === '옥탑방' ? 'btn-primary' : 'btn-secondary'
-                  "
+                  :class="filters.floor === '옥탑방' ? 'btn-primary' : 'btn-secondary'"
                   @click="updateFloor('옥탑방')"
                   style="width: 13ex"
                 >
@@ -348,11 +300,7 @@
                 <button
                   type="button"
                   class="btn"
-                  :class="
-                    filters.floor === '반지하층'
-                      ? 'btn-primary'
-                      : 'btn-secondary'
-                  "
+                  :class="filters.floor === '반지하층' ? 'btn-primary' : 'btn-secondary'"
                   @click="updateFloor('반지하층')"
                   style="width: 13ex"
                 >
@@ -364,9 +312,7 @@
                   type="button"
                   style="width: 13ex; margin-top: 1ex"
                   class="btn"
-                  :class="
-                    filters.floor === '지상층' ? 'btn-primary' : 'btn-secondary'
-                  "
+                  :class="filters.floor === '지상층' ? 'btn-primary' : 'btn-secondary'"
                   @click="updateFloor('지상층')"
                 >
                   지상층
@@ -376,20 +322,13 @@
           </div>
 
           <!-- 전용 면적 버튼과 모달 버튼을 포함한 그룹 -->
-          <div
-            class="btn-group"
-            style="margin-left: 1ex; margin-top: 2ex; height: 5ex"
-          >
+          <div class="btn-group" style="margin-left: 1ex; margin-top: 2ex; height: 5ex">
             <!-- 전용 면적 버튼 -->
             <button
               type="button"
               class="btn btn-primary btn-sm dropdown-toggle"
               @click="toggleDropdown('area')"
-              style="
-                border: 1px solid blue;
-                background-color: white;
-                color: blue;
-              "
+              style="border: 1px solid blue; background-color: white; color: blue"
               onmouseover="this.style.color='white'; this.style.backgroundColor='blue';"
               onmouseout="this.style.color='blue'; this.style.backgroundColor='white';"
             >
@@ -506,33 +445,96 @@
           </div>
         </div>
 
-
-          <div class="app-sidebar-menu overflow-hidden flex-column-fluid" style="margin-top: 2ex; margin-left: 1.5ex; height: calc(100vh - 100px); display: flex;">
+        <div
+          class="app-sidebar-menu overflow-hidden flex-column-fluid"
+          style="
+            margin-top: 2ex;
+            margin-left: 1.5ex;
+            height: calc(100vh - 100px);
+            display: flex;
+          "
+        >
           <!-- 매물 리스트 사이드바 -->
-          <div class="app-sidebar-wrapper" style="flex: 1; overflow-y: hidden; height: 100%; display: flex; flex-direction: column;">
-            <div class="property-container" style="flex: 1;">
-              <div class="property-list" style="overflow-y: auto; min-height: 300vh; flex: 1;">
+          <div
+            class="app-sidebar-wrapper"
+            style="
+              flex: 1;
+              overflow-y: hidden;
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            "
+          >
+            <div class="property-container" style="flex: 1">
+              <div
+                class="property-list"
+                style="overflow-y: auto; min-height: 300vh; flex: 1"
+              >
                 <ul class="property-items">
-                  <li v-for="(item, index) in sales" :key="item.prpPk" class="property-item" @click="toggleSalesDetail(item.prpPk)" style="position: relative;">
-                    <img :src="'/assets/img/' + item.prpImg" alt="매물 이미지" class="property-image" style="width: 250px; height: 237px;" />
-                    
+                  <li
+                    v-for="(item, index) in sales"
+                    :key="item.prpPk"
+                    class="property-item"
+                    @click="toggleSalesDetail(item.prpPk)"
+                    style="position: relative"
+                  >
+                    <img
+                      :src="'/assets/img/' + item.prpImg"
+                      alt="매물 이미지"
+                      class="property-image"
+                      style="width: 250px; height: 237px"
+                    />
+
                     <!-- 이미지 위에 반투명 텍스트 -->
-                    <div style="position: absolute; top: 15px; left: 15px; background-color: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.7); padding: 5px 10px; font-weight: bold; font-size: xx-large; width: 250px; height: 237px; display: flex; align-items: center; justify-content: center;">
+                    <div
+                      style="
+                        position: absolute;
+                        top: 15px;
+                        left: 15px;
+                        background-color: rgba(0, 0, 0, 0.3);
+                        color: rgba(255, 255, 255, 0.7);
+                        padding: 5px 10px;
+                        font-weight: bold;
+                        font-size: xx-large;
+                        width: 250px;
+                        height: 237px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      "
+                    >
                       믿음집
-                    </div>   
-                    <div class="detail-header" style="font-size: smaller; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid red; color: red; padding: 5px; display: inline-block; border-radius: 4px; border-width: 1px;">
-                      방주인
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm"
-                        style="font-size: smaller; border: 1px solid #0d6efd; background-color: white; color: #0d6efd; margin-top: 1ex; margin-bottom: 1ex; margin-left: 1ex; padding: 5px; width: 30ex; display: inline-block; border-radius: 4px; border-width: 1px; justify-content: center;"
+                    <div
+                      style="
+                        display: flex; /* 플렉스 컨테이너로 설정 */
+                        align-items: center; /* 수직 정렬 */
+                        gap: 1ex; /* 버튼 간 간격 */
+                      "
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        style="
+                          font-size: smaller;
+                          border: 1px solid #0d6efd;
+                          background-color: white;
+                          color: #0d6efd;
+                          padding: 5px;
+                          width: 50ex;
+                          border-radius: 4px;
+                          text-align: center; /* 텍스트 정렬 */
+                        "
                         onmouseover="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
                         onmouseout="this.style.color='#0d6efd'; this.style.backgroundColor='white';"
                         onmousedown="this.style.color='white'; this.style.backgroundColor='#0d6efd';"
-                        onmouseup="this.style.color='#0d6efd'; this.style.backgroundColor='white';">
-                      <i></i>상세보기
-                    </button>
+                        onmouseup="this.style.color='#0d6efd'; this.style.backgroundColor='white';"
+                      >
+                        <i></i>상세보기
+                      </button>
+                    </div>
                   </li>
-                </ul> 
+                </ul>
               </div>
             </div>
           </div>
@@ -606,65 +608,190 @@
                   placeholder="원하시는 매물 조건을 입력해주세요."
                   class="form-control"
                 />
-                <button @click="submitAiGPT" class="btn btn-primary btn-sm">
-                  문의
-                </button>
+                <button @click="submitAiGPT" class="btn btn-primary btn-sm">문의</button>
               </div>
               <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  @click="closeModal"
-                >
+                <button type="button" class="btn btn-secondary" @click="closeModal">
                   닫기
                 </button>
               </div>
             </div>
 
-              <!-- 매물 상세정보 -->
-              <div class="property-details-section" v-if="selectedSalesDetails" style="flex: 1; overflow-y: auto; height: 100%; padding-left: 20px;">
-                  <p style="margin-top: 3ex; margin-bottom: 1ex; font-size: large; font-weight: bolder; color: darkgray;">
-                      <strong style="color: black;">매물</strong>{{ selectedSalesDetails.prpPrice }} 
-                      <i style="color: black; margin-left: 5ex; font-size: large;" class="bi bi-share"></i><i style="color: black; margin-left: 2ex; font-size: large;" class="bi bi-heart-fill"></i>
-                  </p>
+            <!-- 매물 상세정보 -->
+            <div
+              class="property-details-section"
+              v-if="selectedSalesDetails"
+              style="flex: 1; overflow-y: auto; height: 100%; padding-left: 20px"
+            >
+            <p
+              style="
+                margin-top: 3ex;
+                margin-bottom: 1ex;
+                font-size: medium;
+                font-weight: bolder;
+                color: darkgray;
+                display: flex;
+                align-items: center; /* 모든 아이템을 세로로 가운데 정렬 */
+              "
+            >
+              <strong style="color: black">매물</strong>
+              {{ selectedSalesDetails.prpPrice }}
 
-              <img :src="'/assets/img/' + selectedSalesDetails.prpImg" alt="매물 이미지" class="property-image" style="width: 100%; height: auto;" />
-              <div class="detail-header" style="font-size: small; font-weight: bolder; margin-top: 1ex; margin-bottom: 1ex; border: 1px solid #ccc; padding: 5px; display: inline-block; border-radius: 6px; border-width: 2px;">
+              <!-- 버튼과 아이콘들을 나란히 배치 -->
+              <div
+                style="
+                  display: flex;
+                  align-items: center; /* 버튼과 아이콘을 세로로 정렬 */
+                  margin-left: 1ex; /* 왼쪽 여백을 주어 간격을 조정 */
+                "
+              >
+                <button
+                  class="btn btn custom-btn"
+                  style="
+                    width: 10ex;
+                    height: 3ex;
+                    color: white;
+                    background-color: var(--color-bg-blue1);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                  @click="goToCesium"
+                >
+                  3D 뷰
+                </button>
+
+                <!-- 아이콘들 나란히 배치 -->
+                <i
+                  style="color: black; margin-left: 1ex; font-size: large"
+                  class="bi bi-share"
+                ></i>
+                <i
+                  style="color: black; margin-left: 1ex; font-size: large"
+                  class="bi bi-heart-fill"
+                ></i>
+              </div>
+            </p>
+
+              <img
+                :src="'/assets/img/' + selectedSalesDetails.prpImg"
+                alt="매물 이미지"
+                class="property-image"
+                style="width: 100%; height: auto"
+              />
+              <div
+                class="detail-header"
+                style="
+                  font-size: small;
+                  font-weight: bolder;
+                  margin-top: 1ex;
+                  margin-bottom: 1ex;
+                  border: 1px solid #ccc;
+                  padding: 5px;
+                  display: inline-block;
+                  border-radius: 6px;
+                  border-width: 2px;
+                "
+              >
                 매물번호{{ selectedSalesDetails.prpPrice }}
               </div>
 
-              <p style="margin-top: 2ex; font-size: large; font-weight: bolder;"><strong style="font-weight: bolder;">가격</strong> {{ selectedSalesDetails.prpPrice }}</p>
-              <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex;">{{ selectedSalesDetails.prpDesc }}</p>
-              <p style="margin-top: 4ex;">{{ selectedSalesDetails.prpName }}</p>       
-              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-pin-map-fill"></i></strong> {{ selectedSalesDetails.prpAddrDetail }}</p>
-              <p style="margin-top: 2ex;"><strong style="font-weight: bolder;"><i class="bi bi-rulers"></i></strong> {{ selectedSalesDetails.prpExclArea }}</p>
-              
-              <button type="button" class="btn btn-primary btn-sm" 
-                style="border: 1px solid  #0d6efd; background-color: white; color: #0d6efd; margin-top: 3ex; width: 40ex"
+              <p style="margin-top: 2ex; font-size: large; font-weight: bolder">
+                <strong style="font-weight: bolder">가격</strong>
+                {{ selectedSalesDetails.prpPrice }}
+              </p>
+              <p style="margin-top: 1ex; font-size: medium; margin-top: 2ex">
+                {{ selectedSalesDetails.prpDesc }}
+              </p>
+              <p style="margin-top: 4ex">{{ selectedSalesDetails.prpName }}</p>
+              <p style="margin-top: 2ex">
+                <strong style="font-weight: bolder"
+                  ><i class="bi bi-pin-map-fill"></i
+                ></strong>
+                {{ selectedSalesDetails.prpAddrDetail }}
+              </p>
+              <p style="margin-top: 2ex">
+                <strong style="font-weight: bolder"><i class="bi bi-rulers"></i></strong>
+                {{ selectedSalesDetails.prpExclArea }}
+              </p>
+
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                style="
+                  border: 1px solid #0d6efd;
+                  background-color: white;
+                  color: #0d6efd;
+                  margin-top: 3ex;
+                  width: 40ex;
+                "
                 onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';">
-                <i class="bi bi-cash-coin"
-                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>실거래가 보러가기
-                <i class="bi bi-arrow-right"
-                onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
-                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"></i>
+                onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"
+              >
+                <i
+                  class="bi bi-cash-coin"
+                  onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                  onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"
+                ></i
+                >실거래가 보러가기
+                <i
+                  class="bi bi-arrow-right"
+                  onmouseover="this.style.color='white'; this.style.backgroundColor=' #0d6efd';"
+                  onmouseout="this.style.color=' #0d6efd'; this.style.backgroundColor='white';"
+                ></i>
               </button>
 
-                  <div style="margin-top: 3ex; display: flex; align-items: center;">
-                      <i class="bi bi-telephone-fill" style="font-size: 22px; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
-                      <i class="bi bi-chat-fill" style="font-size: 22px; margin-left: 1ex; background-color: white; color: #0d6efd; padding: 12px; border: 2px solid #0d6efd; display: inline-block;"></i>
-                      <button type="button" class="btn btn-primary" style="width: 14ex; margin-left: 1ex; font-size: 19px; padding: 10px 20px; border-radius: 0; line-height: 2;">채팅하기</button>
-                  </div>
+              <div style="margin-top: 3ex; display: flex; align-items: center">
+                <i
+                  class="bi bi-telephone-fill"
+                  style="
+                    font-size: 22px;
+                    background-color: white;
+                    color: #0d6efd;
+                    padding: 12px;
+                    border: 2px solid #0d6efd;
+                    display: inline-block;
+                  "
+                ></i>
+                <i
+                  class="bi bi-chat-fill"
+                  style="
+                    font-size: 22px;
+                    margin-left: 1ex;
+                    background-color: white;
+                    color: #0d6efd;
+                    padding: 12px;
+                    border: 2px solid #0d6efd;
+                    display: inline-block;
+                  "
+                ></i>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  style="
+                    width: 14ex;
+                    margin-left: 1ex;
+                    font-size: 19px;
+                    padding: 10px 20px;
+                    border-radius: 0;
+                    line-height: 2;
+                  "
+                >
+                  채팅하기
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
     <div id="modalBackground">
-      <CesiumMap></CesiumMap>
-<!--       <NaverMap></NaverMap>-->
+      <!-- showCesium이 true일 때만 CesiumMap을 렌더링 -->
+      <CesiumMap2 v-if="showCesium" />
+
+      <!-- showCesium이 false일 때만 NaverMap을 렌더링 -->
+      <NaverMap v-else />
     </div>
   </div>
 </template>
@@ -678,7 +805,20 @@ import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import axios from "axios";
-import CesiumMap from "@/components/CesiumMap.vue";
+import CesiumMap2 from "@/components/CesiumMap2.vue";
+
+//*********cesium map*********
+const showCesium = ref(false);
+
+// goToCesium 메소드는 showCesium 값을 토글
+const goToCesium = () => {
+  showCesium.value = !showCesium.value;
+};
+
+// 매물지도 페이지로 이동
+function goToMap() {
+  router.push({ path: "/map" });
+}
 
 // isMobile 변수 정의 (화면 크기를 기준으로)
 const isMobile = ref(window.innerWidth <= 768);
@@ -696,7 +836,6 @@ const computedHeader = computed(() => {
 const router = useRouter();
 const store = useSaleStore();
 const { sales, selectedSalesDetails } = storeToRefs(store);
-
 
 onMounted(() => {
   init();
@@ -790,7 +929,7 @@ async function toggleSalesDetail(prpPk) {
     try {
       // 서버로부터 매물 상세 정보를 가져옴
       const response = await axios.get(`/api/properties/${prpPk}`);
-      
+
       // 서버로부터 받은 데이터를 selectedSalesDetails에 저장
       selectedSalesDetails.value = response.data;
     } catch (error) {
@@ -803,7 +942,6 @@ async function toggleSalesDetail(prpPk) {
     selectedSalesDetails.value = {};
   }
 }
-
 
 // 모달 상태 관리
 const isModalOpen = ref(false);

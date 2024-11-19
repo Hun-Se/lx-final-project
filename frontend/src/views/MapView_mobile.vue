@@ -329,6 +329,8 @@ import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { useChatStore } from "@/stores/chat";
 
+
+
 //********채팅**********
 const chatStore = useChatStore();
 const isChatViewActive = ref(false); // 상태 관리
