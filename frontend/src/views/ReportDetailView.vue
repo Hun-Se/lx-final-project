@@ -36,7 +36,6 @@ const togglePlay = () => {
 
 const setDuration = () => {
   if (audioPlayer.value) {
-    npm;
     duration.value = formatTime(audioPlayer.value.duration);
   }
 };
@@ -142,6 +141,66 @@ function onClickOpenPublicLedgerModal(docName) {
   docNameRef.value = docName;
   publicLedgerStore.openModal();
 }
+
+
+
+// data properties
+const flrPk = ref(''); // 허위매물신고 PK 입력 변수
+const chatMessages = ref([]); // 채팅 메시지 목록
+const flrDecstatus = ref(""); // 부합여부
+const flrDecscontent = ref(""); // 부합여부 이유 설명
+
+// 플라스크 이용해서 문제의 대화 끌어오는 메서드
+const fetchChatPk = async () => {
+  try {
+    console.log("Fetching chatPk for flrPk:", flrPk.value);
+    const response = await axios.get(`/api/chat/flr/${flrPk.value}`);
+    const chatPk = response.data.chat_pk;
+    console.log("Fetched chatPk:", chatPk);
+
+    flrDecstatus.value = response.data.flr_decstatus;
+    flrDecscontent.value = response.data.flr_decscontent;
+
+    // 문장으로 나누기
+    const sentences = response.data.flr_decscontent.split('.').map(sentence => sentence.trim()).filter(sentence => sentence);
+    const container = document.querySelector(".text-container");
+    const ul = document.createElement("ul");
+
+    sentences.forEach(sentence => {
+      const li = document.createElement("li");
+      li.textContent = sentence + "."; // 다시 마침표 추가
+      ul.appendChild(li);
+    });
+
+    container.appendChild(ul);
+
+    if (chatPk) {
+      await fetchChatMessages(chatPk);
+    } else {
+      console.error("채팅방을 찾을 수 없습니다.");
+    }
+  } catch (error) {
+    console.error("Error fetching chatPk:", error);
+  }
+};
+
+// 전체 대화 끌어오는 메서드
+const fetchChatMessages = async (chatPk) => {
+  try {
+    console.log("Fetching chat messages for chatPk:", chatPk);
+    const response = await axios.get(`/api/chat/${chatPk}/messages`);
+    chatMessages.value = response.data;
+    console.log("Fetched chat messages:", chatMessages.value);
+  } catch (error) {
+    console.error("Error fetching chat messages:", error);
+  }
+};
+
+onMounted(() => {
+  flrPk.value = 2;
+  fetchChatPk();
+})
+
 </script>
 
 <template>
@@ -303,7 +362,8 @@ function onClickOpenPublicLedgerModal(docName) {
           <div style="flex: 1" class="card">
             <div class="card-body pt-9">
               <h4>공적장부 열람</h4>
-              <div class="btn-group-public">
+              <div class="d-flex flex-column justify-content-center">
+                <div class="btn-group-public ">
                 <button
                   type="button"
                   class="btn btn-light"
@@ -314,6 +374,7 @@ function onClickOpenPublicLedgerModal(docName) {
                 <button type="button" class="btn btn-light">등기부등본</button>
                 <button type="button" class="btn btn-light">등기부등본</button>
                 <button type="button" class="btn btn-light">등기부등본</button>
+              </div>
               </div>
             </div>
             <div>
@@ -429,7 +490,7 @@ function onClickOpenPublicLedgerModal(docName) {
         </div>
       </div>
     </div>
-    <div class="row mt-5">
+    <div class="row mt-6">
       <div class="col-7" style="height: 600px">
         <div class="card h-100" id="kt_chat_messenger">
           <div class="card-header" id="kt_chat_messenger_header">
@@ -575,7 +636,9 @@ function onClickOpenPublicLedgerModal(docName) {
             </div>
             <!--end::Card toolbar-->
           </div>
-          <div class="card-body" id="kt_chat_messenger_body">
+          <div class="card-body" id="kt_chat_messenger_body" style="
+              overflow: scroll;
+          ">
             <div
               class="scroll-y me-n5 pe-5 h-100 h-lg-auto"
               data-kt-element="messages"
@@ -585,83 +648,51 @@ function onClickOpenPublicLedgerModal(docName) {
               data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_messenger_body"
               data-kt-scroll-offset="5px"
             >
-              <div class="d-flex justify-content-end mb-10">
-                <div class="d-flex flex-column align-items-end">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="me-3">
-                      <span class="me-3">2024-11-12 13:30:54</span>
-                      <a
-                          href="#"
-                          class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                      >신고자</a
+              <div v-if="chatMessages.length">
+                <div v-for="message in chatMessages" :key="message.chatmesPk">
+                  <div v-if="message.senderType === '신고자'" class="d-flex justify-content-end mb-10">
+                    <div class="d-flex flex-column align-items-end">
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="me-3">
+                          <span class="me-3">{{ message.chatmesDatetime}}</span>
+                          <a
+                              href="#"
+                              class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
+                          >신고자</a
+                          >
+                        </div>
+                      </div>
+                      <div
+                          class="p-3 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
+                          data-kt-element="message-text"
                       >
+                        <div :class="['message', { 'highlighted': message.isProblematic }]">
+                        {{ message.chatmesContent }}
+                          </div>
+                      </div>
                     </div>
                   </div>
-                  <div
-                      class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
-                      data-kt-element="message-text"
-                  >
-                    안녕하세요. OO아파트 매물 확인하고 싶어서 연락드렸습니다. 이 매물 아직 볼 수 있을까요?
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex justify-content-start mb-10 p-1">
-                <div class="d-flex flex-column align-items-start">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="ms-3">
-                      <a
-                        href="#"
-                        class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                        >중개인</a
+                  <div v-if="message.senderType === '피신고대상자'" class="d-flex justify-content-start mb-10 p-1">
+                    <div class="d-flex flex-column align-items-start">
+                      <div class="d-flex align-items-center mb-2">
+                        <div class="ms-3">
+                          <a
+                            href="#"
+                            class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
+                            >중개인</a
+                          >
+                          <span class="me-3">{{ message.chatmesDatetime }}</span>
+                        </div>
+                      </div>
+                      <div
+                        class="p-3 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
+                        data-kt-element="message-text"
                       >
-                      <span class="me-3">2024-11-12 13:30:58</span>
+                        <div :class="['message', { 'highlighted': message.isProblematic }]">
+                          {{ message.chatmesContent }}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
-                    data-kt-element="message-text"
-                  >
-                    안녕하세요! 아쉽게도 그 매물은 현재 계약이 완료된 상태입니다. 대신 OO아파트 근처에 비슷한 가격대의 좋은 매물이 많이 있습니다. 바로 안내드릴 수 있는데, 관심 있으신가요?
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex justify-content-end mb-10">
-                <div class="d-flex flex-column align-items-end">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="me-3">
-                      <span class="me-3">2024-11-12 13:31:02</span>
-                      <a
-                          href="#"
-                          class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                      >신고자</a
-                      >
-                    </div>
-                  </div>
-                  <div
-                      class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
-                      data-kt-element="message-text"
-                  >
-                    아… 저는 그 아파트 매물에 관심이 있어서요. 같은 매물이 올라오면 알려주실 수 있나요?
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex justify-content-start mb-10 p-1">
-                <div class="d-flex flex-column align-items-start">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="ms-3">
-                      <a
-                          href="#"
-                          class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                      >중개인</a
-                      >
-                      <span class="me-3">2024-11-12 13:31:14</span>
-                    </div>
-                  </div>
-                  <div
-                      class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
-                      data-kt-element="message-text"
-                  >
-                    그 매물은 당분간 나오기 어려울 것 같네요. 대신 비슷한 조건의 XX아파트나 XX빌라 매물을 추천드립니다. 지금 둘러보시면 좋은 매물도 발견하실 수 있을 거예요!
                   </div>
                 </div>
               </div>
@@ -707,7 +738,7 @@ function onClickOpenPublicLedgerModal(docName) {
             <div class="card-title">
               <!--begin::Users-->
               <div class="symbol-group symbol-hover"></div>
-              <h3>의견서</h3>
+              <h3>AI 의견서</h3>
             </div>
             <!--end::Title--><!--begin::Card toolbar-->
             <div class="card-toolbar">
@@ -830,15 +861,17 @@ function onClickOpenPublicLedgerModal(docName) {
           <div class="card-body d-flex flex-column">
             <div class="" style="width: 100%; height: 100%">
               <div class="fw-bold fs-3 mb-3">
-                AI 의견 내용:
-                <span class="text-gray-600 fs-3 ms-1 badge badge-light-primary"
-                  >부합</span
+                AI 판별:
+                <span v-if="flrDecstatus === '부합'" class="text-primary fs-3 ms-1 badge badge-light-primary"
+                  >{{ flrDecstatus }}</span
+                >
+                <span v-else-if="flrDecstatus === '미부합'" class="text-danger fs-3 ms-1 badge badge-light-danger"
+                >{{ flrDecstatus }}</span
                 >
               </div>
-              <div class="fw-bold fs-3 mt-3 mb-3">
-                부동산 광고시장 감시센터 공문 <span></span>
+              <div class="fw-bold mt-5 fs-3 mb-3"> AI 의견 내용</div>
+              <div class="text-container text-gray-600 fs-3">
               </div>
-              <PdfViewer></PdfViewer>
             </div>
           </div>
         </div>
@@ -918,7 +951,7 @@ nav.open .sidebar {
   text-decoration: none;
 }
 .lists .nav-link:hover {
-  background-color: #4070f4;
+  background-color: var(--color-bg-third);
 }
 .nav-link .icon {
   margin-right: 14px;
@@ -1073,14 +1106,14 @@ nav.open ~ .overlay {
   padding: 5px 15px;
   font-size: 14px;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: var(--color-bg-blue1);
   color: #fff;
   border: none;
   border-radius: 3px;
 }
 
 .play-button:hover {
-  background-color: #0056b3;
+  background-color: var(--color-bg-third);
 }
 
 .progress-container {
@@ -1099,4 +1132,55 @@ nav.open ~ .overlay {
   flex: 1;
   cursor: pointer;
 }
+
+.progress-bar #thumb {
+  background: var(--color-bg-third);
+}
+
+.message {
+  border: 1px solid #ddd;
+  padding: 8px;
+  margin: 4px 0;
+}
+
+.highlighted {
+  background-color: #ffe6e6; /* 문제 메시지에 대해 하이라이트 표시 */
+  border-color: #ff0000;
+}
+
+.text-container {
+  margin-top: 1rem;
+  border-radius: 12px;
+  line-height: 1.8;
+  max-height: 350px;
+  overflow-y: scroll;
+  word-break: break-word;
+
+}
+
+.text-container:hover {
+  background-color: #f0f8ff; /* 마우스 오버 시 배경 색상 변화 */
+}
+
+
+.text-container ul {
+  padding-left: 20px;
+  list-style-type: none; /* 기본 리스트 스타일 제거 */
+}
+
+.text-container ul li {
+  margin-bottom: 15px;
+  position: relative;
+  padding-left: 20px; /* 가운데점 간격 */
+}
+
+.text-container ul li::before {
+  content: "•"; /* 가운데점 추가 */
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.2em;
+  color: var(--color-bg-blue1);
+}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <!--  <MobileHeader></MobileHeader>-->
+    <MobileMapHeader></MobileMapHeader>
   <div id="mainPage">
     <div class="fab-wrapper">
       <input id="fabCheckbox" type="checkbox" class="fab-checkbox" />
@@ -314,6 +314,7 @@
     </section>
     <NaverMap></NaverMap>
   </div>
+
   <MobileBottomTapBar></MobileBottomTapBar>
 </template>
 
@@ -324,7 +325,7 @@ import { useSaleStore } from "@/stores/property.js";
 import NaverMap from "@/components/NaverMap.vue";
 import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
-import MobileHeader from "@/components/MobileHeader.vue";
+import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { useChatStore } from "@/stores/chat";
 
@@ -544,8 +545,8 @@ const handleDrop = (event) => {
 
 .fab-wrapper {
   position: fixed;
-  top: 3rem;
-  left: 3rem;
+  top: 7rem;
+  left: 2.2rem;
   z-index: 999999;
 }
 .fab-checkbox {
@@ -864,5 +865,22 @@ const handleDrop = (event) => {
 .info-box i {
   font-size: 1.5rem;
   color: var(--color-bg-blue1);
+}
+
+.mobile-search-input {
+  display: inline-block;
+  width: 50px;
+  padding: 0;
+  text-align: center;
+}
+
+.button-time-search {
+  color: #fff;
+  background: var(--color-bg-blue1);
+}
+
+.mobile-time-input {
+  width: 30px;
+  height: 20px;
 }
 </style>

@@ -138,7 +138,7 @@ export default {
 @media (max-width: 700px) {
   .zoom-controls {
     position: absolute;
-    top: 4rem;
+    top:5rem;
     right: 1rem;
     display: flex;
     flex-direction: column;

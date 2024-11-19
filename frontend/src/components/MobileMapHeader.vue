@@ -1,12 +1,45 @@
 <template>
   <header class="header">
-    <div class="logo cursor-pointer d-flex" @click="goToHome">
+    <div class="logo cursor-pointer" @click="goToHome">
       <img class="img-logo" src="/assets/img/logo.png" alt="" />
     </div>
-    <h1 class="d-flex justify-content-center align-items-center fw-bold fs-5 text-white" style="line-height: 25px">매물 가격 예측 비교</h1>
-    <div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px position-relative" id="kt_drawer_chat_toggle">
-      <i class="bi bi-bell fs-1 text-white"></i>
-      <span class="bullet bullet-dot bg-danger h-6px w-6px position-absolute" style="top: 4px; right: 4px"></span>
+    <div class="d-flex justify-content-between container-search ms-3 align-items-center">
+        <input
+            class="form-control mobile-search-input "
+            v-model="location"
+            placeholder="위치"
+        />
+        <span>에서</span>
+        <select
+            class="form-control mobile-search-input-type "
+            v-model="selectedTransport"
+        >
+          <option value="" disabled selected>이동수단</option>
+          <option value="walking">도보</option>
+          <option value="driving">자차</option>
+          <option value="public_transport">대중교통</option></select
+        >
+      <span>로</span>
+      <input
+          class="form-control mobile-time-input"
+          type="text"
+          v-model.number="hours"
+          placeholder="0"
+          min="0"
+      />
+      <span>시간</span>
+      <input
+          class="form-control mobile-time-input"
+          type="text"
+          v-model.number="minutes"
+          placeholder="0"
+          min="0"
+          max="59"
+      />
+      <span>분</span>
+      <button @click="submit" type="button" class="btn btn-sm button-time-search">
+        검색
+      </button>
     </div>
   </header>
 </template>
@@ -16,13 +49,6 @@ import { ref, onMounted } from "vue";
 
 const isLoggedIn = ref(false);
 const username = ref("");
-
-defineProps({
-  title: {
-    type: String, // `title`의 타입
-    required: true, // 필수 여부
-  },
-});
 
 // 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
 onMounted(() => {
@@ -64,7 +90,6 @@ function goToHome() {
   z-index: 1000;
   display: flex;
   padding: 0.5rem;
-  justify-content: space-between;
   align-items: center;
   background-color: var(--color-bg-blue1);
   border-bottom: 1px solid #ddd;
@@ -131,4 +156,34 @@ function goToHome() {
   height: 3rem;
 }
 
+.mobile-search-input {
+  width: 70px;
+  height: 20px;
+  padding: 0;
+  text-align: center;
+}
+
+.button-time-search {
+  color: #fff;
+  background: var(--color-bg-third);
+}
+
+.mobile-time-input {
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+}
+
+.mobile-search-input-type {
+  padding: 0;
+  width: 40px;
+  height: 20px;
+  text-align: center;
+}
+
+.container-search span{
+  margin: 0 0.2rem;
+  color: #fff;
+}
 </style>
