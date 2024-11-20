@@ -101,6 +101,7 @@
 
 
     </div>
+    <MobileBottomTapBar></MobileBottomTapBar>
     <RegisterPrpModal></RegisterPrpModal>
 </template>
 
@@ -115,6 +116,7 @@ import { useRouter } from "vue-router";
 import { useMyPageStore } from "@/stores/myPage.js";
 import { useRegisterPrpModalStore } from "@/stores/modal";
 import RegisterPrpModal from "@/components/RegisterPrpModal.vue";
+import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 
 
 const router = useRouter();
