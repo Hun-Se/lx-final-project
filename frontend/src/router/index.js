@@ -121,11 +121,6 @@ const router = createRouter({
       path: "/mobile_prp_report",
       name: "mobile_prp_report",
       component: () => import("../views/MobilePrpReportView.vue"),
-    }, 
-     {
-      path: "/cesiumheatmap",
-      name: "cesiumheatmap",
-      component: () => import("../views/CesiumHeatmap.vue"),
     },
   ],
 });

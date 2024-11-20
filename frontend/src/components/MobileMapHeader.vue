@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <div class="logo cursor-pointer" @click="goToHome">
+    <div class="logo cursor-pointer" @click="goToHomeMobile">
       <img class="img-logo" src="/assets/img/logo.png" alt="" />
     </div>
     <div class="d-flex justify-content-between container-search ms-3 align-items-center">
@@ -46,9 +46,17 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter} from "vue-router";
+import axios from "axios";
 
+const router = useRouter();
 const isLoggedIn = ref(false);
 const username = ref("");
+const location = ref("");
+const selectedTransport = ref("");
+const hours = ref("");
+const minutes = ref("");
+const isochrone = ref(null); // 폴리곤 객체
 
 // 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
 onMounted(() => {
@@ -76,9 +84,92 @@ const logout = async () => {
 };
 
 // 홈으로 이동 함수
-function goToHome() {
-  router.replace({ path: "/" });
+function goToHomeMobile() {
+  router.replace({ path: "/mobile_home" });
 }
+
+
+// 검색 및 폴리곤 그리기
+function submit() {
+  const totalMinutes =
+      (parseInt(hours.value) || 0) * 3600 + (parseInt(minutes.value) || 0) * 60;
+
+  if (!location.value || !selectedTransport.value || totalMinutes === 0) {
+    alert("모든 필드를 올바르게 입력해주세요.");
+    return;
+  }
+
+  geocodeAddress(location.value)
+      .then((coords) => {
+        return axios.get(`/api/isochrone/search`, {
+          params: {
+            lat: coords.lat,
+            lng: coords.lng,
+            transport: selectedTransport.value,
+            duration: totalMinutes,
+          },
+        });
+      })
+      .then((response) => {
+        drawIsochrone(response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("검색 중 오류가 발생했습니다.");
+      });
+}
+
+// 주소를 좌표로 변환하는 함수
+function geocodeAddress(address) {
+  return new Promise((resolve, reject) => {
+    if (!naver.maps.Service) {
+      reject("Naver maps service is not loaded");
+      return;
+    }
+    naver.maps.Service.geocode({ query: address }, (status, response) => {
+      if (status !== naver.maps.Service.Status.OK) {
+        reject("Geocoding failed");
+        return;
+      }
+      const result = response.v2.addresses[0];
+      if (result) {
+        resolve({
+          lat: parseFloat(result.y),
+          lng: parseFloat(result.x),
+        });
+      } else {
+        reject("No results found");
+      }
+    });
+  });
+}
+
+// 폴리곤 그리기 함수
+function drawIsochrone(data) {
+  if (!window.mapInstance) {
+    console.error("지도 객체가 초기화되지 않았습니다.");
+    return;
+  }
+
+  if (isochrone.value) {
+    isochrone.value.setMap(null);
+  }
+
+  const coords = data.results[0].shapes[0].shell.map(
+      (point) => new naver.maps.LatLng(point.lat, point.lng),
+  );
+  isochrone.value = new naver.maps.Polygon({
+    map: window.mapInstance,
+    paths: coords,
+    fillColor: "#ff0000",
+    fillOpacity: 0.3,
+    strokeColor: "#ff0000",
+    strokeOpacity: 0.6,
+    strokeWeight: 3,
+  });
+  window.mapInstance.setCenter(coords[0]);
+}
+
 </script>
 
 <style scoped>
@@ -177,7 +268,7 @@ function goToHome() {
 
 .mobile-search-input-type {
   padding: 0;
-  width: 40px;
+  width: 55px;
   height: 20px;
   text-align: center;
 }
