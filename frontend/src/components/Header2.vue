@@ -86,7 +86,7 @@ const minutes = ref("");
 const isochrone = ref(null); // 폴리곤 객체
 // 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
 onMounted(() => {
-  const storedUsername = sessionStorage.getItem("username");
+  const storedUsername = localStorage.getItem("username");
   if (storedUsername) {
     isLoggedIn.value = true;
     username.value = storedUsername;
@@ -193,9 +193,8 @@ function goToAuction() {
 }
 // 마이페이지로 이동 함수
 function goToMypage() {
-  const userPk = sessionStorage.getItem("userPk");
-  if (userPk) {
-    router.replace({ path: "/my_page" });
+  if (isLoggedIn.value) {
+    router.replace({ path: "/mypage" });
   } else {
     alert("로그인이 필요합니다.");
     goToLoginpage(); // 로그인 안 된 상태에서 마이페이지 접근 시 로그인 페이지로 이동
@@ -228,9 +227,7 @@ function goToBoard() {
 
 .input-location:hover {
   transform: translateY(0px);
-  /* 마우스를 올렸을 때 카드가 위로 10px 떠오름 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  /* 그림자 효과 추가 */
 }
 
 input::-webkit-outer-spin-button,
@@ -281,20 +278,14 @@ input::-webkit-inner-spin-button {
   display: flex;
   justify-content: flex-end;
   white-space: nowrap;
-  /* 한 줄로 표시되도록 강제 */
 }
 
 .nav-right li {
   margin: 0 10px;
-  /* 여백을 추가해서 간격 조절 */
   white-space: nowrap;
-  /* 이정현님을 한 줄로 표시 */
   overflow: hidden;
-  /* 텍스트가 길면 넘어가는 부분을 숨김 */
   text-overflow: ellipsis;
-  /* 너무 길면 생략(...) 처리 */
   max-width: 100px;
-  /* 너무 긴 이름을 제한 */
 }
 
 .nav-center li,

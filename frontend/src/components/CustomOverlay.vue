@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div ref="overlayElement" :style="markerStyle" v-if="visible">
     <div :style="topMarkerStyle">{{ name }}</div>
     <div :style="bottomMarkerStyle">{{ price }}</div>
@@ -140,4 +140,4 @@ export default {
   text-align: center;
   font-weight: bold;
 }
-</style>
+</style> -->

@@ -11,7 +11,14 @@ public class PrpDTO {
 	private int coordPk;
 	private Double latitude;
 	private Double longitude;
+    private Integer prpTransType;
 
+	public Integer getPrpTransType() {
+		return prpTransType;
+	}
+	public void setPrpTransType(Integer prpTransType) {
+		this.prpTransType = prpTransType;
+	}
 	public Integer getPrpPk() {
 		return prpPk;
 	}

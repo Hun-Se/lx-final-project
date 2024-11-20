@@ -19,10 +19,13 @@
     "cesium": "^1.123.1",
     "chart.js": "^4.4.4",
     "frontend": "file:",
+    "heatmap.js": "^2.0.5",
     "pdfjs-dist": "^3.7.107",
     "pinia": "^2.1.7",
+    "vite-plugin-cesium": "^1.2.23",
     "vite-plugin-html-env": "^1.2.8",
     "vue": "^3.4.29",
+    "vue-cesium": "^3.2.9",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {
