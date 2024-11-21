@@ -372,8 +372,9 @@ onMounted(() => {
                   토지대장
                 </button>
                 <button type="button" class="btn btn-light">등기부등본</button>
-                <button type="button" class="btn btn-light">등기부등본</button>
-                <button type="button" class="btn btn-light">등기부등본</button>
+                <button type="button" class="btn btn-light">건축물대장</button>
+                <button type="button" class="btn btn-light">지적도</button>
+                <button type="button" class="btn btn-light">토지이용계획서</button>
               </div>
               </div>
             </div>
