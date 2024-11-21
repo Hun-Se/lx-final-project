@@ -4,79 +4,26 @@
     <label class="fs-4 fw-semibold form-label mt-3">
       <span class="required">신고 분류 선택</span>
     </label>
-    <!-- 셀렉트박스   -->
-    <div class="select-menu mt-5">
-      <div class="select-btn form-select">
-        <span class="sBtn-text">대분류 선택</span>
+
+    <!-- 셀렉트박스 반복 렌더링 -->
+    <div
+        class="select-menu mt-5"
+        v-for="(menu, index) in menus"
+        :key="index"
+        :class="{ active: menu.isActive }"
+    >
+      <div class="select-btn form-select" @click="toggleMenu(index)">
+        <span class="sBtn-text">{{ menu.selected || menu.placeholder }}</span>
         <i class="bx bx-chevron-down"></i>
       </div>
-      <ul class="options">
-        <li class="option">
-          <i class="bx bxl-github" style="color: #171515"></i>
-          <span class="option-text">Github</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-instagram-alt" style="color: #e1306c"></i>
-          <span class="option-text">Instagram</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-linkedin-square" style="color: #0e76a8"></i>
-          <span class="option-text">Linkedin</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-facebook-circle" style="color: #4267b2"></i>
-          <span class="option-text">Facebook</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-twitter" style="color: #1da1f2"></i>
-          <span class="option-text">Twitter</span>
-        </li>
-      </ul>
-    </div>
-    <div class="select-menu mt-5">
-      <div class="select-btn form-select">
-        <span class="sBtn-text">중분류 선택</span>
-        <i class="bx bx-chevron-down"></i>
-      </div>
-      <ul class="options">
-        <li class="option">
-          <i class="bx bxl-github" style="color: #171515"></i>
-          <span class="option-text">Github</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-instagram-alt" style="color: #e1306c"></i>
-          <span class="option-text">Instagram</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-linkedin-square" style="color: #0e76a8"></i>
-          <span class="option-text">Linkedin</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-facebook-circle" style="color: #4267b2"></i>
-          <span class="option-text">Facebook</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-twitter" style="color: #1da1f2"></i>
-          <span class="option-text">Twitter</span>
-        </li>
-      </ul>
-    </div>
-    <div class="select-menu mt-5">
-      <div class="select-btn form-select">
-        <span class="sBtn-text">소분류 선택</span>
-        <i class="bx bx-chevron-down"></i>
-      </div>
-      <ul class="options">
-        <li class="option">
-          <span class="option-text">명시의무 위반</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-instagram-alt" style="color: #e1306c"></i>
-          <span class="option-text">광고 주체</span>
-        </li>
-        <li class="option">
-          <i class="bx bxl-linkedin-square" style="color: #0e76a8"></i>
-          <span class="option-text">부당한 표시·광고</span>
+      <ul class="options" v-show="menu.isActive">
+        <li
+            class="option"
+            v-for="(option, optionIndex) in menu.options"
+            :key="optionIndex"
+            @click="selectOption(index, option)"
+        >
+          <span class="option-text">{{ option }}</span>
         </li>
       </ul>
     </div>
@@ -98,10 +45,10 @@
     <div class="d-flex justify-content-between mt-3">
       <div class="form-check d-flex align-items-center">
         <input
-          class="form-check-input"
-          type="checkbox"
-          value=""
-          id="flexCheckDefault"
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckDefault"
         />
         <label class="form-check-label ms-2" for="flexCheckDefault">
           광고화면
@@ -109,11 +56,11 @@
       </div>
       <div class="form-check d-flex align-items-center">
         <input
-          class="form-check-input"
-          type="checkbox"
-          value=""
-          id="flexCheckChecked"
-          checked
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckChecked"
+            checked
         />
         <label class="form-check-label ms-2" for="flexCheckChecked">
           녹취
@@ -121,11 +68,10 @@
       </div>
       <div class="form-check d-flex align-items-center">
         <input
-          class="form-check-input"
-          type="checkbox"
-          value=""
-          id="flexCheckChecked"
-          checked
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckChecked"
         />
         <label class="form-check-label ms-2" for="flexCheckChecked">
           문자내용
@@ -133,11 +79,10 @@
       </div>
       <div class="form-check d-flex align-items-center">
         <input
-          class="form-check-input"
-          type="checkbox"
-          value=""
-          id="flexCheckChecked"
-          checked
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckChecked"
         />
         <label class="form-check-label ms-2" for="flexCheckChecked">
           기타자료
@@ -153,7 +98,7 @@
     </div>
     <div class="btn-group d-flex justify-content-center mt-6">
       <button class="btn btn-light-dark">취소</button>
-      <button class="btn btn-report">확인</button>
+      <button class="btn btn-report" @click="onClickMoveMap">확인</button>
     </div>
   </div>
 
@@ -162,29 +107,57 @@
 
 <script setup>
 import MobileHeader from "@/components/MobileHeader.vue";
-import { onMounted } from "vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
+import { ref } from 'vue';
+import { useRouter} from "vue-router"
 
-onMounted(() => {
-  const select_els = document.querySelectorAll(".select-menu");
+// 메뉴 데이터
+const menus = ref([
+  {
+    placeholder: '대분류 선택',
+    options: ['명시의무 위반', '광고주체', '부당한 표시·광고'],
+    isActive: false,
+    selected: '',
+  },
+  {
+    placeholder: '중분류 선택',
+    options: ['중개사무소', '개업공인중개사', '중개보조원', '중개대상물'],
+    isActive: false,
+    selected: '',
+  },
+  {
+    placeholder: '소분류 선택',
+    options: [
+      '상호 명시위반',
+      '소재지 명시위반',
+      '전화번호 명시위반',
+      '등록번호 명시위반',
+    ],
+    isActive: false,
+    selected: '',
+  },
+]);
 
-  select_els.forEach((el) => {});
+// 특정 메뉴를 열거나 닫는 함수
+const toggleMenu = (index) => {
+  menus.value = menus.value.map((menu, menuIndex) => ({
+    ...menu,
+    isActive: menuIndex === index ? !menu.isActive : false,
+  }));
+};
 
-  const optionMenu = document.querySelector(".select-menu"),
-    selectBtn = optionMenu.querySelector(".select-btn"),
-    options = optionMenu.querySelectorAll(".option"),
-    sBtn_text = optionMenu.querySelector(".sBtn-text");
-  selectBtn.addEventListener("click", () =>
-    optionMenu.classList.toggle("active"),
-  );
-  options.forEach((option) => {
-    option.addEventListener("click", () => {
-      let selectedOption = option.querySelector(".option-text").innerText;
-      sBtn_text.innerText = selectedOption;
-      optionMenu.classList.remove("active");
-    });
-  });
-});
+// 옵션 선택 함수
+const selectOption = (menuIndex, option) => {
+  menus.value[menuIndex].selected = option;
+  menus.value[menuIndex].isActive = false;
+};
+
+
+const router = useRouter();
+
+const onClickMoveMap = () => {
+  router.push({ path: "/mobile_map"});
+}
 </script>
 
 <style scoped>
@@ -225,7 +198,7 @@ onMounted(() => {
 }
 .options .option {
   display: flex;
-  height: 55px;
+  height: 30px;
   cursor: pointer;
   padding: 0 16px;
   border-radius: 8px;
@@ -240,7 +213,7 @@ onMounted(() => {
   margin-right: 12px;
 }
 .option .option-text {
-  font-size: 18px;
+  font-size: 12px;
   color: #333;
 }
 

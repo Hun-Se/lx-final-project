@@ -2,34 +2,10 @@
   <div class="container-bottom-nav">
     <nav class="nav">
       <ul class="nav-content">
-        <li class="nav-list">
-          <a href="#" class="link-item select_menu">
-            <i class="bi bi-house-door-fill link-icon"></i>
-            <span class="link-text">홈</span>
-          </a>
-        </li>
-        <li class="nav-list">
-          <a href="#" class="link-item">
-            <i class="bi bi-map link-icon"></i>
-            <span class="link-text">지도</span>
-          </a>
-        </li>
-        <li class="nav-list">
-          <a href="#" class="link-item">
-            <i class="bi bi-graph-up link-icon"></i>
-            <span class="link-text">AI가격</span>
-          </a>
-        </li>
-        <li class="nav-list">
-          <a href="#" class="link-item">
-            <i class="bi bi-card-checklist link-icon"></i>
-            <span class="link-text">관리</span>
-          </a>
-        </li>
-        <li class="nav-list">
-          <a href="#" class="link-item">
-            <i class="bi bi-person-fill link-icon"></i>
-            <span class="link-text">마이페이지</span>
+        <li class="nav-list" v-for="(item, index) in menuItems" :key="index">
+          <a href="#" class="link-item select_menu" @click="onClickNavigate(index)">
+            <i :class="item.iconClass + ' link-icon'"></i>
+            <span class="link-text">{{ item.text }}</span>
           </a>
         </li>
         <span class="indicator"></span>
@@ -39,7 +15,18 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const menuItems = ref([
+  { text: '홈', iconClass: 'bi bi-house-door-fill' },
+  { text: '지도', iconClass: 'bi bi-map' },
+  { text: 'AI가격', iconClass: 'bi bi-graph-up' },
+  { text: '관리', iconClass: 'bi bi-card-checklist' },
+  { text: '마이페이지', iconClass: 'bi bi-person-fill' }
+])
 
 onMounted(() => {
   const linkItems = document.querySelectorAll(".link-item");
@@ -52,6 +39,20 @@ onMounted(() => {
     });
   });
 });
+
+function onClickNavigate(index) {
+  if (index === 0) {
+    router.push({ path: "/mobile_home" });
+  } else if(index === 1) {
+    router.push({ path: "/mobile_map" });
+  } else if(index === 2) {
+    router.push({ path: "/mobile_ai_real_estate" });
+  } else if(index === 3) {
+    window.open("http://localhost:5173/report");
+  }  else if(index === 4) {
+    router.push({ path: "mobile_my_page"})
+  }
+}
 </script>
 
 <style scoped>

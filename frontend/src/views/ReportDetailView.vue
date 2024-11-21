@@ -197,7 +197,7 @@ const fetchChatMessages = async (chatPk) => {
 };
 
 onMounted(() => {
-  flrPk.value = 2;
+  flrPk.value = 1;
   fetchChatPk();
 })
 
@@ -372,8 +372,9 @@ onMounted(() => {
                   토지대장
                 </button>
                 <button type="button" class="btn btn-light">등기부등본</button>
-                <button type="button" class="btn btn-light">등기부등본</button>
-                <button type="button" class="btn btn-light">등기부등본</button>
+                <button type="button" class="btn btn-light">건축물대장</button>
+                <button type="button" class="btn btn-light">지적도</button>
+                <button type="button" class="btn btn-light">토지이용계획서</button>
               </div>
               </div>
             </div>
@@ -663,7 +664,7 @@ onMounted(() => {
                         </div>
                       </div>
                       <div
-                          class="p-3 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end"
+                          class="p-3 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-800px text-end fs-2"
                           data-kt-element="message-text"
                       >
                         <div :class="['message', { 'highlighted': message.isProblematic }]">
@@ -685,7 +686,7 @@ onMounted(() => {
                         </div>
                       </div>
                       <div
-                        class="p-3 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start"
+                        class="p-3 rounded bg-light-info text-gray-900 fw-semibold mw-lg-800px text-start fs-2"
                         data-kt-element="message-text"
                       >
                         <div :class="['message', { 'highlighted': message.isProblematic }]">

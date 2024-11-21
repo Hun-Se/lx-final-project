@@ -18,7 +18,7 @@
         <a class="fab-action fab-action-3">
           <i class="bi bi-funnel"></i>
         </a>
-        <a class="fab-action fab-action-4"> 3D </a>
+        <a class="fab-action fab-action-4 fs-8"> 히트맵 </a>
       </div>
     </div>
     <section
@@ -304,6 +304,7 @@
                       </svg>
                     </div>
                     <span class="badge badge-light-warning">우수중개사</span>
+                    <div class="btn btn-light-danger btn-sm" @click="onClickMoveReport">신고</div>
                   </div>
                 </div>
               </a>
@@ -328,7 +329,6 @@ import Header2 from "@/components/Header2.vue";
 import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { useChatStore } from "@/stores/chat";
-
 
 
 //********채팅**********
@@ -508,6 +508,11 @@ const handleDrop = (event) => {
     draggedElement.value = null;
   }
 };
+
+// 신고이동
+function onClickMoveReport() {
+  router.push({path:"/mobile_prp_report"});
+}
 </script>
 
 <style scoped>

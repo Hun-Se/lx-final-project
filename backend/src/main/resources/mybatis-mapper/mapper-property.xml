@@ -153,4 +153,56 @@
 	<delete id="deleteProperty" parameterType="int">
 		DELETE FROM prp WHERE prp_pk = #{prpPk};
 	</delete>
+
+	<!-- 관심매물삭제 -->
+	<delete id="deleteInterestPrp" parameterType="int">
+		DELETE FROM favprp WHERE prp_pk = #{prpPk};
+	</delete>
+
+	<select id="getAllPropertiesMap"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
+		AS price,
+		coord_pk, ST_AsText(location) as location FROM coordPk
+		FROM
+		prp p
+		JOIN coord c ON
+		p.coord_pk = c.coord_pk
+	</select>
+
+	<!-- 모든 매물 정보와 좌표 정보 조회 -->
+	<select id="getAllPropertyById" parameterType="Long"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
+		AS price, ST_AsText(c.location) AS location
+		FROM prp p
+		JOIN coord c ON
+		p.coord_pk = c.coord_pk;
+
+	</select>
+
+	<select id="getPropertyMarkerById" parameterType="Long"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
+		AS price,
+		ST_AsText(c.location) AS location
+		FROM prp p
+		JOIN coord c ON
+		p.coord_pk = c.coord_pk
+		WHERE p.prp_pk = #{prpPk};
+	</select>
+	<!-- 경위도 찢어버려 -->
+	<select id="getPointById" parameterType="Long"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT
+		p.coord_pk AS coordPk,
+		p.prp_pk AS prpPk,
+		p.prp_name AS name,
+		p.prp_trans_type AS prpTransType,
+		CAST(p.prp_price AS DECIMAL(15, 0)) AS price,  <!-- 정수형으로 반환 -->
+		ST_X(c.location) AS latitude, -- 경도
+		ST_Y(c.location) AS longitude -- 위도
+		FROM prp p
+		JOIN coord c ON p.coord_pk = c.coord_pk;
+	</select>
 </mapper>

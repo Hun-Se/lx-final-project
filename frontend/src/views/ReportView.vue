@@ -1,4 +1,13 @@
-<script setup></script>
+<script setup>
+import {useRouter} from "vue-router";
+
+const router = useRouter();
+function moveToDetail() {
+  router.push("/report_detail");
+}
+
+
+</script>
 
 <template>
   <nav>
@@ -532,7 +541,7 @@
                     </tr>
                   </thead>
                   <tbody class="fs-6">
-                    <tr>
+                    <tr @click="moveToDetail " class="report-list">
                       <td>2416</td>
                       <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
                       <td>
@@ -574,7 +583,7 @@
                             <i class="bi bi-check-circle-fill text-success"></i>
                           </div>
                           <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
+<!--                            <i class="bi bi-check-circle-fill text-success"></i>-->
                           </div>
                         </div>
                       </td>
@@ -583,11 +592,11 @@
                       </td>
                     </tr>
                     <tr>
-                      <td>2411</td>
+                      <td>2415</td>
                       <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
                       <td>
                         <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1234B</span>
+                        <span class="badge fw-bold px-4 py-3">A1233B</span>
                         <!--end::User-->
                       </td>
                       <td class="dt-type-numeric">
@@ -621,21 +630,21 @@
                             <i class="bi bi-check-circle-fill text-success"></i>
                           </div>
                           <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
+<!--                            <i class="bi bi-check-circle-fill text-success"></i>-->
                           </div>
                           <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
+<!--                            <i class="bi bi-check-circle-fill text-success"></i>-->
                           </div>
                         </div>
                       </td>
                       <td class="">처리완료</td>
                     </tr>
                     <tr>
-                      <td>2412</td>
+                      <td>2414</td>
                       <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
                       <td>
                         <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1234B</span>
+                        <span class="badge fw-bold px-4 py-3">A1232B</span>
                         <!--end::User-->
                       </td>
                       <td class="dt-type-numeric">
@@ -683,7 +692,7 @@
                       <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
                       <td>
                         <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1234B</span>
+                        <span class="badge fw-bold px-4 py-3">A1231B</span>
                         <!--end::User-->
                       </td>
                       <td class="dt-type-numeric">
@@ -727,11 +736,11 @@
                       <td class="">처리완료</td>
                     </tr>
                     <tr>
-                      <td>2414</td>
+                      <td>2412</td>
                       <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
                       <td>
                         <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1234B</span>
+                        <span class="badge fw-bold px-4 py-3">A1230B</span>
                         <!--end::User-->
                       </td>
                       <td class="dt-type-numeric">
@@ -775,11 +784,11 @@
                       <td class="">처리완료</td>
                     </tr>
                     <tr>
-                      <td>2415</td>
+                      <td>2411</td>
                       <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
                       <td>
                         <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1234B</span>
+                        <span class="badge fw-bold px-4 py-3">A1229B</span>
                         <!--end::User-->
                       </td>
                       <td class="dt-type-numeric">
@@ -1027,4 +1036,5 @@ nav.open ~ .overlay {
   justify-content: space-between;
   padding: 20px;
 }
+
 </style>
