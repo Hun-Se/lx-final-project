@@ -14,12 +14,12 @@
           <input
               class="form-check-input mobile-prp-select-chart"
               type="checkbox"
-              :id="favorite-${index}"
+              :id="'favorite-' + index"
               :value="apartment"
               :disabled="selectedApartments.length >= 5 && !selectedApartments.includes(apartment)"
               @change="toggleFavorite(apartment)"
           />
-          <label class="ms-2 form-check-label" :for="favorite-${index}">
+          <label class="ms-2 form-check-label" :for="favorite-index">
             {{ apartment.name }}
           </label>
         </div>
@@ -134,8 +134,8 @@ const toggleFavorite = (apartment) => {
 };
 
 const calculateChangeRate = (apartment) => {
-  const price2024 = apartment.predictedPrices[3];
-  const price2025 = apartment.predictedPrices[4];
+  const price2024 = apartment.predictedPrices[2];
+  const price2025 = apartment.predictedPrices[3];
   const changeRate = ((price2025 - price2024) / price2024) * 100;
   return {
     rate: changeRate.toFixed(2),
@@ -159,7 +159,7 @@ const renderChart = async () => {
   chartInstance.value = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['2021년', '2022년', '2023년', '2024년', '2025년'],
+      labels: [ '2022년', '2023년', '2024년', '2025년'],
       datasets: selectedApartments.value.map((apartment, index) => {
         const colorIndex = index % colors.length; // 색상 배열 순환
         const color = colors[colorIndex];

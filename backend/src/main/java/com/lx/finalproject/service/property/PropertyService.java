@@ -34,15 +34,14 @@ public class PropertyService {
     }
 
 	public List<PrpVO> getAllProperties() {
-	
 		return dao.getAllProperties();
 	}
 
     public void  deleteInterestPrp(int prpPk) {
         dao.deleteInterestPrp(prpPk);
     }
+
     public List<PrpDTO> getPointById() {
-    	
-        return  dao.getPointById();
+        return dao.getPointById();
     }
 }

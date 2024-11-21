@@ -32,5 +32,4 @@ public interface PropertyDAO {
 
 	// 관심매물 삭제
 	void deleteInterestPrp(@Param("prpPk") int prpPk);
-
 }

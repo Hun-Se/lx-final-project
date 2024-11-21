@@ -88,10 +88,6 @@ const router = createRouter({
       name: "mobile_ai_real_estate",
       component: () => import("../views/MobileAI_real_estateView.vue")
     },
-    {path: "/mobile_ai_real_estate",
-      name: "mobile_ai_real_estate",
-      component: () => import("../views/MobileAI_real_estateView.vue")
-    },
     {
       path: "/report_detail",
       name: "report_detail",

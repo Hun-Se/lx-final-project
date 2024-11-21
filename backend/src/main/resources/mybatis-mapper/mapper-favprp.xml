@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.favprp.FavPrpDAO">
+
+    <!-- 관심 매물 가져오기 -->
+    <select id="getFavprpByUserPk" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
+        SELECT 
+            prp.prp_name AS prpName,
+            prp.PRP_PREDICT_2022 AS predict2022, 
+            prp.PRP_PREDICT_2023 AS predict2023,
+            prp.PRP_PREDICT_2024 AS predict2024,
+            prp.PRP_PREDICT_2025 AS predict2025
+        FROM 
+            prp 
+        INNER JOIN 
+            favprp 
+        ON 
+            prp.prp_pk = favprp.prp_pk
+        WHERE 
+            favprp.user_pk = #{userPk};
+    </select>
+
+</mapper>

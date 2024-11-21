@@ -11,11 +11,20 @@ username = "root"
 password = "rootroot"
 host = "localhost"
 database = "real_estate_data"
-engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
+engine1 = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}")
+
+# PostgreSQL 연결 정보 설정
+username = "postgres"  # PostgreSQL 사용자 이름
+password = "postgis"  # PostgreSQL 비밀번호
+host = "localhost"  # PostgreSQL 호스트 주소
+port = "5432"  # PostgreSQL 포트 (기본값은 5432)
+database = "real_estate"  # PostgreSQL 데이터베이스 이름
+# PostgreSQL 연결 엔진 생성
+engine2 = create_engine(f"postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}")
 
 # 데이터 불러오기
-df = pd.read_sql("SELECT * FROM transaction_data3", con=engine)
-dumy = pd.read_sql("SELECT * FROM prp", con=engine)
+df = pd.read_sql("SELECT * FROM transaction_data3", con=engine1)
+dumy = pd.read_sql("SELECT * FROM prp", con=engine2)
 
 # 전처리 및 범주화 함수
 def categorize_subway_distance(distance):
@@ -59,13 +68,26 @@ xgb_model.fit(X_2024_scaled, y_2024)
 rf_model.fit(X_2024_scaled, y_2024)
 
 # Step 1: prp_dumy_data 테이블에 PRP_PREDICT_2024 컬럼 추가 (존재하지 않는 경우에만)
-with engine.connect() as conn:
-    result = conn.execute(text("SHOW COLUMNS FROM prp LIKE 'PRP_PREDICT_2024';"))
-    column_exists = result.fetchone() is not None
-    
-    if not column_exists:
-        conn.execute(text("ALTER TABLE prp ADD COLUMN PRP_PREDICT_2024 FLOAT;"))
-print("PRP_PREDICT_2024 컬럼 추가 완료")
+query = """
+    SELECT column_name
+    FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'prp' AND column_name = 'prp_predict_2024';
+    """
+
+# Step 1: prp_dumy_data 테이블에 PRP_PREDICT_2023 컬럼 추가 (존재하지 않는 경우에만)
+with engine2.connect() as conn:
+    result = conn.execute(text(query))
+    columns = result.fetchall()
+
+if not columns:
+    # 컬럼이 없으면 추가
+    with engine2.connect() as conn:
+        conn.execute(text("""
+        ALTER TABLE public.prp
+        ADD COLUMN "prp_predict_2024" NUMERIC;
+        """))
+        conn.commit()
+    print("컬럼 'prp_predict_2024' 추가 완료")
 
 # 예외 처리 및 컬럼 확인
 if 'id' not in dumy.columns:
@@ -102,14 +124,14 @@ for index, row in dumy.iterrows():
     predicted_total_price = pred_ensemble[0] * prp_excl_area
 
     # 업데이트 쿼리 실행
-    with engine.connect() as conn:
+    with engine2.connect() as conn:
         result = conn.execute(
             text("""
             UPDATE prp
-            SET PRP_PREDICT_2024 = :predicted_price
-            WHERE prp_pk = :id
+            SET "prp_predict_2024" = :predicted_price
+            WHERE "prp_pk" = :id
             """),
-            {"predicted_price": predicted_total_price, "id": row['prp_pk']}
+            {"predicted_price": float(predicted_total_price), "id": row['prp_pk']}
         )
         conn.commit()
 

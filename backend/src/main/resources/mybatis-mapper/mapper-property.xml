@@ -3,23 +3,96 @@
 
 <mapper namespace="com.lx.finalproject.dao.property.PropertyDAO">
 
-	<select id="getAllProperties" parameterType="int"
-		resultType="com.lx.finalproject.vo.PrpVO">
-		SELECT * FROM prp
-	</select>
+    <!-- 모든 매물 가져오기 -->
+    <select id="getAllProperties" resultType="com.lx.finalproject.vo.PrpVO">
+        SELECT * FROM prp
+    </select>
 
-	<!-- 매물 리스트 가져오기 -->
-	<select id="getAllPropertiesByAgent" parameterType="int"
-		resultType="com.lx.finalproject.vo.PrpVO">
-		SELECT * FROM prp
-		WHERE user_pk = #{agentPk}
+    <!-- 중개사의 모든 매물 가져오기 -->
+    <select id="getAllPropertiesByAgent" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
+        SELECT * FROM prp
+        WHERE agent_pk = #{agentPk}
+    </select>
+    
+    <!-- 특정 매물 가져오기 -->
+    <select id="getPropertyById" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
+        SELECT * FROM prp
+        WHERE prp_pk = #{prpPk}
+    </select>
+    
+    <!-- 관심 매물 가져오기 -->
+    <select id="getFavprpByUserPk" parameterType="int" resultType="com.lx.finalproject.vo.FavPrpVO">
+    	SELECT 
+    		prp_name prpName,
+    		predict_2022 predict2022, 
+    		predict_2022 predict2023,
+    		predict_2022 predict2024,
+    		predict_2022 predict2025
+		FROM 
+		    prp 
+		INNER JOIN 
+		    favprp 
+		ON 
+		    prp.prp_pk = favprp.prp_pk
+		WHERE 
+		    favprp.user_pk = #{user_pk};
+    </select>
+    
+    <!-- 관심 매물 삭제 -->
+    <delete id="deleteInterestPrp" parameterType="int">
+        DELETE FROM favprp 
+        WHERE prp_pk = #{prpPk};
+    </delete>
+    
+    <!-- 모든 매물 정보와 좌표 정보 조회 -->
+    <select id="getAllPropertiesMap" resultType="com.lx.finalproject.dto.prp.PrpDTO">
+        SELECT 
+            p.prp_pk AS prpPk,
+            p.prp_name AS name,
+            p.prp_price AS price,
+            c.coord_pk AS coordPk,
+            ST_AsText(c.location) AS location
+        FROM prp p
+        JOIN coord c ON p.coord_pk = c.coord_pk;
+    </select>
+    
+    <!-- 특정 매물 정보와 좌표 정보 조회 -->
+    <select id="getAllPropertyById" parameterType="Long" resultType="com.lx.finalproject.dto.prp.PrpDTO">
+        SELECT 
+            p.prp_pk AS prpPk,
+            p.prp_name AS name,
+            p.prp_price AS price,
+            ST_AsText(c.location) AS location
+        FROM prp p
+        JOIN coord c ON p.coord_pk = c.coord_pk
+        WHERE p.prp_pk = #{prpPk};
+        
+    </select>
+    
+    <!-- 마커? 누가 알면 넣어주세요DON -->
+    <select id="getPropertyMarkerById" parameterType="Long"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
+		AS price,
+		ST_AsText(c.location) AS location
+		FROM prp p
+		JOIN coord c ON
+		p.coord_pk = c.coord_pk
+		WHERE p.prp_pk = #{prpPk};
 	</select>
-
-	<!-- 특정 매물 가져오기 -->
-	<select id="getPropertyById" parameterType="int"
-		resultType="com.lx.finalproject.vo.PrpVO">
-		SELECT * FROM prp
-		WHERE prp_pk = #{prpPk}
+	
+	<!-- 경위도 찢어버려 / 뭔지 알면 넣어주세요DON -->
+	<select id="getPointById" parameterType="Long"
+		resultType="com.lx.finalproject.dto.prp.PrpDTO">
+		SELECT
+		p.coord_pk AS coordPk,
+		p.prp_pk AS prpPk,
+		p.prp_name AS name,
+        CAST(p.prp_price AS DECIMAL(15, 0)) AS price,  <!-- 정수형으로 반환 -->
+		ST_Y(c.location) AS latitude, -- 위도
+		ST_X(c.location) AS longitude -- 경도
+		FROM prp p
+		JOIN coord c ON p.coord_pk = c.coord_pk;
 	</select>
 
 	<!-- 매물 저장 -->
@@ -80,55 +153,4 @@
 	<delete id="deleteProperty" parameterType="int">
 		DELETE FROM prp WHERE prp_pk = #{prpPk};
 	</delete>
-
-	<!-- 관심매물삭제 -->
-	<delete id="deleteInterestPrp" parameterType="int">
-		DELETE FROM favprp WHERE prp_pk = #{prpPk};
-	</delete>
-
-	<select id="getAllPropertiesMap"
-		resultType="com.lx.finalproject.dto.prp.PrpDTO">
-		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
-		AS price,
-		coord_pk, ST_AsText(location) as location FROM coordPk
-		FROM
-		prp p
-		JOIN coord c ON
-		p.coord_pk = c.coord_pk
-	</select>
-
-	<!-- 모든 매물 정보와 좌표 정보 조회 -->
-	<select id="getAllPropertyById" parameterType="Long"
-		resultType="com.lx.finalproject.dto.prp.PrpDTO">
-		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
-		AS price, ST_AsText(c.location) AS location
-		FROM prp p
-		JOIN coord c ON
-		p.coord_pk = c.coord_pk;
-
-	</select>
-
-	<select id="getPropertyMarkerById" parameterType="Long"
-		resultType="com.lx.finalproject.dto.prp.PrpDTO">
-		SELECT p.prp_pk AS prpPK, p.prp_name AS name, p.prp_price
-		AS price,
-		ST_AsText(c.location) AS location
-		FROM prp p
-		JOIN coord c ON
-		p.coord_pk = c.coord_pk
-		WHERE p.prp_pk = #{prpPk};
-	</select>
-	<!-- 경위도 찢어버려 -->
-	<select id="getPointById" parameterType="Long"
-		resultType="com.lx.finalproject.dto.prp.PrpDTO">
-		SELECT
-		p.coord_pk AS coordPk,
-		p.prp_pk AS prpPk,
-		p.prp_name AS name,
-        CAST(p.prp_price AS DECIMAL(15, 0)) AS price,  <!-- 정수형으로 반환 -->
-		ST_Y(c.location) AS latitude, -- 위도
-		ST_X(c.location) AS longitude -- 경도
-		FROM prp p
-		JOIN coord c ON p.coord_pk = c.coord_pk;
-	</select>
 </mapper>
