@@ -16,10 +16,11 @@ public class PropertyController {
     @Autowired
     private PropertyService service;
     
-    @GetMapping
+    @GetMapping("/getall")
     public List<PrpVO> getPropertiesAll() {
         return service.getAllProperties();
     }
+    
     @GetMapping("/map")
     public List<PrpDTO> getPointById() {
         return service.getPointById();

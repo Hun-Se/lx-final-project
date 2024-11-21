@@ -45,7 +45,7 @@
         ></div>
 
         <div class="jtFEOu">
-          <button class="styled__Tab-sc-1bidayn-1 cjOCPb" @click="toggleChatView">
+          <button class="styled__Tab-sc-1bidayn-1 cjOCPb">
             {{ buttonText }}
           </button>
         </div>
