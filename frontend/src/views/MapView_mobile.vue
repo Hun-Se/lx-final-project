@@ -134,18 +134,18 @@
                 <div class="styled-RoomDetail">
                   <h1 class="styled-price">
                     <!--                  가격 <span>{{ item.prpPrice }}</span>-->
-                    <span>월 70만원</span>
+                    <span>{{item.prpPrice/10000}}억 원</span>
                   </h1>
-                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">원룸</p>
-                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">보증금:500만원</p>
+                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">{{ item.prpName }}</p>
+                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">지역(코드) : {{item.regionPk}}</p>
                   <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">
-                    {{ item.prpAddrDetail }}
+                    전용면적 : {{ item.prpExclArea }}m^2
                   </p>
                   <p class="styled__RoomInfo-sc-1b8f2kq-6 iDAcJ">
-                    {{ item.prpStrucType }}, {{ item.prpExclArea }}, 관리비 10만
+                    {{ item.prpBlock }}동, {{ item.prpFloor }}층, {{ item.prpUnit }}호
                   </p>
                   <p class="styled__RoomDesc-sc-1b8f2kq-7 hVDije">
-                    {{ item.prpDesc }}
+                    주소 : {{ item.prpAddrDetail }}
                   </p>
 
                   <div class="styled__TagContainer-sc-1b8f2kq-8 jZjxOL">
@@ -470,10 +470,22 @@ const toggleSidebar = () => {
 // 선택된 매물 ID
 const selectedSalesId = ref(null);
 
-// 매물 클릭 시 상세 정보 토글
-function toggleSalesDetail(salesId) {
-  selectedSalesId.value = salesId;
-  store.fetchSalesDetails(salesId);
+// 매물 클릭 시 상세 정보 요청 및 라우터 이동
+async function toggleSalesDetail(salesId) {
+  event.preventDefault(); // 페이지 이동 방지
+
+  try {
+    // Pinia의 fetchSalesDetails를 통해 API 요청
+    await store.fetchSalesDetails(salesId);
+
+    // 상세 페이지로 이동
+    router.push({
+      path: "/mobile_prp_detail",
+      query: { id: salesId }, // 매물 ID를 쿼리로 전달
+    });
+  } catch (error) {
+    console.error("매물 상세 정보를 가져오는 중 오류 발생:", error);
+  }
 }
 
 // 모달 상태 관리
