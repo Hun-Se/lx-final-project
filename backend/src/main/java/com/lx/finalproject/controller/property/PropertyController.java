@@ -16,7 +16,7 @@ public class PropertyController {
     @Autowired
     private PropertyService service;
     
-    @GetMapping("/getall")
+    @GetMapping
     public List<PrpVO> getPropertiesAll() {
         return service.getAllProperties();
     }

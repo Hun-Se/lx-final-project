@@ -3,7 +3,7 @@
     <div class="logo cursor-pointer d-flex" @click="goToHome">
       <img class="img-logo" src="/assets/img/logo.png" alt="" />
     </div>
-    <h1 class="d-flex justify-content-center align-items-center fw-bold fs-5 text-white" style="line-height: 25px">매물 가격 예측 비교</h1>
+    <h1 class="d-flex justify-content-center align-items-center fw-bold fs-5 text-white" style="line-height: 25px">{{ title }}</h1>
     <div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px position-relative" id="kt_drawer_chat_toggle">
       <i class="bi bi-bell fs-1 text-white"></i>
       <span class="bullet bullet-dot bg-danger h-6px w-6px position-absolute" style="top: 4px; right: 4px"></span>
