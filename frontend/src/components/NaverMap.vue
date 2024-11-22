@@ -55,9 +55,9 @@ export default {
       // 마커 생성
       this.locations.forEach((location) => {
         const content = `
-           <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue2); background: white; cursor: pointer; position: relative; z-index: 2;">
+           <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue1); background: white; cursor: pointer; position: relative; z-index: 2;">
         <!-- 노란색 동그라미 -->
-        <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background-color: orange; border-radius: 50%; z-index: 3; border: 2px solid var(--color-bg-blue2);display: flex; align-items: center; justify-content: center;"> ${location.prpTransType === 0
+        <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background-color: orange; border-radius: 50%; z-index: 3; border: 2px solid var(--color-bg-blue1);display: flex; align-items: center; justify-content: center;"> ${location.prpTransType === 0
             ? "매"
             : location.prpTransType === 1
             ? "전"
@@ -75,7 +75,7 @@ export default {
 
         <!-- 아래 화살표 부분 -->
         <span style="position: absolute; border-style: solid; border-width: 1.2rem 1rem 0 1rem; border-color: #ffffff transparent; display: block; width: 0; z-index: 1; top: 2.5rem; left: 2.0rem;"></span>
-        <span style="position: absolute; border-style: solid; border-width: 1.1rem 1rem 0 1rem; border-color: var(--color-bg-blue2) transparent; display: block; width: 0; z-index: 0; top: 2.933rem; left: 2.0rem;"></span>
+        <span style="position: absolute; border-style: solid; border-width: 1.1rem 1rem 0 1rem; border-color: var(--color-bg-blue1) transparent; display: block; width: 0; z-index: 0; top: 2.933rem; left: 2.0rem;"></span>
       </div>
         `;
 

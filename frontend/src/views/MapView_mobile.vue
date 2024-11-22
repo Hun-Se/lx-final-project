@@ -18,7 +18,7 @@
         <a class="fab-action fab-action-3">
           <i class="bi bi-funnel"></i>
         </a>
-        <a class="fab-action fab-action-4 fs-8"> 히트맵 </a>
+        <a class="fab-action fab-action-4 fs-8" @click="toggleMap"> 히트맵 </a>
       </div>
     </div>
     <section
@@ -313,7 +313,12 @@
         </ul>
       </div>
     </section>
-    <NaverMap></NaverMap>
+    <div v-if="mapType === '네이버'">
+      <NaverMap></NaverMap>
+    </div>
+    <div v-else-if="mapType === '히트맵'">
+      <CesiumHeatmap></CesiumHeatmap>
+    </div>
   </div>
 
   <MobileBottomTapBar></MobileBottomTapBar>
@@ -329,7 +334,16 @@ import Header2 from "@/components/Header2.vue";
 import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { useChatStore } from "@/stores/chat";
+import CesiumHeatmap from "@/components/CesiumHeatmap.vue";
 
+const mapType = ref("네이버");
+function toggleMap() {
+  if (mapType.value === "네이버") {
+    mapType.value = '히트맵'
+  } else if (mapType.value === "히트맵") {
+    mapType.value = "네이버";
+  }
+}
 
 //********채팅**********
 const chatStore = useChatStore();
