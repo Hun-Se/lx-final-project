@@ -5,6 +5,7 @@ public class RecVO {
 	private Integer recPk;
     private String recDatetime;
     private String recFile;
+    private Integer flrPk;
     private Integer userPk;
     private Integer prpPk;
     private Integer agentPk;
@@ -26,6 +27,12 @@ public class RecVO {
 	public void setRecFile(String recFile) {
 		this.recFile = recFile;
 	}
+	public int getFlrPk() {
+        return flrPk;
+    }
+    public void setFlrPk(int flrPk) {
+        this.flrPk = flrPk;
+    }
 	public Integer getUserPk() {
 		return userPk;
 	}
