@@ -89,9 +89,10 @@ const router = createRouter({
       component: () => import("../views/MobileAI_real_estateView.vue")
     },
     {
-      path: "/report_detail",
-      name: "report_detail",
-      component: () => import("../views/ReportDetailView.vue"),
+      path: "/report_detail/:flrPk",
+      name: "reportdetail",
+      component: () => import('../views/ReportDetailView.vue'), // 절대 경로로 수정
+      props: true
     },
     {
       path: "/report_document",
@@ -118,6 +119,7 @@ const router = createRouter({
       name: "mobile_prp_report",
       component: () => import("../views/MobilePrpReportView.vue"),
     },
+    
   ],
 });
 

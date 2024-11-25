@@ -7,8 +7,9 @@ public class FlrVO {
     private String flrCateMiddle;
     private String flrCateLower;
     private String flrContent;
+    private String flrDatetime;
     private Integer userPk;
-    private Integer prpPk;
+	private Integer prpPk;
     private Integer chatPk;
     private Integer recPk;
     
@@ -41,6 +42,12 @@ public class FlrVO {
 	}
 	public void setFlrContent(String flrContent) {
 		this.flrContent = flrContent;
+	}
+    public String getFlrDatetime() {
+		return flrDatetime;
+	}
+	public void setFlrDatetime(String flrDatetime) {
+		this.flrDatetime = flrDatetime;
 	}
 	public Integer getUserPk() {
 		return userPk;

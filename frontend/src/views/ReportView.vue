@@ -2,10 +2,103 @@
 import {useRouter} from "vue-router";
 
 const router = useRouter();
-function moveToDetail() {
-  router.push("/report_detail");
-}
+//function moveToDetail() {
+//  router.push("/report_detail");
+//}
 
+// 서버에서 신고 데이터를 가져와 테이블에 추가
+fetch('/api/report/reports')
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('API 데이터:', data);
+        const tableBody = document.getElementById('report-table-body');
+
+        // 데이터가 없는 경우 처리
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center">신고 내역이 없습니다.</td></tr>';
+            return;
+        }
+
+        // 데이터가 있는 경우 반복적으로 테이블에 추가
+        data.forEach((report, index) => {
+            const row = document.createElement('tr'); // 새로운 행 생성
+            row.classList.add('report-list');
+
+            // 클릭 이벤트를 JavaScript에서 직접 추가
+            row.addEventListener('click', () => {
+                moveToDetail(report.flrPk); // 신고 접수 번호를 넘겨주는 함수 호출
+            });
+
+            // 순번
+            const orderCell = document.createElement('td');
+            orderCell.textContent = index + 1; // 순번은 1부터 시작
+            row.appendChild(orderCell);
+
+            // 신고일자
+            const dateCell = document.createElement('td');
+            dateCell.setAttribute('data-order', report.flrDatetime || '');
+            dateCell.textContent = report.flrDatetime
+                ? new Date(report.flrDatetime).toLocaleDateString()
+                : 'N/A';
+            row.appendChild(dateCell);
+
+            // 신고접수번호
+            const pkCell = document.createElement('td');
+            pkCell.innerHTML = `<span class="badge fw-bold px-4 py-3">${report.flrPk || 'N/A'}</span>`;
+            row.appendChild(pkCell);
+
+            // 신고사유 (대분류, 중분류, 소분류)
+            const reasonCell = document.createElement('td');
+            reasonCell.innerHTML = `
+                <div class="row">
+                    <div class="col-4">
+                        <span class="badge badge-light-danger fw-bold px-4 py-3">${report.flrCateUpper || 'N/A'}</span>
+                    </div>
+                    <div class="col-4">
+                        <span class="badge badge-light-warning fw-bold px-4 py-3">${report.flrCateMiddle || 'N/A'}</span>
+                    </div>
+                    <div class="col-4">
+                        <span class="badge badge-light-success fw-bold px-4 py-3">${report.flrCateLower || 'N/A'}</span>
+                    </div>
+                </div>`;
+            row.appendChild(reasonCell);
+
+            // 로그로 각 데이터 확인
+            console.log('신고 접수 번호:', report.flrPk); // 데이터 확인
+
+            // 증빙자료 항목
+            const evidenceCell = document.createElement('td');
+            evidenceCell.innerHTML = `
+                <div class="row">
+                    <div class="col-3 p-3">${report.textPk ? '<i class="bi bi-check-circle-fill text-success"></i>' : ''}</div>
+                    <div class="col-3 p-3">${report.recPk ? '<i class="bi bi-check-circle-fill text-success"></i>' : ''}</div>
+                    <div class="col-3 p-3">${report.chatPk ? '<i class="bi bi-check-circle-fill text-success"></i>' : ''}</div>
+                    <div class="col-3 p-3">${report.otherPk ? '<i class="bi bi-check-circle-fill text-success"></i>' : ''}</div>
+                </div>`;
+            row.appendChild(evidenceCell);
+
+            // 상태 (기본값으로 신규 표시)
+            const statusCell = document.createElement('td');
+            statusCell.innerHTML = `<span>신규</span>`;
+            row.appendChild(statusCell);
+
+            // 테이블 본문에 행 추가
+            tableBody.appendChild(row);
+        });
+    })
+    .catch((error) => {
+        console.error('데이터를 가져오는 중 오류 발생:', error);
+        const tableBody = document.getElementById('report-table-body');
+        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">데이터를 로드하는 중 오류가 발생했습니다.</td></tr>';
+    });
+
+// moveToDetail 함수 정의
+function moveToDetail(flrPk) {
+    console.log(`신고 접수 번호: ${flrPk}`);
+    router.push({ 
+      path: `/report_detail/${flrPk}` 
+    });
+}
 
 </script>
 
@@ -425,412 +518,35 @@ function moveToDetail() {
                     <col data-dt-column="4" style="width: 104.984px" />
                   </colgroup>
                   <thead class="fs-7 text-gray-500 text-uppercase">
-                    <tr role="row">
-                      <th class="col-1">
-                        <span class="dt-column-title mb-5" role="button"
-                          >순번</span
-                        ><span class="dt-column-order"></span>
-                      </th>
-                      <th class="col-2">
-                        <span class="dt-column-title" role="button"
-                          >신고일자</span
-                        ><span class="dt-column-order"></span>
-                      </th>
-                      <th class="col-2 me-3">
-                        <span class="dt-column-title" role="button"
-                          >신고접수번호</span
-                        ><span class="dt-column-order"></span>
-                      </th>
-                      <th class="col-3 me-3">
-                        <span class="dt-column-title" role="button"
-                          >신고사유</span
-                        ><span class="dt-column-order"></span>
-                        <div class="row mt-5">
-                          <div class="dropdown col-4">
-                            <button
-                              class="btn btn-secondary btn-sm dropdown-toggle"
-                              type="button"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                            >
-                              대분류
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li>
-                                <a class="dropdown-item" href="#">Action</a>
-                              </li>
-                              <li>
-                                <a class="dropdown-item" href="#"
-                                  >Another action</a
-                                >
-                              </li>
-                              <li>
-                                <a class="dropdown-item" href="#"
-                                  >Something else here</a
-                                >
-                              </li>
-                            </ul>
-                          </div>
-                          <div class="dropdown col-4">
-                            <button
-                              class="btn btn-secondary btn-sm dropdown-toggle"
-                              type="button"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                            >
-                              중분류
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li>
-                                <a class="dropdown-item" href="#">Action</a>
-                              </li>
-                              <li>
-                                <a class="dropdown-item" href="#"
-                                  >Another action</a
-                                >
-                              </li>
-                              <li>
-                                <a class="dropdown-item" href="#"
-                                  >Something else here</a
-                                >
-                              </li>
-                            </ul>
-                          </div>
-                          <div class="dropdown col-4">
-                            <button
-                              class="btn btn-secondary dropdown-toggle btn-sm"
-                              type="button"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                            >
-                              소분류
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li>
-                                <a class="dropdown-item" href="#">Action</a>
-                              </li>
-                              <li>
-                                <a class="dropdown-item" href="#"
-                                  >Another action</a
-                                >
-                              </li>
-                              <li>
-                                <a class="dropdown-item" href="#"
-                                  >Something else here</a
-                                >
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </th>
-                      <th class="col-3">
-                        <span class="dt-column-title mb-5" role="button"
-                          >증빙자료 항목</span
-                        ><span class="dt-column-order"></span>
-                        <div class="row mt-5">
-                          <div class="col-3 p-3">광고화면</div>
-                          <div class="col-3 p-3">녹취</div>
-                          <div class="col-3 p-3">문자내용</div>
-                          <div class="col-3 p-3">기타자료</div>
-                        </div>
-                      </th>
-                      <th class="col-1">
-                        <span class="dt-column-title" role="button">상태</span
-                        ><span class="dt-column-order"></span>
-                      </th>
-                    </tr>
+                      <tr>
+                          <th class="col-1">
+                              <span class="dt-column-title">순번</span>
+                          </th>
+                          <th class="col-2">
+                              <span class="dt-column-title">신고일자</span>
+                          </th>
+                          <th class="col-2">
+                              <span class="dt-column-title">신고접수번호</span>
+                          </th>
+                          <th class="col-3">
+                              <span class="dt-column-title">신고사유</span>
+                          </th>
+                          <th class="col-3">
+                              <span class="dt-column-title">증빙자료 항목</span>
+                              <div class="row mt-5">
+                                  <div class="col-3">광고화면</div>
+                                  <div class="col-3">녹취</div>
+                                  <div class="col-3">문자내용</div>
+                                  <div class="col-3">기타자료</div>
+                              </div>
+                          </th>
+                          <th class="col-1">
+                              <span class="dt-column-title">상태</span>
+                          </th>
+                      </tr>
                   </thead>
-                  <tbody class="fs-6">
-                    <tr @click="moveToDetail " class="report-list">
-                      <td>2416</td>
-                      <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
-                      <td>
-                        <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1234B</span>
-                        <!--end::User-->
-                      </td>
-                      <td class="dt-type-numeric">
-                        <div class="row">
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-danger fw-bold px-4 py-3"
-                              >명시의무 위반</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-warning fw-bold px-4 py-3"
-                              >중개사무소</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-success fw-bold px-4 py-3"
-                              >상호명시 위반</span
-                            >
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="row">
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-<!--                            <i class="bi bi-check-circle-fill text-success"></i>-->
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">
-                        <span>신규</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>2415</td>
-                      <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
-                      <td>
-                        <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1233B</span>
-                        <!--end::User-->
-                      </td>
-                      <td class="dt-type-numeric">
-                        <div class="row">
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-danger fw-bold px-4 py-3"
-                              >명시의무 위반</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-warning fw-bold px-4 py-3"
-                              >중개사무소</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-success fw-bold px-4 py-3"
-                              >상호명시 위반</span
-                            >
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="row">
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-<!--                            <i class="bi bi-check-circle-fill text-success"></i>-->
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-<!--                            <i class="bi bi-check-circle-fill text-success"></i>-->
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">처리완료</td>
-                    </tr>
-                    <tr>
-                      <td>2414</td>
-                      <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
-                      <td>
-                        <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1232B</span>
-                        <!--end::User-->
-                      </td>
-                      <td class="dt-type-numeric">
-                        <div class="row">
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-danger fw-bold px-4 py-3"
-                              >명시의무 위반</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-warning fw-bold px-4 py-3"
-                              >중개사무소</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-success fw-bold px-4 py-3"
-                              >상호명시 위반</span
-                            >
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="row">
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">처리완료</td>
-                    </tr>
-                    <tr>
-                      <td>2413</td>
-                      <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
-                      <td>
-                        <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1231B</span>
-                        <!--end::User-->
-                      </td>
-                      <td class="dt-type-numeric">
-                        <div class="row">
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-danger fw-bold px-4 py-3"
-                              >명시의무 위반</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-warning fw-bold px-4 py-3"
-                              >중개사무소</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-success fw-bold px-4 py-3"
-                              >상호명시 위반</span
-                            >
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="row">
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">처리완료</td>
-                    </tr>
-                    <tr>
-                      <td>2412</td>
-                      <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
-                      <td>
-                        <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1230B</span>
-                        <!--end::User-->
-                      </td>
-                      <td class="dt-type-numeric">
-                        <div class="row">
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-danger fw-bold px-4 py-3"
-                              >명시의무 위반</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-warning fw-bold px-4 py-3"
-                              >중개사무소</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-success fw-bold px-4 py-3"
-                              >상호명시 위반</span
-                            >
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="row">
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">처리완료</td>
-                    </tr>
-                    <tr>
-                      <td>2411</td>
-                      <td data-order="2024-09-22T00:00:00+09:00">2024-11-01</td>
-                      <td>
-                        <!--begin::User-->
-                        <span class="badge fw-bold px-4 py-3">A1229B</span>
-                        <!--end::User-->
-                      </td>
-                      <td class="dt-type-numeric">
-                        <div class="row">
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-danger fw-bold px-4 py-3"
-                              >명시의무 위반</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-warning fw-bold px-4 py-3"
-                              >중개사무소</span
-                            >
-                          </div>
-                          <div class="col-4">
-                            <span
-                              class="badge badge-light-success fw-bold px-4 py-3"
-                              >상호명시 위반</span
-                            >
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="row">
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                          <div class="col-3 p-5 ps-7">
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                          </div>
-                        </div>
-                      </td>
-                      <td class="">처리완료</td>
-                    </tr>
+                  <tbody id="report-table-body" class="fs-6">
+                      <!-- 데이터가 동적으로 추가됩니다 -->
                   </tbody>
                   <tfoot></tfoot>
                 </table>
