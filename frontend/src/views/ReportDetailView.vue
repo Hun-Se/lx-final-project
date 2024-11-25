@@ -4,6 +4,9 @@ import PdfViewer from "@/components/PdfViewer.vue";
 import PublicLedgerModal from "@/components/PublicLedgerModal.vue";
 import { usePublicLedgerModalStore } from "@/stores/modal.js";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+
+const route = useRoute(); // 현재 라우트 정보 가져오기
 // Reactive 상태 선언
 const audioPlayer = ref(null);
 const isPlaying = ref(false);
@@ -142,10 +145,48 @@ function onClickOpenPublicLedgerModal(docName) {
   publicLedgerStore.openModal();
 }
 
+const reportData = ref(null); // 상세 정보 저장
+// 신고 상세 정보 API 호출 함수
+const fetchReportDetail = async () => {
+  try {
+    console.log(`Fetching report detail for flrPk: ${flrPk.value}`);
+    const response = await fetch(`/api/report/detail/${flrPk.value}`); // 백엔드 API 호출
+    if (response.ok) {
+      const data = await response.json();
+      reportData.value = data; // 가져온 데이터를 Vue 데이터에 할당
+      console.log("Fetched report detail:", reportData.value);
+    } else {
+      console.error("Failed to fetch report detail:", response.status);
+    }
+  } catch (error) {
+    console.error("Error fetching report detail:", error);
+  }
+};
 
+
+//------피신고 대상자 정보
+const agentData = ref(null); // 피신고 대상자 정보 저장
+
+const fetchAgentDetails = async () => {
+  try {
+    console.log(`Fetching agent details for flrPk: ${flrPk.value}`);
+    const response = await fetch(`/api/report/agent-details/${flrPk.value}`);
+    if (response.ok) {
+      agentData.value = await response.json();
+      console.log("Fetched agent details:", agentData.value);
+    } else {
+      console.error("Failed to fetch agent details:", response.status);
+    }
+  } catch (error) {
+    console.error("Error fetching agent details:", error);
+  }
+};
+
+//-------------플라스크
 
 // data properties
-const flrPk = ref(''); // 허위매물신고 PK 입력 변수
+const flrPk = ref(""); // 허위매물 신고 번호
+console.log(`받은 신고 접수 번호: ${flrPk}`);
 const chatMessages = ref([]); // 채팅 메시지 목록
 const flrDecstatus = ref(""); // 부합여부
 const flrDecscontent = ref(""); // 부합여부 이유 설명
@@ -196,9 +237,27 @@ const fetchChatMessages = async (chatPk) => {
   }
 };
 
+// 받은 flrPk를 기반으로 데이터 가져오기
 onMounted(() => {
-  flrPk.value = 1;
-  fetchChatPk();
+    fetch(`/api/report/detail/${flrPk}`)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("받은 신고 데이터:", data);
+            // 데이터 처리 로직 추가
+        })
+        .catch((error) => console.error("데이터 로드 중 오류:", error));
+});
+
+onMounted(() => {
+  flrPk.value = route.params.flrPk || ""; // 쿼리 파라미터에서 flrPk 읽기
+  console.log("쿼리에서 가져온 flrPk:", flrPk.value);
+
+  // flrPk가 존재할 경우 데이터를 불러오는 메서드 호출
+  if (flrPk.value) {
+    fetchReportDetail(); // flrPk에 기반한 데이터 로드
+    fetchAgentDetails(); // 피신고 대상자 정보 가져오기
+    fetchChatPk();
+  }
 })
 
 </script>
@@ -289,97 +348,54 @@ onMounted(() => {
             <div class="card-body pt-9">
               <div class="">
                 <div class="d-flex align-items-center mb-2">
-                  <a href="#" class="tag fs-1"> 신고접수번호 C51743 </a>
+                  <a href="#" class="tag fs-1"> 신고접수번호 {{ reportData?.flrPk }} </a>
                   <span class="arrow"></span>
                 </div>
                 <div class="d-flex flex-column container-left">
                   <div class="mt-5">
                     <div class="d-flex text-gray-800">
                       <div class="fw-semibold pe-5">신고일자:</div>
-                      <div class="text-end fw-norma">2024-11-01</div>
+                      <div class="text-end fw-norma">{{ reportData?.flrDatetime }}</div>
                       <!--end::Label-->
                     </div>
                     <!--end::Item-->
                     <!--begin::Item-->
                     <div class="d-flex text-gray-800 mt-5 mb-3 container-badge">
-                      <!--begin::Accountnumber-->
                       <div class="fw-semibold pe-5">신고사유:</div>
-                      <!--end::Accountnumber-->
-                      <!--begin::Number-->
-                      <span
-                        class="badge signal badge-light-danger fw-bold me-2 px-4 py-3"
-                        >명시의무 위반</span
-                      >
-                      <span
-                        class="badge signal badge-light-warning fw-bold me-2 px-4 py-3"
-                        >중개사무소</span
-                      >
-                      <span
-                        class="badge signal badge-light-success fw-bold me-2 px-4 py-3"
-                        >상호명시 위반</span
-                      >
-                      <!--end::Number-->
+                      <span v-if="reportData?.flrCateUpper" class="badge signal badge-light-danger fw-bold me-2 px-4 py-3">{{ reportData.flrCateUpper }}</span>
+                      <span v-if="reportData?.flrCateMiddle" class="badge signal badge-light-warning fw-bold me-2 px-4 py-3">{{ reportData.flrCateMiddle }}</span>
+                      <span v-if="reportData?.flrCateLower" class="badge signal badge-light-success fw-bold me-2 px-4 py-3">{{ reportData.flrCateLower }}</span>
                     </div>
                     <div class="d-flex text-gray-800 mt-5">
-                      <div class="fw-semibold pe-5" style="white-space: nowrap">
-                        증빙자료:
-                      </div>
-                      <table class="styled-table">
-                        <thead>
-                          <tr>
-                            <th>광고화면</th>
-                            <th>녹취</th>
-                            <th>문자내용</th>
-                            <th>기타자료</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr class="text-center tr-table-list">
-                            <td></td>
-                            <td></td>
-                            <td>
-                              <i
-                                class="bi bi-check-circle-fill text-success"
-                              ></i>
-                            </td>
-                            <td></td>
-                          </tr>
-                          <!-- and so on... -->
-                        </tbody>
-                      </table>
-                      <!--end::Label-->
+                    <div class="fw-semibold pe-5" style="white-space: nowrap">
+                      증빙자료:
                     </div>
+                    <table class="styled-table">
+                      <thead>
+                        <tr>
+                          <th>광고화면</th>
+                          <th>녹취</th>
+                          <th>문자내용</th>
+                          <th>기타자료</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="text-center tr-table-list">
+                          <td v-html="reportData?.textPk ? '<i class=\'bi bi-check-circle-fill text-success\'></i>' : ''"></td>
+                          <td v-html="reportData?.recPk ? '<i class=\'bi bi-check-circle-fill text-success\'></i>' : ''"></td>
+                          <td v-html="reportData?.chatPk ? '<i class=\'bi bi-check-circle-fill text-success\'></i>' : ''"></td>
+                          <td v-html="reportData?.otherPk ? '<i class=\'bi bi-check-circle-fill text-success\'></i>' : ''"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!--end::Label-->
+                  </div>
+
                     <div class="d-flex text-gray-800 mt-5">
-                      <div clss="fw-semibold pe-5" style="white-space: nowrap">
-                        첨부파일:
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div style="flex: 1" class="card">
-            <div class="card-body pt-9">
-              <h4>공적장부 열람</h4>
-              <div class="d-flex flex-column justify-content-center">
-                <div class="btn-group-public ">
-                <button
-                  type="button"
-                  class="btn btn-light"
-                  @click="onClickOpenPublicLedgerModal('토지대장')"
-                >
-                  토지대장
-                </button>
-                <button type="button" class="btn btn-light">등기부등본</button>
-                <button type="button" class="btn btn-light">건축물대장</button>
-                <button type="button" class="btn btn-light">지적도</button>
-                <button type="button" class="btn btn-light">토지이용계획서</button>
-              </div>
-              </div>
-            </div>
-            <div>
-              <h4></h4>
             </div>
           </div>
         </div>
@@ -430,44 +446,21 @@ onMounted(() => {
                 </div>
                 <div>
                   <div class="mt-10 pb-5 content-list">
-                    <!--begin::Details item-->
                     <div class="fw-bold mt-5 mb-3">
-                      중개사 번호: <span class="text-gray-600 ms-1">12345</span>
+                      중개사 번호: <span class="text-gray-600 ms-1">{{ agentData?.agentLicense }}</span>
                     </div>
                     <div class="fw-bold mt-5 mb-3">
-                      이메일:
-                      <span class="ms-1 text-gray-600">
-                        <a href="#" class="text-gray-600 text-hover-primary"
-                          >kim72840@gmail.com</a
-                        >
-                      </span>
-                    </div>
-
-                    <!--begin::Details item-->
-                    <!--begin::Details item-->
-                    <div class="fw-bold mt-5 mb-3">
-                      중개사무소 소재지:
-                      <span class="text-gray-600 ms-1">강남구 언주로 703</span>
-                    </div>
-
-                    <!--begin::Details item-->
-                    <!--begin::Details item-->
-                    <div class="fw-bold mt-5 mb-3">
-                      중개사무소명:
-                      <span class="text-gray-600 ms-1">한마음공인중개사</span>
-                    </div>
-
-                    <!--begin::Details item-->
-                    <!--begin::Details item-->
-                    <div class="fw-bold mt-5 mb-3">
-                      중개사무소 연락처:
-                      <span class="ms-1 text-gray-600">010-1234-1234</span>
+                      중개사 이름: <span class="ms-1 text-gray-600">{{ agentData?.userName }}</span>
                     </div>
                     <div class="fw-bold mt-5 mb-3">
-                      대표중개사명:
-                      <span class="ms-1 text-gray-600">김세훈</span>
+                      중개사무소 소재지: <span class="text-gray-600 ms-1">{{ agentData?.agencyLocation }}</span>
                     </div>
-                    <!--begin::Details item-->
+                    <div class="fw-bold mt-5 mb-3">
+                      중개사무소명: <span class="text-gray-600 ms-1">{{ agentData?.agencyName }}</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      중개사무소 연락처: <span class="ms-1 text-gray-600">{{ agentData?.agencyMobile }}</span>
+                    </div>
                   </div>
                 </div>
                 <!--end::Title-->
@@ -499,7 +492,7 @@ onMounted(() => {
             <div class="card-title">
               <!--begin::Users-->
               <div class="symbol-group symbol-hover"></div>
-              <h3>녹취록 스크립트</h3>
+              <h3>AI 증빙자료 핵심증거 추출</h3>
             </div>
             <!--end::Title-->
             <!--begin::Card toolbar-->
