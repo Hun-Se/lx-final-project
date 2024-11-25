@@ -3,7 +3,7 @@ import { apiInstance } from "./index.js";
 const api = apiInstance();
 
 export const requestSalesList = async () => {
-  const url = "api/properties/getall";
+  const url = "api/properties";
   try {
     const response = await api.get(url);
     return response.data;

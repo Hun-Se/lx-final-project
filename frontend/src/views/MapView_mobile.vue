@@ -1,5 +1,5 @@
 <template>
-    <MobileMapHeader></MobileMapHeader>
+  <MobileMapHeader></MobileMapHeader>
   <div id="mainPage">
     <div class="fab-wrapper">
       <input id="fabCheckbox" type="checkbox" class="fab-checkbox" />
@@ -123,21 +123,38 @@
               v-for="(item, index) in sales"
               :key="item.prpPk"
               class="property-item-mobile"
-              @click="toggleSalesDetail(item.prpPk)"
             >
               <a href="#" class="styled-roomLink">
                 <img
                   :src="'/assets/img/' + item.prpImg"
                   alt="매물 이미지"
                   class="property-image-mobile"
+                  @click="toggleSalesDetail(item.prpPk)"
                 />
                 <div class="styled-RoomDetail">
                   <h1 class="styled-price">
                     <!--                  가격 <span>{{ item.prpPrice }}</span>-->
-                    <span>{{item.prpPrice/10000}}억 원</span>
+                    <span>월 70만원</span>
+                    <button
+                      class="btn btn custom-btn"
+                      style="
+                        width: 10ex;
+                        height: 3ex;
+                        color: white;
+                        background-color: var(--color-bg-blue1);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                      @click="goToCesium"
+                    >
+                      3D 뷰
+                    </button>
                   </h1>
                   <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">{{ item.prpName }}</p>
-                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">지역(코드) : {{item.regionPk}}</p>
+                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">
+                    지역(코드) : {{ item.regionPk }}
+                  </p>
                   <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">
                     전용면적 : {{ item.prpExclArea }}m^2
                   </p>
@@ -304,7 +321,9 @@
                       </svg>
                     </div>
                     <span class="badge badge-light-warning">우수중개사</span>
-                    <div class="btn btn-light-danger btn-sm" @click="onClickMoveReport">신고</div>
+                    <div class="btn btn-light-danger btn-sm" @click="onClickMoveReport">
+                      신고
+                    </div>
                   </div>
                 </div>
               </a>
@@ -313,14 +332,22 @@
         </ul>
       </div>
     </section>
-    <div v-if="mapType === '네이버'">
-      <NaverMap></NaverMap>
+    <!-- 지도 렌더링 -->
+    <div id="modalBackground" v-if="mapType === '네이버'">
+      <!-- 네이버 지도를 렌더링 -->
+      <NaverMap />
     </div>
-    <div v-else-if="mapType === '히트맵'">
-      <CesiumHeatmap></CesiumHeatmap>
+
+    <div id="modalBackground" v-else-if="mapType === 'Cesium'">
+      <!-- Cesium 지도를 렌더링 -->
+      <CesiumMap2 />
+    </div>
+
+    <div id="modalBackground" v-else-if="mapType === '히트맵'">
+      <!-- 히트맵을 렌더링 -->
+      <CesiumHeatmap />
     </div>
   </div>
-
   <MobileBottomTapBar></MobileBottomTapBar>
 </template>
 
@@ -335,12 +362,26 @@ import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { useChatStore } from "@/stores/chat";
 import CesiumHeatmap from "@/components/CesiumHeatmap.vue";
+import CesiumMap2 from "@/components/CesiumMap2.vue";
 
 const mapType = ref("네이버");
+
+// 지도 타입 순환 전환 로직
+const mapTypes = ["네이버", "Cesium", "히트맵"];
+let currentIndex = 0;
+
 function toggleMap() {
+  // 현재 mapType의 인덱스를 순환하며 전환
+  currentIndex = (currentIndex + 1) % mapTypes.length;
+  mapType.value = mapTypes[currentIndex];
+}
+
+// 3D 뷰 버튼 클릭 시 지도 타입을 순환
+function goToCesium() {
+  // 네이버와 Cesium을 번갈아 전환
   if (mapType.value === "네이버") {
-    mapType.value = '히트맵'
-  } else if (mapType.value === "히트맵") {
+    mapType.value = "Cesium";
+  } else if (mapType.value === "Cesium") {
     mapType.value = "네이버";
   }
 }
@@ -537,7 +578,7 @@ const handleDrop = (event) => {
 
 // 신고이동
 function onClickMoveReport() {
-  router.push({path:"/mobile_prp_report"});
+  router.push({ path: "/mobile_prp_report" });
 }
 </script>
 

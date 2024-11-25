@@ -5,6 +5,11 @@
     <div class="zoom-controls">
       <button @click="zoomIn" class="zoom-button">+</button>
       <button @click="zoomOut" class="zoom-button">-</button>
+      <div id="real_cost">
+        <button @click="fetchRealCost" id="real_cost" class="realcost-button">
+          실거래가
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +23,9 @@ export default {
     return {
       map: null,
       locations: [], // 마커 데이터를 저장할 배열
+      markers: [], // 지도에 표시된 마커 배열
+      initialCenter: { lat: 37.516042, lng: 127.034881 }, // 초기 지도 중심 좌표
+      initialZoom: 17, // 초기 줌 레벨
     };
   },
   mounted() {
@@ -46,7 +54,7 @@ export default {
           longitude: location.longitude,
           name: location.name,
           price: location.price,
-          prpTransType:location.prpTransType
+          prpTransType: location.prpTransType,
         }));
       } catch (error) {
         console.error("데이터를 가져오는 중 오류 발생:", error);
@@ -55,30 +63,27 @@ export default {
       // 마커 생성
       this.locations.forEach((location) => {
         const content = `
-           <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue1); background: white; cursor: pointer; position: relative; z-index: 2;">
+           <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue2); background: white; cursor: pointer; position: relative; z-index: 2;">
         <!-- 노란색 동그라미 -->
-        <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background-color: orange; border-radius: 50%; z-index: 3; border: 2px solid var(--color-bg-blue1);display: flex; align-items: center; justify-content: center;"> ${location.prpTransType === 0
-            ? "매"
-            : location.prpTransType === 1
-            ? "전"
-            : "월"}</div>
-        
+        <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background-color: orange; border-radius: 50%; z-index: 3; border: 2px solid var(--color-bg-blue2);display: flex; align-items: center; justify-content: center;"> ${
+          location.prpTransType === 0 ? "매" : location.prpTransType === 1 ? "전" : "월"
+        }</div>
+
         <!-- 텍스트 부분 -->
         <div style="max-width: 23rem; height: 1rem; padding: 0 0.8rem; text-overflow: ellipsis; white-space: nowrap; display: table-cell; vertical-align: middle; font-weight: 600;">
           <p>아파트</p>
           <p>${
-              location.price >= 100000000 
+            location.price >= 100000000
               ? `${(location.price / 100000000).toFixed(1)}억`
               : `${Math.floor(location.price / 10000)}만원`
-          }</p>  
+          }</p>
         </div>
 
         <!-- 아래 화살표 부분 -->
         <span style="position: absolute; border-style: solid; border-width: 1.2rem 1rem 0 1rem; border-color: #ffffff transparent; display: block; width: 0; z-index: 1; top: 2.5rem; left: 2.0rem;"></span>
-        <span style="position: absolute; border-style: solid; border-width: 1.1rem 1rem 0 1rem; border-color: var(--color-bg-blue1) transparent; display: block; width: 0; z-index: 0; top: 2.933rem; left: 2.0rem;"></span>
+        <span style="position: absolute; border-style: solid; border-width: 1.1rem 1rem 0 1rem; border-color: var(--color-bg-blue2) transparent; display: block; width: 0; z-index: 0; top: 2.933rem; left: 2.0rem;"></span>
       </div>
         `;
-
 
         new naver.maps.Marker({
           position: new naver.maps.LatLng(location.latitude, location.longitude),
@@ -91,16 +96,19 @@ export default {
         });
       });
     },
+
     zoomIn() {
       if (this.map) {
         this.map.setZoom(this.map.getZoom() + 1);
       }
     },
+
     zoomOut() {
       if (this.map) {
         this.map.setZoom(this.map.getZoom() - 1);
       }
     },
+
     resetMap() {
       if (this.map) {
         // 초기 위치와 줌 레벨로 지도를 리셋
@@ -109,6 +117,59 @@ export default {
         );
         this.map.setZoom(this.initialZoom);
       }
+    },
+
+    async fetchRealCost() {
+      try {
+        const response = await axios.get("/api/realcost");
+        this.displayRealCostOnMap(response.data);
+      } catch (error) {
+        console.error("실거래가 데이터를 가져오는 데 실패했습니다", error);
+        if (error.response) {
+          console.error("서버 응답 오류:", error.response.data);
+        }
+      }
+    },
+
+    displayRealCostOnMap(data) {
+      this.markers.forEach((marker) => marker.setMap(null));
+      this.markers = [];
+
+      data.forEach((item) => {
+        const geoJson = JSON.parse(item.geom_wgs84); // geoJson 변수로 파싱
+
+        if (geoJson.type === "Polygon") {
+          // Polygon 처리
+          const coordinates = geoJson.coordinates[0].map(
+            ([lon, lat]) => new naver.maps.LatLng(lat, lon)
+          );
+          new naver.maps.Polygon({
+            map: this.map,
+            paths: coordinates,
+            fillColor: "#ff0000",
+            fillOpacity: 0.5,
+            strokeColor: "#0000ff",
+            strokeWeight: 2,
+          });
+        } else if (geoJson.type === "Point") {
+          const [lon, lat] = geoJson.coordinates;
+          this.createPriceLabel(new naver.maps.LatLng(lat, lon), item.real_cost);
+        }
+      });
+    },
+
+    createPriceLabel(position, price) {
+      const priceLabel = new naver.maps.Marker({
+        position: position,
+        map: this.map,
+        icon: {
+          content: `<div class="price-label">${price}</div>`,
+          size: new naver.maps.Size(50, 50),
+          anchor: new naver.maps.Point(25, 50),
+        },
+      });
+
+      this.markers.push(priceLabel); // 마커 배열에 추가
     },
   },
 };
@@ -154,7 +215,7 @@ export default {
 @media (max-width: 700px) {
   .zoom-controls {
     position: absolute;
-    top:5rem;
+    top: 5rem;
     right: 1rem;
     display: flex;
     flex-direction: column;

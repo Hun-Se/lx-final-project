@@ -9,6 +9,8 @@ import com.lx.finalproject.vo.PrpVO;
 
 @Mapper
 public interface PropertyDAO {
+	
+	 
 	// PrpDTO 리스트 가져오기 (위도, 경도 포함)
 	List<PrpDTO> getPointById();
 

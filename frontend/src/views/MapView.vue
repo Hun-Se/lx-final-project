@@ -645,21 +645,7 @@
                   margin-left: 1ex; /* 왼쪽 여백을 주어 간격을 조정 */
                 "
               >
-                <button
-                  class="btn btn custom-btn"
-                  style="
-                    width: 10ex;
-                    height: 3ex;
-                    color: white;
-                    background-color: var(--color-bg-blue1);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  "
-                  @click="goToCesium"
-                >
-                  3D 뷰
-                </button>
+                
 
                 <!-- 아이콘들 나란히 배치 -->
                 <i

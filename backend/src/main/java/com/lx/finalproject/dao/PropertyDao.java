@@ -11,4 +11,6 @@ public interface PropertyDao {
     
     
     PrpDTO getPropertyMarkerById(Long prp_pk);
+    
+    
 }
