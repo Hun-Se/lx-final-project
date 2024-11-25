@@ -1,11 +1,18 @@
-from flask import Flask, request, jsonify
+import os
 import psycopg2
 import json
 import google.generativeai as genai
 import re, os
 import requests
+from dotenv import load_dotenv
 from flask_cors import CORS
 from psycopg2.extras import DictCursor
+from flask import Flask, request, jsonify
+from ai_chat import process_ai_request, get_db_connection
+
+
+load_dotenv()
+GENAI_API_KEY = os.getenv("GENAI_API_KEY")
 
 # GeMini API 설정
 genai.configure(api_key="AIzaSyCCli_Zt0gxb16rl8s6HrRISFVZ5nSgd9U")
@@ -411,6 +418,27 @@ def get_record_script_by_flr(flr_pk):
     # 결과 반환
     return jsonify({'flr_decstatus': flr_recdecstatus, 'flr_decscontent': flr_recdecscontent, 'chat_pk': rec_pk, '전체내용': response_data})
 
+
+
+# 여기서부터 ai Chat 컨트롤러 (원래 폴더구조를 만드는게 좋지만 시간상 한 파일안에 처리)
+# 사용자 정의 질문 처리
+@app.route("/chatbot", methods=["POST"])
+def query_api():
+    user_question = request.json.get("question", "")
+    if not user_question:
+        return jsonify({"error": "질문을 올바르게 입력해주세요."}), 400
+
+    try:
+        result = process_ai_request(user_question)
+        print(result)
+        return jsonify({
+            "question": user_question,
+            "result": result,
+            "message": "Query processed successfully."
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # 서버 실행 (디버그 모드 사용 시 코드 변경사항 자동 반영)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

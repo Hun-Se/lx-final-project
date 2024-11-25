@@ -1,5 +1,5 @@
 <template>
-  <MobileHeader> </MobileHeader>
+  <MobileHeader title="홈페이지"> </MobileHeader>
   <div
     class="container"
     style="flex: 1; margin-top: 40px; margin-bottom: 60px; overflow-y: auto"

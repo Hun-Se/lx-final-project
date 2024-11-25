@@ -1,5 +1,5 @@
 <template>
-  <component :is="renderHeader()"/>
+  <MobileHeader title="채팅"></MobileHeader>
   <div class="mt-15 p-5">
 
 

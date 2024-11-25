@@ -1,5 +1,5 @@
 <template>
-  <MobileHeader></MobileHeader>
+  <MobileHeader title="신고페이지"></MobileHeader>
   <div class="container mt-20">
     <label class="fs-4 fw-semibold form-label mt-3">
       <span class="required">신고 분류 선택</span>
@@ -32,7 +32,7 @@
     </label>
     <div class="mt-3 mb-3">
       <div class="form-floating">
-        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+        <textarea v-model="reportContent" class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
         <label for="floatingTextarea" style="color: grey">신고내용의 정확한 확인을 위해서 구체적으로 기재해 주세요.</label>
       </div>
     </div>
@@ -43,49 +43,21 @@
       </div>
     </label>
     <div class="d-flex justify-content-between mt-3">
-      <div class="form-check d-flex align-items-center">
+      <div class="form-check d-flex align-items-center"
+        v-for="(option, index) in proofOptions" :key="index"
+      >
         <input
             class="form-check-input"
             type="checkbox"
-            value=""
-            id="flexCheckDefault"
+            :value="option"
+            :id="'proofOption' + index"
+            v-model="selectedProofOptions"
         />
-        <label class="form-check-label ms-2" for="flexCheckDefault">
-          광고화면
-        </label>
-      </div>
-      <div class="form-check d-flex align-items-center">
-        <input
-            class="form-check-input"
-            type="checkbox"
-            value=""
-            id="flexCheckChecked"
-            checked
-        />
-        <label class="form-check-label ms-2" for="flexCheckChecked">
-          녹취
-        </label>
-      </div>
-      <div class="form-check d-flex align-items-center">
-        <input
-            class="form-check-input"
-            type="checkbox"
-            value=""
-            id="flexCheckChecked"
-        />
-        <label class="form-check-label ms-2" for="flexCheckChecked">
-          문자내용
-        </label>
-      </div>
-      <div class="form-check d-flex align-items-center">
-        <input
-            class="form-check-input"
-            type="checkbox"
-            value=""
-            id="flexCheckChecked"
-        />
-        <label class="form-check-label ms-2" for="flexCheckChecked">
-          기타자료
+        <label
+            class="form-check-label ms-2"
+            :for="'proofOption' + index"
+        >
+          {{ option }}
         </label>
       </div>
     </div>
@@ -94,11 +66,18 @@
       <span class="">자료 첨부</span>
     </label>
     <div class="mt-3 mb-3">
-      <input class="form-control" type="file" id="formFileMultiple" multiple />
+      <input
+          class="form-control"
+          type="file"
+          id="formFileMultiple"
+          multiple
+          @change="handleFileUpload"
+      />
     </div>
+
     <div class="btn-group d-flex justify-content-center mt-6">
       <button class="btn btn-light-dark">취소</button>
-      <button class="btn btn-report" @click="onClickMoveMap">확인</button>
+      <button class="btn btn-report" @click="submitReport">확인</button>
     </div>
   </div>
 
@@ -111,34 +90,61 @@ import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { ref } from 'vue';
 import { useRouter} from "vue-router"
 
-// 메뉴 데이터
+const categoryData = {
+  대분류: {
+    "명시의무 위반": ["중개사무소", "개업공인중개사", "중개보조원", "중개대상물"],
+    "광고주체": ["개업공인중개사가 아닌 자"],
+    "부당한 표시·광고": ["부존재·허위 매물", "존재·허위매물", "중개의사 없는 매물", "거짓광고", "과장광고", "기만적인 표시·광고"],
+  },
+  중분류: {
+    "중개사무소": ["상호 명시위반", "소재지 명시위반", "전화번호 명시위반","등록번호 명시위반"],
+    "개업공인중개사": ["성명 명시위반"],
+    "중개보조원": ["중개보조원 명시금"],
+    "중개대상물": ["토지_소재지 명시위반", "토지_면적 명시위반",
+      "토지_가격 명시위반", "토지_중개대상물 종류 명시위반",
+      "토지_거래형태 명시위반", "건축물 소재지 명시위반","건축물_면적 명시위반",
+      "건축물_가격 명시위반", "건축물_중개대상물 종류 명시위반", "건축물_거래형태 명시위반",
+      "건축물_총 층수 명시위반", "건축물_입주가능일 명시위반", "건축물_방 수 및 욕실 수 명시위반",
+      "건축물_행정기관 승인일자 명시위반", "건축물_주차대수 명시위반", "건축물_관리비 명시위반", "건축물_방향 명시위반",
+      "입목_소재지 명시위반", "입목_면적 명시위반", "입목_가격 명시위반", "입목_수출,수량,수령 다름","입목_거래형태 명시위반",
+      "공장재단_소재지 명시위반","공장재단_가격 명시위반","공장재단_거래형태 명시위반","광업재단_소재지 명시위반","광업재단_가격 명시위반",
+      "광업재단_거래형태 명시위반"],
+    "개업공인중개사가 아닌 자": ["중개보조원 광고", "대표 미병기 소속공인중개사 광고", "무자격 광고"],
+    "부존재·허위 매물": ["표시·광고 위치 미존재", "표시·광고 위치의 중개대상물과 동일하지 않음"],
+    "존재·허위매물": ["중개의뢰하지 않았음에도 임의 표시·광고(제3자 공동중개를 허용하지 않은 표시광고)", "표시·광고 당시부터, 계약체결 사실을 알고도 표시·광고", "중개의뢰하지 않았음에도 임의 표시·광고(제3자 공동중개를 허용하지 않은 표시광고)","거래불가 부동산 표시·광고"],
+    "중개의사 없는 매물": ["타 중개대상물 계속 권유", "계약체결 인지 후 지체 없이 삭제 지연"],
+    "거짓광고": ["실제 가격과 다르게 표시·광고", "실제 면적과 다르게 표시·광고", "다른 평면도나 사진 사용", "토지 용도를 다르게 표시·광고", "기타 거짓 표시·광고"],
+    "과장광고": ["옵션 성능 과장", "관리비 표시 위반", "실제 방향과 다르게 표시·광고", "주요 교통시설과 거리를 직선거리로 표시·광고", "기타 과장 표시·광고"],
+    "기만적인 표시·광고": ["선택에 중요한 사실 은폐·누락", "소비자 오인 소지"]
+  },
+};
+
 const menus = ref([
   {
-    placeholder: '대분류 선택',
-    options: ['명시의무 위반', '광고주체', '부당한 표시·광고'],
+    placeholder: "대분류 선택",
+    options: Object.keys(categoryData.대분류), // 대분류 옵션
     isActive: false,
-    selected: '',
+    selected: "",
   },
   {
-    placeholder: '중분류 선택',
-    options: ['중개사무소', '개업공인중개사', '중개보조원', '중개대상물'],
+    placeholder: "중분류 선택",
+    options: [], // 중분류는 대분류 선택 시 동적으로 변경
     isActive: false,
-    selected: '',
+    selected: "",
   },
   {
-    placeholder: '소분류 선택',
-    options: [
-      '상호 명시위반',
-      '소재지 명시위반',
-      '전화번호 명시위반',
-      '등록번호 명시위반',
-    ],
+    placeholder: "소분류 선택",
+    options: [], // 소분류는 중분류 선택 시 동적으로 변경
     isActive: false,
-    selected: '',
+    selected: "",
   },
 ]);
 
-// 특정 메뉴를 열거나 닫는 함수
+const proofOptions = ref(["광고화면", "녹취", "문자내용", "기타자료"]);
+const selectedProofOptions = ref([]);
+const reportContent = ref("");
+const uploadedFiles = ref([]);
+
 const toggleMenu = (index) => {
   menus.value = menus.value.map((menu, menuIndex) => ({
     ...menu,
@@ -146,10 +152,80 @@ const toggleMenu = (index) => {
   }));
 };
 
-// 옵션 선택 함수
 const selectOption = (menuIndex, option) => {
   menus.value[menuIndex].selected = option;
   menus.value[menuIndex].isActive = false;
+
+  // 선택에 따라 다음 메뉴의 옵션 업데이트
+  if (menuIndex === 0) {
+    // 대분류 선택 시 중분류 업데이트
+    menus.value[1].options = categoryData.대분류[option] || [];
+    menus.value[1].selected = ""; // 중분류 초기화
+    menus.value[2].options = []; // 소분류 초기화
+    menus.value[2].selected = "";
+  } else if (menuIndex === 1) {
+    // 중분류 선택 시 소분류 업데이트
+    menus.value[2].options = categoryData.중분류[option] || [];
+    menus.value[2].selected = ""; // 소분류 초기화
+  }
+};
+
+// 파일 업로드 핸들러
+const handleFileUpload = (event) => {
+  uploadedFiles.value = Array.from(event.target.files);
+};
+
+const submitReport = async () => {
+  const userPk = sessionStorage.getItem('userPk');
+
+  // 필수 값 확인
+  if (!menus.value.every((menu) => menu.selected)) {
+    alert("모든 카테고리를 선택해야 합니다.");
+    return;
+  }
+
+  if (!reportContent.value) {
+    alert("신고 내용을 입력해야 합니다.");
+    return;
+  }
+
+  const reportBody = {
+    userPk: userPk, // 사용자 ID
+    prpPk: 1, // 부동산 ID (더미 데이터)
+    chatPk: 1, // 채팅방 ID (더미 데이터)
+    recPk: null, // 녹취 파일은 서버에서 처리
+    cateUpper: menus.value[0].selected, // 대분류
+    cateMiddle: menus.value[1].selected, // 중분류
+    cateLower: menus.value[2].selected, // 소분류
+    content: reportContent.value,
+    proofOptions: selectedProofOptions.value,
+    files: [],
+  };
+
+  for (const file of uploadedFiles.value) {
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    let folder = "";
+
+    if (["mp3", "wav", "m4a"].includes(fileExtension)) {
+      folder = "recode";
+    } else if (["jpg", "png", "jpeg", "gif"].includes(fileExtension)) {
+      folder = "capture";
+    } else if (["pdf", "doc", "docx"].includes(fileExtension)) {
+      folder = "doc";
+    } else {
+      folder = "besides"
+    }
+
+    const filePath = `/assets/file/${folder}/${folder}_${Date.now()}_${file.name}`;
+    reportBody.files.push({ name: file.name, path: filePath });
+  }
+
+  try {
+    const response = await axios.post("/api/reportPrp", reportBody);
+    console.log("서버 응답:", response.data);
+  } catch (error) {
+    console.error("요청 실패:", error);
+  }
 };
 
 

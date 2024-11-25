@@ -14,166 +14,142 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
+import { useAiChatbotStore } from "@/stores/aiChatbot.js";
+import {storeToRefs} from "pinia";
 
-export default {
-  data() {
-    return {
-      map: null,
-      locations: [], // 마커 데이터를 저장할 배열
-      markers: [], // 지도에 표시된 마커 배열
-      initialCenter: { lat: 37.516042, lng: 127.034881 }, // 초기 지도 중심 좌표
-      initialZoom: 17, // 초기 줌 레벨
-    };
-  },
-  mounted() {
-    const script = document.createElement("script");
-    script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
-    script.onload = () => {
-      this.initMap();
-    };
-    document.head.appendChild(script);
-  },
-  methods: {
-    async initMap() {
-      this.map = new naver.maps.Map("map", {
-        center: new naver.maps.LatLng(37.516042, 127.034881),
-        zoom: 17,
-        zoomControl: false,
-        mapTypeControl: true,
-      });
-      window.mapInstance = this.map; // 전역 변수 설정
+const map = ref(null);
+const locations = ref([]);
+const markers = ref([]);
+const aiChatbotStore = useAiChatbotStore();
+const { chatBotData } = storeToRefs(aiChatbotStore);
 
-      // 위치 데이터 가져오기
-      try {
-        const response = await axios.get("/api/properties/map");
-        this.locations = response.data.map((location) => ({
-          latitude: location.latitude,
-          longitude: location.longitude,
-          name: location.name,
-          price: location.price,
-          prpTransType: location.prpTransType,
-        }));
-      } catch (error) {
-        console.error("데이터를 가져오는 중 오류 발생:", error);
-      }
+const initMap = async () => {
+  map.value = new naver.maps.Map("map", {
+    center: new naver.maps.LatLng(37.516042, 127.034881),
+    zoom: 17,
+    zoomControl: false,
+    mapTypeControl: true,
+  });
 
-      // 마커 생성
-      this.locations.forEach((location) => {
-        const content = `
-           <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue2); background: white; cursor: pointer; position: relative; z-index: 2;">
-        <!-- 노란색 동그라미 -->
-        <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background-color: orange; border-radius: 50%; z-index: 3; border: 2px solid var(--color-bg-blue2);display: flex; align-items: center; justify-content: center;"> ${
-          location.prpTransType === 0 ? "매" : location.prpTransType === 1 ? "전" : "월"
-        }</div>
+  // 위치 데이터 초기화
+  await updateLocations();
+  updateMarkersAndCenter();
+};
 
-        <!-- 텍스트 부분 -->
+const updateLocations = async () => {
+
+  if (chatBotData?.value.length > 0) {
+    const resultData = chatBotData?.value[chatBotData?.value.length-1].result.result_data || [];
+    console.log(resultData);
+    locations.value = resultData.map((location) => ({
+      // 쿼리결과가 반대로나옴 시간없어서 일단 프론트 단에서 바꿔서 기입
+      latitude: location.longitude,
+      longitude: location.latitude,
+      name: location.prp_name,
+      price: location.prp_price,
+      prpTransType: location.prp_trans_type,
+    }));
+  } else {
+    try {
+      const response = await axios.get("/api/properties/map");
+      locations.value = response.data.map((location) => ({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        name: location.name,
+        price: location.price,
+        prpTransType: location.prpTransType,
+      }));
+    } catch (error) {
+      console.error("데이터를 가져오는 중 오류 발생:", error);
+    }
+  }
+};
+
+const updateMarkersAndCenter = () => {
+  // 기존 마커 제거
+  markers.value.forEach((marker) => marker.setMap(null));
+  markers.value = [];
+
+  // 새로운 마커 생성
+  locations.value.forEach((location, index) => {
+    const content = `
+      <div style="margin: 0; display: table; padding: 0.5rem; table-layout: auto; border-radius: 2.3rem; border: 0.2rem solid var(--color-bg-blue1); background: white; cursor: pointer; position: relative; z-index: 2;">
+        <div style="position: absolute; top: -10px; left: -10px; width: 25px; height: 25px; background-color: orange; border-radius: 50%; z-index: 3; border: 2px solid var(--color-bg-blue1);display: flex; align-items: center; justify-content: center;"> ${
+        location.prpTransType === 0
+            ? "매"
+            : location.prpTransType === 1
+                ? "전"
+                : "월"
+    }</div>
         <div style="max-width: 23rem; height: 1rem; padding: 0 0.8rem; text-overflow: ellipsis; white-space: nowrap; display: table-cell; vertical-align: middle; font-weight: 600;">
-          <p>아파트</p>
+          <p>${location.name}</p>
           <p>${
-            location.price >= 100000000
-              ? `${(location.price / 100000000).toFixed(1)}억`
-              : `${Math.floor(location.price / 10000)}만원`
-          }</p>
+        location.price >= 100000000
+            ? `${(location.price / 100000000).toFixed(1)}억`
+            : `${Math.floor(location.price / 10000)}만원`
+    }</p>
         </div>
-
-        <!-- 아래 화살표 부분 -->
         <span style="position: absolute; border-style: solid; border-width: 1.2rem 1rem 0 1rem; border-color: #ffffff transparent; display: block; width: 0; z-index: 1; top: 2.5rem; left: 2.0rem;"></span>
         <span style="position: absolute; border-style: solid; border-width: 1.1rem 1rem 0 1rem; border-color: var(--color-bg-blue2) transparent; display: block; width: 0; z-index: 0; top: 2.933rem; left: 2.0rem;"></span>
       </div>
-        `;
+    `;
 
-        new naver.maps.Marker({
-          position: new naver.maps.LatLng(location.latitude, location.longitude),
-          map: this.map,
-          icon: {
-            content: content,
-            size: new naver.maps.Size(38, 58),
-            anchor: new naver.maps.Point(19, 58),
-          },
-        });
-      });
-    },
+    const marker = new naver.maps.Marker({
+      position: new naver.maps.LatLng(location.latitude, location.longitude),
+      map: map.value,
+      icon: {
+        content: content,
+        size: new naver.maps.Size(38, 58),
+        anchor: new naver.maps.Point(19, 58),
+      },
+    });
 
-    zoomIn() {
-      if (this.map) {
-        this.map.setZoom(this.map.getZoom() + 1);
-      }
-    },
+    markers.value.push(marker);
 
-    zoomOut() {
-      if (this.map) {
-        this.map.setZoom(this.map.getZoom() - 1);
-      }
-    },
-
-    resetMap() {
-      if (this.map) {
-        // 초기 위치와 줌 레벨로 지도를 리셋
-        this.map.setCenter(
-          new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng)
-        );
-        this.map.setZoom(this.initialZoom);
-      }
-    },
-
-    async fetchRealCost() {
-      try {
-        const response = await axios.get("/api/realcost");
-        this.displayRealCostOnMap(response.data);
-      } catch (error) {
-        console.error("실거래가 데이터를 가져오는 데 실패했습니다", error);
-        if (error.response) {
-          console.error("서버 응답 오류:", error.response.data);
-        }
-      }
-    },
-
-    displayRealCostOnMap(data) {
-      this.markers.forEach((marker) => marker.setMap(null));
-      this.markers = [];
-
-      data.forEach((item) => {
-        const geoJson = JSON.parse(item.geom_wgs84); // geoJson 변수로 파싱
-
-        if (geoJson.type === "Polygon") {
-          // Polygon 처리
-          const coordinates = geoJson.coordinates[0].map(
-            ([lon, lat]) => new naver.maps.LatLng(lat, lon)
-          );
-          new naver.maps.Polygon({
-            map: this.map,
-            paths: coordinates,
-            fillColor: "#ff0000",
-            fillOpacity: 0.5,
-            strokeColor: "#0000ff",
-            strokeWeight: 2,
-          });
-        } else if (geoJson.type === "Point") {
-          const [lon, lat] = geoJson.coordinates;
-          this.createPriceLabel(new naver.maps.LatLng(lat, lon), item.real_cost);
-        }
-      });
-    },
-
-    createPriceLabel(position, price) {
-      const priceLabel = new naver.maps.Marker({
-        position: position,
-        map: this.map,
-        icon: {
-          content: `<div class="price-label">${price}</div>`,
-          size: new naver.maps.Size(50, 50),
-          anchor: new naver.maps.Point(25, 50),
-        },
-      });
-
-      this.markers.push(priceLabel); // 마커 배열에 추가
-    },
-  },
+    // 첫 번째 위치를 지도 중심으로 설정
+    if (index === 0) {
+      map.value.setCenter(
+          new naver.maps.LatLng(location.latitude, location.longitude)
+      );
+    }
+  });
 };
+
+// 줌 컨트롤 함수
+const zoomIn = () => {
+  if (map.value) {
+    map.value.setZoom(map.value.getZoom() + 1);
+  }
+};
+
+const zoomOut = () => {
+  if (map.value) {
+    map.value.setZoom(map.value.getZoom() - 1);
+  }
+};
+
+// watch로 chatBotData 변경 감지
+watch(
+    () => chatBotData.value,
+    async () => {
+      await updateLocations();
+      updateMarkersAndCenter();
+    },
+    { deep: true }
+);
+
+// 스크립트 로드 후 지도 초기화
+onMounted(() => {
+  const script = document.createElement("script");
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.onload = initMap;
+  document.head.appendChild(script);
+});
 </script>
+
 
 <style scoped>
 .map-container {

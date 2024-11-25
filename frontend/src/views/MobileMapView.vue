@@ -63,7 +63,7 @@
           <!-- AI 채팅 -->
           <div v-if="isChatViewActive">
             <!-- 매물 조건 박스들 (상단 문단) -->
-            <div>
+            <div v-if="chatList.length === 0">
               <div style="display: flex; padding-left: 1ex; margin-top: 1ex; width: 55ex">
                 <div
                   class="info-box"
@@ -95,16 +95,50 @@
                 </div>
               </div>
             </div>
+            <div v-else-if="chatList.length > 0" class="p-5 overflow-auto">
+              <div v-for="(sendChat, index) in chatList" :key="index">
+                <!-- 사용자 입력 -->
+                <div class="d-flex flex-column align-items-end">
+                  <div class="d-flex align-items-center mb-2">
+                  </div>
+                  <div class="p-5 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-400px text-end" data-kt-element="message-text">
+                    {{ sendChat }}
+                  </div>
+                </div>
 
+                <!-- AI 응답 -->
+                <div v-if="chatBotData.length > index && chatBotData[index]?.result?.friendly_response" class="d-flex justify-content-start mt-5 mb-10">
+                  <!--begin::Wrapper-->
+                  <div class="d-flex flex-column align-items-start">
+                    <!--begin::User-->
+                    <div class="d-flex align-items-center mb-2">
+                      <!--begin::Avatar-->
+                      <div class="symbol symbol-35px symbol-circle">
+                        <img alt="AiChat" src="/assets/img/chatbot_profile.jpg">
+                      </div>
+                      <div class="ms-3">
+                        <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary me-1">챗봇</a>
+                      </div>
+                    </div>
+                    <div class="p-5 rounded bg-light-info text-gray-900 fw-semibold mw-lg-400px text-start" data-kt-element="message-text">
+                      <div v-html="formattedResponse(index)"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
             <!-- 입력창 및 버튼 (하단 문단) -->
             <div
-              style="display: flex; align-items: center; width: 53ex; margin-left: 2ex"
+              style="display: flex; align-items: center; width: 53ex; margin-left: 2ex; padding-bottom: 8rem"
             >
               <input
                 type="text"
                 name="AiGPT"
                 placeholder="원하는 매물 조건을 입력해주세요."
                 class="form-control"
+                v-model="chatQuestion"
                 style="flex-grow: 1; margin-right: 0.5ex; width: 15ex"
               />
               <button
@@ -118,7 +152,7 @@
           </div>
 
           <!-- 매물 리스트 -->
-          <ul v-if="!isChatViewActive">
+          <ul v-if="!isChatViewActive && chatBotData.length === 0">
             <li
               v-for="(item, index) in sales"
               :key="item.prpPk"
@@ -329,6 +363,198 @@
               </a>
             </li>
           </ul>
+          <ul v-else-if="!isChatViewActive && chatBotData.length > 0">
+            <li
+                v-for="(item, index) in chatBotData[chatBotData.length - 1].result.result_data"
+                :key="item.prp_pk"
+                class="property-item-mobile"
+                @click="toggleSalesDetail(item.prp_pk)"
+            >
+              <a href="#" class="styled-roomLink">
+                <img
+                    :src="'/assets/img/' + item.prp_img"
+                    alt="매물 이미지"
+                    class="property-image-mobile"
+                />
+                <div class="styled-RoomDetail">
+                  <h1 class="styled-price">
+                    <!--                  가격 <span>{{ item.prpPrice }}</span>-->
+                    <span>{{item.prp_price/10000}}억 원</span>
+                  </h1>
+                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">{{ item.prp_name }}</p>
+                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">지역(코드) : {{item.region_pk}}</p>
+                  <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">
+                    전용면적 : {{ item.prp_excl_area }}m^2
+                  </p>
+                  <p class="styled__RoomInfo-sc-1b8f2kq-6 iDAcJ">
+                    {{ item.prp_block }}동, {{ item.prp_floor }}층, {{ item.prp_unit }}호
+                  </p>
+                  <p class="styled__RoomDesc-sc-1b8f2kq-7 hVDije">
+                    주소 : {{ item.prp_addr_detail ? item.prp_addr_detail : 비공개 }}
+                  </p>
+
+                  <div class="styled__TagContainer-sc-1b8f2kq-8 jZjxOL">
+                    <div class="animated_badge animated_badge_5 hide">
+                      <div class="animated_stars">
+                        <div class="animated_star plus"></div>
+                        <div class="animated_star donut yellow"></div>
+                        <div class="animated_star plus"></div>
+                        <div class="animated_star donut"></div>
+                        <div class="animated_star plus yellow"></div>
+                      </div>
+                      <svg
+                          class="animated_badge_svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 84 99"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                            class="badge_ribbon"
+                            d="M0.761166 82.9447L17.3041 50.8886C17.5574 50.3979 18.1606 50.2053 18.6513 50.4586L43.875 63.4756C44.3658 63.7289 44.5583 64.332 44.305 64.8228L27.7788 96.8466C27.4294 97.5236 26.4817 97.5769 26.0586 96.9435L17.8756 84.694C17.6881 84.4133 17.3716 84.2461 17.0341 84.2495L1.65981 84.4033C0.906487 84.4108 0.415676 83.6142 0.761166 82.9447Z"
+                            fill="#F04152"
+                        />
+                        <path
+                            class="badge_ribbon"
+                            d="M0.761166 82.9447L17.3041 50.8886C17.5574 50.3979 18.1606 50.2053 18.6513 50.4586L43.875 63.4756C44.3658 63.7289 44.5583 64.332 44.305 64.8228L27.7788 96.8466C27.4294 97.5236 26.4817 97.5769 26.0586 96.9435L17.8756 84.694C17.6881 84.4133 17.3716 84.2461 17.0341 84.2495L1.65981 84.4033C0.906487 84.4108 0.415676 83.6142 0.761166 82.9447Z"
+                            fill="url(#paint0_linear)"
+                        />
+                        <mask
+                            id="mask0"
+                            mask-type="alpha"
+                            maskUnits="userSpaceOnUse"
+                            x="1"
+                            y="50"
+                            width="44"
+                            height="46"
+                        >
+                          <path
+                              d="M3.80623 77.0441L15.4697 54.4432C16.7361 51.9893 19.752 51.0266 22.2059 52.293L40.3204 61.6412C42.7743 62.9076 43.737 65.9235 42.4707 68.3774L30.8904 90.817C29.1437 94.2016 24.4052 94.4685 22.2895 91.3014L19.0777 86.4935C18.1402 85.09 16.5578 84.2543 14.8701 84.2712L8.29946 84.3369C4.53283 84.3745 2.07879 80.3915 3.80623 77.0441Z"
+                              fill="#71A1F4"
+                          />
+                          <path
+                              d="M3.80623 77.0441L15.4697 54.4432C16.7361 51.9893 19.752 51.0266 22.2059 52.293L40.3204 61.6412C42.7743 62.9076 43.737 65.9235 42.4707 68.3774L30.8904 90.817C29.1437 94.2016 24.4052 94.4685 22.2895 91.3014L19.0777 86.4935C18.1402 85.09 16.5578 84.2543 14.8701 84.2712L8.29946 84.3369C4.53283 84.3745 2.07879 80.3915 3.80623 77.0441Z"
+                              fill="url(#paint1_linear)"
+                          />
+                        </mask>
+                        <g class="badge_ribbon" mask="url(#mask0)">
+                          <rect
+                              width="9.73445"
+                              height="46.9502"
+                              transform="matrix(0.894023 0.448022 -0.445194 0.895434 24.272 60.4499)"
+                              fill="#FCD977"
+                          />
+                        </g>
+                        <path
+                            class="badge_ribbon right"
+                            d="M56.5365 97.1074L38.5 65.8673C38.2239 65.389 38.3877 64.7774 38.866 64.5013L63.4476 50.3091C63.9259 50.0329 64.5375 50.1968 64.8137 50.6751L82.832 81.8838C83.2129 82.5435 82.7458 83.3698 81.9841 83.3836L67.2552 83.6511C66.9177 83.6572 66.6061 83.8332 66.4266 84.1191L58.2494 97.1392C57.8487 97.7772 56.9132 97.7598 56.5365 97.1074Z"
+                            fill="#F04152"
+                        />
+                        <path
+                            class="badge_ribbon right"
+                            d="M56.5365 97.1074L38.5 65.8673C38.2239 65.389 38.3877 64.7774 38.866 64.5013L63.4476 50.3091C63.9259 50.0329 64.5375 50.1968 64.8137 50.6751L82.832 81.8838C83.2129 82.5435 82.7458 83.3698 81.9841 83.3836L67.2552 83.6511C66.9177 83.6572 66.6061 83.8332 66.4266 84.1191L58.2494 97.1392C57.8487 97.7772 56.9132 97.7598 56.5365 97.1074Z"
+                            fill="url(#paint2_linear)"
+                        />
+                        <mask
+                            id="mask1"
+                            mask-type="alpha"
+                            maskUnits="userSpaceOnUse"
+                            x="38"
+                            y="49"
+                            width="45"
+                            height="47"
+                        >
+                          <path
+                              d="M53.2165 91.357L40.5 69.3314C39.1193 66.9399 39.9387 63.882 42.3301 62.5013L59.9835 52.3091C62.375 50.9283 65.4329 51.7477 66.8137 54.1392L79.4394 76.0076C81.3438 79.3061 79.0082 83.4376 75.2001 83.5068L69.419 83.6118C67.7314 83.6424 66.1732 84.5224 65.2756 85.9517L61.7808 91.5162C59.7774 94.7061 55.0999 94.6192 53.2165 91.357Z"
+                              fill="#71A1F4"
+                          />
+                          <path
+                              d="M53.2165 91.357L40.5 69.3314C39.1193 66.9399 39.9387 63.882 42.3301 62.5013L59.9835 52.3091C62.375 50.9283 65.4329 51.7477 66.8137 54.1392L79.4394 76.0076C81.3438 79.3061 79.0082 83.4376 75.2001 83.5068L69.419 83.6118C67.7314 83.6424 66.1732 84.5224 65.2756 85.9517L61.7808 91.5162C59.7774 94.7061 55.0999 94.6192 53.2165 91.357Z"
+                              fill="url(#paint3_linear)"
+                          />
+                        </mask>
+                        <g class="badge_ribbon right" mask="url(#mask1)">
+                          <rect
+                              width="9.73445"
+                              height="46.9502"
+                              transform="matrix(0.860033 -0.510239 0.512954 0.858416 50.3103 65.1699)"
+                              fill="#FCD977"
+                          />
+                        </g>
+                        <circle
+                            cx="40.5"
+                            cy="37.5"
+                            r="33.5"
+                            fill="#DBDFE7"
+                            stroke="#FCD977"
+                            stroke-width="8"
+                        />
+                        <circle
+                            class="badge_circle"
+                            cx="40.5"
+                            cy="37.5"
+                            r="29.5"
+                            fill="#FCD977"
+                            stroke="#FFA826"
+                            stroke-width="4"
+                        />
+                        <path class="badge_number" fill="#FFA826" />
+                        <defs>
+                          <linearGradient
+                              id="paint0_linear"
+                              x1="31.2632"
+                              y1="56.9671"
+                              x2="13.7695"
+                              y2="90.8654"
+                              gradientUnits="userSpaceOnUse"
+                          >
+                            <stop stop-color="#A31523" />
+                            <stop offset="1" stop-color="#F04152" stop-opacity="0" />
+                          </linearGradient>
+                          <linearGradient
+                              id="paint1_linear"
+                              x1="31.2632"
+                              y1="56.9671"
+                              x2="13.7695"
+                              y2="90.8654"
+                              gradientUnits="userSpaceOnUse"
+                          >
+                            <stop stop-color="#27539F" />
+                            <stop offset="1" stop-color="#71A1F4" stop-opacity="0" />
+                          </linearGradient>
+                          <linearGradient
+                              id="paint2_linear"
+                              x1="51.1568"
+                              y1="57.4052"
+                              x2="70.2299"
+                              y2="90.4407"
+                              gradientUnits="userSpaceOnUse"
+                          >
+                            <stop stop-color="#A31523" />
+                            <stop offset="1" stop-color="#F04152" stop-opacity="0" />
+                          </linearGradient>
+                          <linearGradient
+                              id="paint3_linear"
+                              x1="51.1568"
+                              y1="57.4052"
+                              x2="70.2299"
+                              y2="90.4407"
+                              gradientUnits="userSpaceOnUse"
+                          >
+                            <stop stop-color="#27539F" />
+                            <stop offset="1" stop-color="#71A1F4" stop-opacity="0" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </div>
+                    <span class="badge badge-light-warning">우수중개사</span>
+                    <div class="btn btn-light-danger btn-sm" @click="onClickMoveReport">신고</div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
         </ul>
       </div>
     </section>
@@ -355,12 +581,12 @@
 import { ref, computed, reactive, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useSaleStore } from "@/stores/property.js";
+import { useAiChatbotStore } from "@/stores/aiChatbot.js";
 import NaverMap from "@/components/NaverMap.vue";
 import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
 import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
-import { useChatStore } from "@/stores/chat";
 import CesiumHeatmap from "@/components/CesiumHeatmap.vue";
 import CesiumMap2 from "@/components/CesiumMap2.vue";
 
@@ -387,27 +613,63 @@ function goToCesium() {
 }
 
 //********채팅**********
-const chatStore = useChatStore();
-const isChatViewActive = ref(false); // 상태 관리
+const aiChatbotStore = useAiChatbotStore();
+const chatQuestion = ref("");
+const { chatBotData, chatBotBody } = storeToRefs(aiChatbotStore);
+const chatList = ref([]);
 
+
+const isChatViewActive = ref(false); // 상태 관리
 // AI GPT 제출
-const submitAiGPT = () => {
-  // 문의 로직 구현
-  console.log("AI GPT 문의 제출");
+const submitAiGPT = async () => {
+  chatBotBody.value = {
+      "question": chatQuestion.value
+  }
+  chatList.value.push(chatQuestion.value);
+  chatQuestion.value = "";
+  await aiChatbotStore.fetchAiChatbot();
+
+};
+
+// Format Friendly Response
+const formatFriendlyResponse = (response) => {
+  if (!response) return "";
+
+  const items = response.split("\n").filter((line) => line.trim() !== "");
+  let formattedResponse = "<ul>";
+
+  items.forEach((line, index) => {
+    if (line.startsWith(index + 1 + ".")) {
+      // 매물 번호 처리
+      formattedResponse += `<li><strong>${line}</strong><ul>`;
+    } else if (line.startsWith("- ")) {
+      // 항목 처리
+      formattedResponse += `<li>${line.substring(2)}</li>`;
+    } else {
+      // 닫는 태그 처리
+      formattedResponse += `</ul></li>`;
+    }
+  });
+
+  formattedResponse += "</ul>";
+  return formattedResponse;
+};
+
+// Friendly Response를 계산
+const formattedResponse = (index) => {
+  const response = chatBotData.value[index]?.result?.friendly_response || "";
+  // 텍스트를 HTML 형식으로 변환 (예: 줄바꿈 처리)
+  return response.replace(/\n/g, "<br>");
 };
 
 // 버튼 텍스트에 대한 반응형 값 계산
-const buttonText = computed(() => (isChatViewActive.value ? "AI Chat" : "매물"));
+const buttonText = computed(() => (isChatViewActive.value ? "AI 공인중개사" : "매물"));
 
 // 채팅 보기 토글
 const toggleChatView = () => {
   isChatViewActive.value = !isChatViewActive.value;
 };
 
-// **********매물**********
-function goToAuction() {
-  router.push({ path: "/user_auction" });
-}
 
 // isMobile 변수 정의 (화면 크기를 기준으로)
 const isMobile = ref(window.innerWidth <= 768);
@@ -417,10 +679,6 @@ window.addEventListener("resize", () => {
   isMobile.value = window.innerWidth <= 768;
 });
 
-// 렌더할 헤더 선택
-const computedHeader = computed(() => {
-  return isMobile.value ? MobileHeader : Header2;
-});
 
 const router = useRouter();
 const store = useSaleStore();
@@ -433,7 +691,6 @@ onMounted(() => {
 
 const init = () => {
   store.fetchSalesList();
-  console.log(sales.value);
 };
 
 // 필터 상태를 관리할 reactive 객체

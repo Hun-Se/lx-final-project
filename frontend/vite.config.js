@@ -28,6 +28,7 @@ export default ({ mode }) => {
       outDir: "../backend/src/main/resources/static",
     },
     server: {
+      host: "0.0.0.0",
       proxy: {
         "/ws/chat": {
           target: "http://localhost:9000", // .env에서 불러온 API URL

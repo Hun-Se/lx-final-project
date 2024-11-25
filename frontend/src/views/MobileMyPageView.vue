@@ -1,6 +1,6 @@
 <template>
 
-    <MobileHeader>
+    <MobileHeader title="마이페이지">
     </MobileHeader>
     <div class="container" style="width: 428px; height: 926px; ">
         <ul class="container-sub-menu d-flex justify-content-around fs-4 p-3">

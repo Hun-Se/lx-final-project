@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: "/mobile_map",
       name: "mobile_map",
-      component: () => import("../views/MapView_mobile.vue"),
+      component: () => import("../views/MobileMapView.vue"),
     },
     {
       path: "/broker_auction",

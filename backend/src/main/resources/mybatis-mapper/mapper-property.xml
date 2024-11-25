@@ -89,8 +89,8 @@
 		p.prp_pk AS prpPk,
 		p.prp_name AS name,
         CAST(p.prp_price AS DECIMAL(15, 0)) AS price,  <!-- 정수형으로 반환 -->
-		ST_Y(c.location) AS latitude, -- 위도
-		ST_X(c.location) AS longitude -- 경도
+		ST_X(c.location) AS latitude, -- 위도
+		ST_Y(c.location) AS longitude -- 경도
 		FROM prp p
 		JOIN coord c ON p.coord_pk = c.coord_pk;
 	</select>
