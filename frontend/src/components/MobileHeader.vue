@@ -1,58 +1,81 @@
 <template>
   <header class="header">
+    <!-- 로고 -->
     <div class="logo cursor-pointer d-flex" @click="goToHome">
       <img class="img-logo" src="/assets/img/logo.png" alt="" />
     </div>
-    <h1 class="d-flex justify-content-center align-items-center fw-bold fs-5 text-white" style="line-height: 25px">{{ title }}</h1>
-    <div class="btn btn-icon btn-custom btn-icon-muted btn-active-light btn-active-color-primary w-35px h-35px position-relative" id="kt_drawer_chat_toggle">
-      <i class="bi bi-bell fs-1 text-white"></i>
-      <span class="bullet bullet-dot bg-danger h-6px w-6px position-absolute" style="top: 4px; right: 4px"></span>
+
+    <!-- 헤더 제목 -->
+    <h1 class="d-flex justify-content-center align-items-center fw-bold fs-5 text-white" style="line-height: 25px">
+      {{ title }}
+    </h1>
+
+    <!-- 사용자 정보 또는 로그인 버튼 -->
+    <div class="d-flex align-items-center">
+      <template v-if="isLoggedIn">
+        <!-- 로그인 상태 -->
+        <span class="text-white me-3">{{ username }}</span>
+        <button class="btn btn-light btn-sm" @click="logout">Logout</button>
+      </template>
+      <template v-else>
+        <!-- 비로그인 상태 -->
+        <button class="btn btn-primary btn-sm" @click="goToLogin">Login</button>
+      </template>
     </div>
   </header>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, watch, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user"; // Pinia userStore 가져오기
 
+const router = useRouter();
+const userStore = useUserStore();
+
+// 로그인 상태와 사용자 이름
 const isLoggedIn = ref(false);
 const username = ref("");
 
-defineProps({
-  title: {
-    type: String, // `title`의 타입
-    required: true, // 필수 여부
+// userStore.user 상태 변경 감지
+watch(
+  () => userStore.user,
+  (newUser) => {
+    if (newUser && newUser.userName) {
+      isLoggedIn.value = true;
+      username.value = newUser.userName;
+    } else {
+      isLoggedIn.value = false;
+      username.value = "";
+    }
   },
-});
-
-// 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
-onMounted(() => {
-  const storedUsername = localStorage.getItem("username");
-  if (storedUsername) {
-    isLoggedIn.value = true;
-    username.value = storedUsername;
-  }
-});
+  { immediate: true } // 컴포넌트가 마운트될 때도 즉시 실행
+);
 
 // 로그아웃 함수
-const logout = async () => {
-  try {
-    // 서버에 로그아웃 요청 (세션 무효화)
-    const response = await axios.post("/api/logout"); // 경로 확인
-    if (response.status === 200) {
-      localStorage.removeItem("username"); // localStorage에서 사용자 정보 삭제
-      isLoggedIn.value = false;
+const logout = () => {
+  userStore.clearUser(); // Pinia 스토어 초기화
+  isLoggedIn.value = false;
+  username.value = "";
+  router.push("/login"); // 로그아웃 후 로그인 페이지로 이동
+};
 
-      router.replace({ path: "/" }); // 로그아웃 후 메인 페이지로 리다이렉트
-    }
-  } catch (error) {
-    console.error("로그아웃 중 오류 발생:", error);
-  }
+// 로그인 페이지로 이동
+const goToLogin = () => {
+  router.push("/login");
 };
 
 // 홈으로 이동 함수
-function goToHome() {
-  router.replace({ path: "/" });
-}
+const goToHome = () => {
+  router.push("/");
+};
+
+// Pinia 상태 초기화
+onMounted(() => {
+  if (userStore.initializeUser) {
+    userStore.initializeUser();
+  }
+});
 </script>
 
 <style scoped>
@@ -76,59 +99,13 @@ function goToHome() {
   cursor: pointer;
 }
 
-.navigation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-grow: 1;
-}
-
-.nav-center {
-  display: flex;
-  justify-content: left;
-  flex-grow: 1;
-  list-style: none;
-  margin: 0;
-  padding: 0px 0px 0px 20px;
-}
-
-.nav-right {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: flex-end;
-  white-space: nowrap; /* 한 줄로 표시되도록 강제 */
-}
-
-.nav-right li {
-  margin: 0 10px; /* 여백을 추가해서 간격 조절 */
-  white-space: nowrap; /* 이정현님을 한 줄로 표시 */
-  overflow: hidden; /* 텍스트가 길면 넘어가는 부분을 숨김 */
-  text-overflow: ellipsis; /* 너무 길면 생략(...) 처리 */
-  max-width: 100px; /* 너무 긴 이름을 제한 */
-}
-
-.nav-center li,
-.nav-right li {
-  margin: 0 15px;
-}
-
-.nav-center li a,
-.nav-right li a {
-  text-decoration: none;
-  color: black;
-  font-weight: bold;
-}
-
-.nav-center li a:hover,
-.nav-right li a:hover {
-  color: #d81f26;
-}
-
 .img-logo {
   width: 3rem;
   height: 3rem;
 }
 
+.btn-sm {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.875rem;
+}
 </style>

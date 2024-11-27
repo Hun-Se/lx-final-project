@@ -19,7 +19,7 @@ public class UserService {
     }
 
     // ID로 사용자 조회
-    public int getUserByUserId(String userId) {
+    public UserVo getUserByUserId(String userId) {
         return userDao.getUserByUserId(userId);
     }
 

@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -71,14 +73,16 @@ public class LoginController {
 
     // 로그인 처리 (POST 요청)
     @PostMapping("/login")
-    public int login(@RequestBody UserVo user) {
+    public ResponseEntity<?> login(@RequestBody UserVo user) {
         boolean isAuthenticated = userService.authenticate(user.getUserId(), user.getUserPw());
         if (isAuthenticated) {
-            return userService.getUserByUserId(user.getUserId());
+            UserVo authenticatedUser = userService.getUserByUserId(user.getUserId());
+            return ResponseEntity.ok(authenticatedUser); // 인증 성공 시 200 OK와 사용자 정보 반환
         } else {
-            return 700;
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials"); // 401 Unauthorized
         }
     }
+
     
     // 유저 이름 조회 (GET 요청)
     @GetMapping("/userName/{userPk}")

@@ -1,46 +1,39 @@
 package com.lx.finalproject.controller.WebSocketChat;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.gson.Gson;
-import com.lx.finalproject.utill.SimpleChatHandler;
-import com.lx.finalproject.vo.ChatMessageVo;
-
-import lombok.RequiredArgsConstructor;
-
+import com.lx.finalproject.service.websocket.WebsocketService;
+import com.lx.finalproject.vo.ChatmesVO;
 
 @Controller
 @RequestMapping("chat")
-@RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173") // 허용할 Origin 명시
 public class ChatController {
-	
-	@Autowired
-    SimpleChatHandler simpleChatHandler;
-	
-	@Autowired
-    Gson gson;
 
-    @GetMapping("test")
-    public @ResponseBody String test() throws Exception {
-        simpleChatHandler.broadcast(gson.toJson(new ChatMessageVo("관리자", "10분 뒤 서버가 종료됩니다.")));
-        return "done";
-    }
+    @Autowired
+    private WebsocketService websocketService;
 
-    @GetMapping("rooms")
-    public String rooms() {
-        return "rooms";  
-    }
+    /**
+     * 채팅 메시지 저장 엔드포인트
+     *
+     * @param chatmesVO 요청 본문에 포함된 메시지 데이터
+     * @return 처리 결과 메시지
+     */
+    @PostMapping("save")
+    public @ResponseBody String saveChatMessage(@RequestBody ChatmesVO chatmesVO) {
+        try {
+            // user_pk_sender 또는 agent_pk_sender 중 하나는 반드시 존재해야 함
+            if (chatmesVO.getUserPkSender() == null && chatmesVO.getAgentPkSender() == null) {
+                return "Error: Either userPkSender or agentPkSender is required.";
+            }
 
-    @GetMapping("enter")
-    public String enter(@RequestParam("userName") String userName) {
-        return "chat";  
+            // 메시지를 저장
+            websocketService.saveChatMessage(chatmesVO);
+            return "Message saved successfully.";
+        } catch (Exception e) {
+            return "Failed to save message: " + e.getMessage();
+        }
     }
-    
-    
 }
