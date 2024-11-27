@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.flr.FlrDAO">
+
+   <!-- 채팅 -->
+	<insert id="insertFlrData"
+		parameterType="com.lx.finalproject.dto.flr.FlrDTO"
+		useGeneratedKeys="true" keyProperty="flrPk">
+		INSERT INTO flr (user_pk, prp_pk, chat_pk, rec_pk, flr_cate_upper, flr_cate_middle, flr_cate_lower, flr_datetime, flr_content)
+        VALUES (#{userPk}, #{prpPk}, #{chatPk}, #{recPk}, #{flrCateUpper}, #{flrCateMiddle}, #{flrCateLower}, now()::date, #{flrContent})
+	</insert>
+	
+	<!-- flrPk를 기준으로 rec_pk 값을 조회 -->
+    <select id="checkRecPkByFlrPk" resultType="integer">
+        SELECT rec_pk
+        FROM flr
+        WHERE flr_pk = #{flrPk}
+    </select>
+  
+</mapper>

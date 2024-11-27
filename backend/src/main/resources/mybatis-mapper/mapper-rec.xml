@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.rec.RecDAO">
+
+	<resultMap id="RecScriptMap"
+		type="com.lx.finalproject.dto.rec.RecScriptDTO">
+		<result property="recscrPk" column="recscr_pk" />
+		<result property="recscrContent" column="recscr_content" />
+		<result property="senderType" column="sender_type" />
+	</resultMap>
+
+	<insert id="insertRec"
+		parameterType="com.lx.finalproject.vo.RecVO" useGeneratedKeys="true"
+		keyProperty="recPk">
+		INSERT INTO rec (rec_datetime, rec_file, flr_pk)
+		VALUES
+		(#{recDatetime}, #{recFile}, #{flrPk})
+	</insert>
+
+	<select id="findScriptByRecPk" parameterType="int"
+		resultMap="RecScriptMap">
+		SELECT rs.recscr_pk, rs.recscr_content,
+		       CASE
+		           WHEN rs.user_pk_sender IS NOT NULL THEN '신고자'
+		           WHEN rs.agent_pk_sender IS NOT NULL THEN '피신고대상자'
+		           ELSE '알수없음'
+		       END AS sender_type
+		FROM recscr rs
+		WHERE rs.rec_pk = #{recPk}
+		ORDER BY rs.recscr_pk ASC;
+	</select>
+
+	<!-- flrPk를 사용해 chatPk 조회 -->
+	<select id="findRecPkByFlrPk" parameterType="int"
+		resultType="int">
+		SELECT rec_pk
+		FROM flr
+		WHERE flr_pk = #{flrPk}
+	</select>
+
+	<select id="findProblematicScriptByRecPk" parameterType="int"
+		resultType="int">
+		SELECT rs.recscr_pk
+		FROM recscr rs
+		WHERE rs.rec_pk = #{recPk}
+		  AND rs.recscr_pk IN (
+		      SELECT recscr_pk
+		      FROM recscrai
+		      WHERE airecdecs_pk IN (
+		          SELECT airecdecs_pk
+		          FROM airecdecs
+		          WHERE rec_pk = #{recPk}
+		      )
+		  );
+	</select>
+	
+	<select id="findAiRecDecsByRecPk" parameterType="int" resultType="com.lx.finalproject.vo.AiRecDecsVO">
+        SELECT flr_recdecstatus, flr_recdecscontent, rec_pk, airecdecs_pk
+        FROM airecdecs
+        WHERE rec_pk = #{recPk}
+    </select>
+
+</mapper>

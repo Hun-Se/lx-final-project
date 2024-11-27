@@ -176,7 +176,7 @@ const handleFileUpload = (event) => {
 };
 
 const submitReport = async () => {
-  const userPk = sessionStorage.getItem('userPk');
+  const userPk = sessionStorage.getItem('userPk') || 1;
 
   // 필수 값 확인
   if (!menus.value.every((menu) => menu.selected)) {
@@ -189,45 +189,67 @@ const submitReport = async () => {
     return;
   }
 
-  const reportBody = {
-    userPk: userPk, // 사용자 ID
-    prpPk: 1, // 부동산 ID (더미 데이터)
-    chatPk: 1, // 채팅방 ID (더미 데이터)
-    recPk: null, // 녹취 파일은 서버에서 처리
-    cateUpper: menus.value[0].selected, // 대분류
-    cateMiddle: menus.value[1].selected, // 중분류
-    cateLower: menus.value[2].selected, // 소분류
-    content: reportContent.value,
-    proofOptions: selectedProofOptions.value,
-    files: [],
-  };
+  // 1. /api/flr/save 호출하여 flr 테이블에 신고 데이터 추가
+  try{
+    const flrSaveResponse = await axios.post('/api/flr/save', {
+      userPk : 1,
+      prpPk: 1,
+      chatPk: null,
+      recPk: null,
+      flrCateUpper: menus.value[0].selected,
+      flrCateMiddle: menus.value[1].selected,
+      flrCateLower: menus.value[2].selected,
+      flrContent: reportContent.value
+    });
 
-  for (const file of uploadedFiles.value) {
-    const fileExtension = file.name.split(".").pop().toLowerCase();
-    let folder = "";
+    console.log("flrSaveResponse:", flrSaveResponse.data); // 디버깅 코드 추가
+    const flrPk = flrSaveResponse.data.flrPk;
+    console.log("flrPk:", flrPk); // flrPk가 제대로 전달되는지 확인
 
-    if (["mp3", "wav", "m4a"].includes(fileExtension)) {
-      folder = "recode";
-    } else if (["jpg", "png", "jpeg", "gif"].includes(fileExtension)) {
-      folder = "capture";
-    } else if (["pdf", "doc", "docx"].includes(fileExtension)) {
-      folder = "doc";
-    } else {
-      folder = "besides"
+    if (!flrPk) {
+      alert("flr_pk가 정상적으로 생성되지 않았습니다.");
+      return;
     }
 
-    const filePath = `/assets/file/${folder}/${folder}_${Date.now()}_${file.name}`;
-    reportBody.files.push({ name: file.name, path: filePath });
-  }
+    // 2. /api/audio/uplad 호출해서 녹음파일 저장하고 처리
+    // FormData 선언
+    const formData = new FormData();
 
-  try {
-    const response = await axios.post("/api/reportPrp", reportBody);
+    // 기본 데이터 추가
+    formData.append("flr_pk", flrPk);
+
+    // 파일 유효성 검사 및 추가
+    if (uploadedFiles.value.length > 0) {
+      const allowedExtensions = ["mp3", "wav", "m4a", "jpg", "png", "jpeg", "gif", "pdf", "doc", "docx"];
+      const fileExtension = uploadedFiles.value[0].name.split(".").pop().toLowerCase();
+      if (!allowedExtensions.includes(fileExtension)) {
+        alert("지원되지 않는 파일 형식입니다.");
+        return;
+      }
+      formData.append("file", uploadedFiles.value[0]); // 단일 파일 업로드 처리
+    } else {
+      alert("파일을 업로드해야 합니다.");
+      return;
+    }
+
+    // 디버깅: formData 내용 확인
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+
+    const response = await axios.post("/api/audio/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     console.log("서버 응답:", response.data);
-  } catch (error) {
-    console.error("요청 실패:", error);
+    alert("신고가 성공적으로 접수되었습니다.");
+  } catch (error){
+    console.error("요청 실패:", error.response || error);
+    alert("신고 접수 중 오류가 발생했습니다.");
   }
 };
-
 
 const router = useRouter();
 
