@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import PdfViewer from "@/components/PdfViewer.vue";
 import PublicLedgerModal from "@/components/PublicLedgerModal.vue";
 import { usePublicLedgerModalStore } from "@/stores/modal.js";
@@ -11,15 +11,13 @@ const route = useRoute(); // 현재 라우트 정보 가져오기
 // Reactive 상태 선언
 const audioPlayer = ref(null);
 const isPlaying = ref(false);
-const audioSource = ref(
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-);
+const audioSource = ref("/assets/record/record_4.mp3"); // 오디오 파일 경로
 const currentTime = ref("00:00");
 const duration = ref("00:00");
 const progress = ref(0);
 
 // 메서드 정의
-const fetchInfo = () => {
+const fetchInfo = () => {const audioSource = ref("/assets/record/record_4.mp3"); // 오디오 파일 경로
   // 정보 조회 함수 로직
 };
 
@@ -843,7 +841,7 @@ onMounted(async () => {
                       </div>
                     </div>
                   </div>
-                  <!-- 오디오 재생/정지 툴바 -->
+                  <!-- 오디오 UI -->
                   <div class="audio-toolbar p-5">
                     <audio
                       ref="audioPlayer"
@@ -870,11 +868,10 @@ onMounted(async () => {
                         @input="seekAudio"
                       />
                       <span class="time">{{ duration }}</span>
+                    </div>
+                  </div>                  
                 </div>
-              </div>
-            </div>
-          </div>
-          
+              </div>          
             </div>
           </div>
           <!--end::Card footer-->
