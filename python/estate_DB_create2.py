@@ -9,7 +9,7 @@ database = "real_estate_data"
 
 # CSV 파일에서 데이터 불러오기
 print("CSV 파일 로드 시작")
-df_result = pd.read_csv('prp_dumy_data.csv', encoding='cp949')
+df_result = pd.read_csv('real_estate_data2.csv', encoding='cp949')
 print("CSV 파일 로드 완료")
 
 # 필요한 컬럼만 선택하여 새로운 DataFrame 생성
@@ -36,7 +36,7 @@ engine = create_engine(f"mysql+pymysql://{username}:{password}@{host}/{database}
 # Step 1: 테이블을 수동으로 생성하고 id 컬럼을 자동 증가로 설정
 with engine.connect() as conn:
     conn.execute(text("""
-    CREATE TABLE IF NOT EXISTS prp_dumy_data (
+    CREATE TABLE IF NOT EXISTS real_estate_data2 (
         id INT AUTO_INCREMENT PRIMARY KEY,
         area FLOAT,
         transaction_price INT,
@@ -52,5 +52,5 @@ with engine.connect() as conn:
 print("테이블 생성 완료")
 
 # Step 2: 데이터프레임을 MySQL에 저장 (기존 테이블에 추가)
-df_selected.to_sql('prp_dumy_data', con=engine, if_exists='append', index=False)
+df_selected.to_sql('real_estate_data2', con=engine, if_exists='append', index=False)
 print("데이터가 성공적으로 MySQL 데이터베이스에 저장되었습니다.")
