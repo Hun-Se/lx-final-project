@@ -5,6 +5,7 @@ import PublicLedgerModal from "@/components/PublicLedgerModal.vue";
 import { usePublicLedgerModalStore } from "@/stores/modal.js";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
+import axios from "axios";
 
 const route = useRoute(); // 현재 라우트 정보 가져오기
 // Reactive 상태 선언
@@ -182,7 +183,7 @@ const fetchAgentDetails = async () => {
   }
 };
 
-//-------------플라스크
+//-------------챗하이라이팅+플라스크
 
 // data properties
 const flrPk = ref(""); // 허위매물 신고 번호
@@ -190,6 +191,7 @@ console.log(`받은 신고 접수 번호: ${flrPk}`);
 const chatMessages = ref([]); // 채팅 메시지 목록
 const flrDecstatus = ref(""); // 부합여부
 const flrDecscontent = ref(""); // 부합여부 이유 설명
+const recScript = ref([]);
 
 // 플라스크 이용해서 문제의 대화 끌어오는 메서드
 const fetchChatPk = async () => {
@@ -200,7 +202,7 @@ const fetchChatPk = async () => {
     console.log("Fetched chatPk:", chatPk);
 
     flrDecstatus.value = response.data.flr_decstatus;
-    flrDecscontent.value = response.data.flr_decscontent;
+    // flrDecscontent.value = response.data.flr_decscontent;
 
     // 문장으로 나누기
     const sentences = response.data.flr_decscontent.split('.').map(sentence => sentence.trim()).filter(sentence => sentence);
@@ -226,10 +228,10 @@ const fetchChatPk = async () => {
 };
 
 // 전체 대화 끌어오는 메서드
-const fetchChatMessages = async (chatPk) => {
+const fetchChatMessages = async (chatPK) => {
   try {
-    console.log("Fetching chat messages for chatPk:", chatPk);
-    const response = await axios.get(`/api/chat/${chatPk}/messages`);
+    console.log("Fetching chat messages for chatPk:", chatPK);
+    const response = await axios.get(`/api/chat/${chatPK}/messages`);
     chatMessages.value = response.data;
     console.log("Fetched chat messages:", chatMessages.value);
   } catch (error) {
@@ -237,28 +239,130 @@ const fetchChatMessages = async (chatPk) => {
   }
 };
 
-// 받은 flrPk를 기반으로 데이터 가져오기
-onMounted(() => {
-    fetch(`/api/report/detail/${flrPk}`)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("받은 신고 데이터:", data);
-            // 데이터 처리 로직 추가
-        })
-        .catch((error) => console.error("데이터 로드 중 오류:", error));
-});
+//--------------음성녹음하이라이팅
+// 문제의 스크립트 끌어오는 메서드
+const fetchRecPk = async () => {
+  try {
+    console.log("Fetching recPk for flrPk:", flrPk.value);
+    const response = await axios.get(`/api/audio/flr/${flrPk.value}/recPk`);
+    const recPk = response.data;
+    console.log("Fetched recPk:", recPk);
+    fetchAiRecDecs(recPk)
 
-onMounted(() => {
-  flrPk.value = route.params.flrPk || ""; // 쿼리 파라미터에서 flrPk 읽기
-  console.log("쿼리에서 가져온 flrPk:", flrPk.value);
+    
 
-  // flrPk가 존재할 경우 데이터를 불러오는 메서드 호출
-  if (flrPk.value) {
-    fetchReportDetail(); // flrPk에 기반한 데이터 로드
-    fetchAgentDetails(); // 피신고 대상자 정보 가져오기
-    fetchChatPk();
+    if (recPk) {
+      await fetchRecScript(recPk);
+    } else {
+      console.error("채팅방을 찾을 수 없습니다.");
+    }
+  } catch (error) {
+    console.error("Error fetching recPk:", error);
   }
-})
+};
+
+// 전체 스크립트 끌어오는 메서드
+const fetchRecScript = async (recPk) => {
+  try {
+    console.log("Fetching rec script for recPk:", recPk);
+    const response = await axios.get(`/api/audio/${recPk}/script`);
+    recScript.value = response.data;
+
+    // 이새끼 때문에 7시간 41분 날림
+    // // 하이라이팅 처리 (예: HTML 요소 추가)
+    // const container = document.querySelector(".text-container");
+    // container.innerHTML = ""; // 기존 내용을 초기화
+
+    // recScript.value.forEach((script) => {
+    //   const paragraph = document.createElement("p");
+    //   paragraph.textContent = script.recscrContent;
+
+    //   if (script.isProblematic) {
+    //     paragraph.style.color = "red"; // 문제 스크립트는 빨간색으로 표시
+    //     paragraph.style.fontWeight = "bold";
+    //   }
+    //   container.appendChild(paragraph);
+    // });
+
+    console.log("Fetched rec Script:", recScript.value);
+  } catch (error) {
+    console.error("Error fetching rec Script:", error);
+  }
+};
+
+
+
+// AI 판별 결과 가져오는 함수
+const fetchAiRecDecs = async (recPk) => {
+  try {
+    console.log("Fetching AI recDecs for recPk:", recPk);
+    const response = await axios.get(`/api/audio/airecdecs/${recPk}`);
+    if (response.status === 200) {
+      // 데이터가 정상적으로 반환되었을 경우 상태 업데이트
+      flrDecstatus.value = response.data.flrRecdecstatus || "정보 없음";
+      // flrDecscontent.value = response.data.flrRecdecscontent || "AI 의견 내용을 찾을 수 없습니다.";
+      console.log("업데이트된 flrDecscontent:", flrDecscontent.value);
+      // 문장으로 나누기
+      const sentences = response.data.flrRecdecscontent.split('.').map(sentence => sentence.trim()).filter(sentence => sentence);
+      const container = document.querySelector(".text-container");
+      const ul = document.createElement("ul");
+
+      sentences.forEach(sentence => {
+        const li = document.createElement("li");
+        li.textContent = sentence + "."; // 다시 마침표 추가
+        ul.appendChild(li);
+      });
+
+      container.appendChild(ul);
+      console.log("AI RecDecs 데이터:", response.data);
+    } else {
+      console.error("AI RecDecs를 가져오지 못했습니다. 상태 코드:", response.status);
+      flrDecstatus.value = "정보 없음";
+      flrDecscontent.value = "AI 의견 데이터를 찾을 수 없습니다.";
+    }
+  } catch (error) {
+    console.error("AI RecDecs 데이터를 가져오는 중 오류 발생:", error);
+    flrDecstatus.value = "정보 없음";
+    flrDecscontent.value = "AI 의견 데이터를 찾을 수 없습니다.";
+  }
+};
+
+
+//------------------------------------------------------
+// 받은 flrPk를 기반으로 데이터 가져오기
+onMounted(async () => {
+  flrPk.value = route.params.flrPk || ""; // 쿼리 파라미터 또는 URL에서 flrPk 읽기
+  console.log("URL에서 가져온 flrPk:", flrPk.value);
+
+  if (flrPk.value) {
+    try {
+      // 신고 상세 데이터 로드
+      const reportResponse = await fetch(`/api/report/detail/${flrPk.value}`);
+      const reportData = await reportResponse.json();
+      console.log("받은 신고 데이터:", reportData);
+
+      // recPk 확인을 위한 API 호출
+      const recPkResponse = await fetch(`/api/flr/check-rec-pk/${flrPk.value}`);
+      const isRecPkNull = await recPkResponse.json();
+
+      if (isRecPkNull) {
+        console.log("recPk가 null입니다. fetchChatPk() 호출", isRecPkNull);
+        fetchChatPk(); // recPk가 null인 경우
+      } else {
+        console.log("recPk가 존재합니다. fetchRecPk() 호출", isRecPkNull);
+        fetchRecPk(); // recPk가 존재하는 경우
+      }
+
+      // 추가 데이터 로드
+      fetchReportDetail(); // 신고 상세 정보
+      fetchAgentDetails(); // 피신고 대상자 정보
+    } catch (error) {
+      console.error("데이터 로드 중 오류 발생:", error);
+    }
+  } else {
+    console.error("flrPk를 URL에서 가져올 수 없습니다.");
+  }
+});
 
 </script>
 
@@ -642,84 +746,135 @@ onMounted(() => {
               data-kt-scroll-wrappers="#kt_content, #kt_app_content, #kt_chat_messenger_body"
               data-kt-scroll-offset="5px"
             >
-              <div v-if="chatMessages.length">
-                <div v-for="message in chatMessages" :key="message.chatmesPk">
-                  <div v-if="message.senderType === '신고자'" class="d-flex justify-content-end mb-10">
-                    <div class="d-flex flex-column align-items-end">
-                      <div class="d-flex align-items-center mb-2">
-                        <div class="me-3">
-                          <span class="me-3">{{ message.chatmesDatetime}}</span>
-                          <a
-                              href="#"
-                              class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
-                          >신고자</a
-                          >
-                        </div>
-                      </div>
-                      <div
-                          class="p-3 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-800px text-end fs-2"
-                          data-kt-element="message-text"
-                      >
-                        <div :class="['message', { 'highlighted': message.isProblematic }]">
-                        {{ message.chatmesContent }}
+            <div>
+              <!-- isRecPk가 null일 경우 -->
+              <div v-if=isRecPkNull></div>
+                <div v-if="chatMessages.length">
+                  <div v-for="message in chatMessages" :key="message.chatmesPk">
+                    <div v-if="message.senderType === '신고자'" class="d-flex justify-content-end mb-10">
+                      <div class="d-flex flex-column align-items-end">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="me-3">
+                            <span class="me-3">{{ message.chatmesDatetime}}</span>
+                            <a
+                                href="#"
+                                class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1"
+                            >신고자</a
+                            >
                           </div>
+                        </div>
+                        <div
+                            class="p-3 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-800px text-end fs-2"
+                            data-kt-element="message-text"
+                        >
+                          <div :class="['message', { 'highlighted': message.isProblematic }]">
+                          {{ message.chatmesContent }}
+                            </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div v-if="message.senderType === '피신고대상자'" class="d-flex justify-content-start mb-10 p-1">
-                    <div class="d-flex flex-column align-items-start">
-                      <div class="d-flex align-items-center mb-2">
-                        <div class="ms-3">
-                          <a
-                            href="#"
-                            class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
-                            >중개인</a
-                          >
-                          <span class="me-3">{{ message.chatmesDatetime }}</span>
+                    <div v-if="message.senderType === '피신고대상자'" class="d-flex justify-content-start mb-10 p-1">
+                      <div class="d-flex flex-column align-items-start">
+                        <div class="d-flex align-items-center mb-2">
+                          <div class="ms-3">
+                            <a
+                              href="#"
+                              class="fs-5 fw-bold text-gray-900 text-hover-primary me-1"
+                              >중개인</a
+                            >
+                            <span class="me-3">{{ message.chatmesDatetime }}</span>
+                          </div>
                         </div>
-                      </div>
-                      <div
-                        class="p-3 rounded bg-light-info text-gray-900 fw-semibold mw-lg-800px text-start fs-2"
-                        data-kt-element="message-text"
-                      >
-                        <div :class="['message', { 'highlighted': message.isProblematic }]">
-                          {{ message.chatmesContent }}
+                        <div
+                          class="p-3 rounded bg-light-info text-gray-900 fw-semibold mw-lg-800px text-start fs-2"
+                          data-kt-element="message-text"
+                        >
+                          <div :class="['message', { 'highlighted': message.isProblematic }]">
+                            {{ message.chatmesContent }}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
+                <!-- isRecPk가 notNull일 경우 -->
+                <div v-else>
+                  <div v-if="recScript.length">
+                    <div v-for="script in recScript" :key="script.recscrPk">
+                      <!-- 신고자 메시지 -->
+                      <div v-if="script.senderType === '신고자'" class="d-flex justify-content-end mb-10">
+                        <div class="d-flex flex-column align-items-end">
+                          <div class="d-flex align-items-center mb-2">
+                            <div class="me-3">
+                              <span class="me-3">{{ script.recscrDatetime }}</span>
+                              <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary ms-1">신고자</a>
+                            </div>
+                          </div>
+                          <div
+                            class="p-3 rounded bg-light-primary text-gray-900 fw-semibold mw-lg-800px text-end fs-2"
+                            data-kt-element="message-text"
+                          >
+                            <div :class="['message', { 'highlighted': script.isProblematic }]">
+                              {{ script.recscrContent }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 중개인 메시지 -->
+                      <div v-if="script.senderType === '피신고대상자'" class="d-flex justify-content-start mb-10">
+                        <div class="d-flex flex-column align-items-start">
+                          <div class="d-flex align-items-center mb-2">
+                            <div class="ms-3">
+                              <a href="#" class="fs-5 fw-bold text-gray-900 text-hover-primary me-1">중개인</a>
+                              <span class="me-3">{{ script.recscrDatetime }}</span>
+                            </div>
+                          </div>
+                          <div
+                            class="p-3 rounded bg-light-info text-gray-900 fw-semibold mw-lg-800px text-start fs-2"
+                            data-kt-element="message-text"
+                          >
+                            <div :class="['message', { 'highlighted': script.isProblematic }]">
+                              {{ script.recscrContent }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 오디오 재생/정지 툴바 -->
+                  <div class="audio-toolbar p-5">
+                    <audio
+                      ref="audioPlayer"
+                      :src="audioSource"
+                      @timeupdate="updateProgress"
+                      @loadedmetadata="setDuration"
+                      @ended="onAudioEnded"
+                    ></audio>
+
+                    <!-- 재생/정지 버튼 -->
+                    <button @click="togglePlay" class="play-button">
+                      {{ isPlaying ? "정지" : "재생" }}
+                    </button>
+
+                    <!-- 진행 바 및 시간 표시 -->
+                    <div class="progress-container">
+                      <span class="time">{{ currentTime }}</span>
+                      <input
+                        type="range"
+                        class="progress-bar"
+                        min="0"
+                        max="100"
+                        v-model="progress"
+                        @input="seekAudio"
+                      />
+                      <span class="time">{{ duration }}</span>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- 오디오 재생/정지 툴바 -->
-          <div class="audio-toolbar p-5">
-            <audio
-              ref="audioPlayer"
-              :src="audioSource"
-              @timeupdate="updateProgress"
-              @loadedmetadata="setDuration"
-              @ended="onAudioEnded"
-            ></audio>
-
-            <!-- 재생/정지 버튼 -->
-            <button @click="togglePlay" class="play-button">
-              {{ isPlaying ? "정지" : "재생" }}
-            </button>
-
-            <!-- 진행 바 및 시간 표시 -->
-            <div class="progress-container">
-              <span class="time">{{ currentTime }}</span>
-              <input
-                type="range"
-                class="progress-bar"
-                min="0"
-                max="100"
-                v-model="progress"
-                @input="seekAudio"
-              />
-              <span class="time">{{ duration }}</span>
+          
             </div>
           </div>
           <!--end::Card footer-->
@@ -852,19 +1007,44 @@ onMounted(() => {
               </div>
             </div>
           </div>
+          <div>
           <div class="card-body d-flex flex-column">
             <div class="" style="width: 100%; height: 100%">
-              <div class="fw-bold fs-3 mb-3">
-                AI 판별:
-                <span v-if="flrDecstatus === '부합'" class="text-primary fs-3 ms-1 badge badge-light-primary"
+
+              <!-- isRecPk가 null일 경우 -->
+              <div v-if="isRecPkNull === true">
+                <div class="fw-bold fs-3 mb-3">
+                  AI 판별:
+                  <span v-if="flrDecstatus === '부합'" class="text-primary fs-3 ms-1 badge badge-light-primary"
+                    >{{ flrDecstatus }}</span
+                  >
+                  <span v-else-if="flrDecstatus === '미부합'" class="text-danger fs-3 ms-1 badge badge-light-danger"
                   >{{ flrDecstatus }}</span
-                >
-                <span v-else-if="flrDecstatus === '미부합'" class="text-danger fs-3 ms-1 badge badge-light-danger"
-                >{{ flrDecstatus }}</span
-                >
+                  >
+                </div>
+                <div class="fw-bold mt-5 fs-3 mb-3"> AI 의견 내용</div>
+                <div class="text-container text-gray-600 fs-3">
+                  <p>{{ flrDecscontent }}</p>
+                </div>
               </div>
-              <div class="fw-bold mt-5 fs-3 mb-3"> AI 의견 내용</div>
-              <div class="text-container text-gray-600 fs-3">
+
+              <!-- isRecPk가 notNull일 경우 -->
+              <div v-else>
+                <div class="fw-bold fs-3 mb-3">
+                  AI 판별:
+                  <span v-if="flrDecstatus === '부합'" class="text-primary fs-3 ms-1 badge badge-light-primary">
+                    {{ flrDecstatus }}
+                  </span>
+                  <span v-else-if="flrDecstatus === '미부합'" class="text-danger fs-3 ms-1 badge badge-light-danger">
+                    {{ flrDecstatus }}
+                  </span>
+                  <span v-else class="text-secondary fs-3 ms-1">정보 없음</span>
+                  <div class="fw-bold mt-5 fs-3 mb-3">AI 의견 내용</div>
+                  <div class="text-container text-gray-600 fs-3">
+                    <p>{{ flrDecscontent }}</p>
+                  </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

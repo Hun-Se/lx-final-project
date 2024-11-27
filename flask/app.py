@@ -228,7 +228,7 @@ def get_chat_by_flr(flr_pk):
 @app.route('/record/flr/<int:flr_pk>', methods=['GET'])
 def get_record_script_by_flr(flr_pk):
     base_path = r'C:\lx-final-project\frontend\public\assets\record' #spring boot에서 저장한 파일 경로 사용
-    file_path = os.path.join(base_path, f'record_{flr_pk}.m4a') #파일 이름도 spring boot에서 저장한 파일 이름 사용
+    file_path = os.path.join(base_path, f'record_{flr_pk}.mp3') #파일 이름도 spring boot에서 저장한 파일 이름 사용
 
     res = req_upload(file=file_path, completion='sync') #clova api 실행
     result = res.json()

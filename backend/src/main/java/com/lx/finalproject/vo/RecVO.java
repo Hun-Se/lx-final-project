@@ -1,24 +1,26 @@
 package com.lx.finalproject.vo;
+import java.time.LocalDate;
 
 public class RecVO {
 	
 	private Integer recPk;
-    private String recDatetime;
+    private LocalDate recDatetime;
     private String recFile;
     private Integer flrPk;
     private Integer userPk;
     private Integer prpPk;
     private Integer agentPk;
+    
 	public Integer getRecPk() {
 		return recPk;
 	}
 	public void setRecPk(Integer recPk) {
 		this.recPk = recPk;
 	}
-	public String getRecDatetime() {
+	public LocalDate getRecDatetime() {
 		return recDatetime;
 	}
-	public void setRecDatetime(String recDatetime) {
+	public void setRecDatetime(LocalDate recDatetime) {
 		this.recDatetime = recDatetime;
 	}
 	public String getRecFile() {
@@ -27,10 +29,10 @@ public class RecVO {
 	public void setRecFile(String recFile) {
 		this.recFile = recFile;
 	}
-	public int getFlrPk() {
+	public Integer getFlrPk() {
         return flrPk;
     }
-    public void setFlrPk(int flrPk) {
+    public void setFlrPk(Integer flrPk) {
         this.flrPk = flrPk;
     }
 	public Integer getUserPk() {
@@ -54,8 +56,7 @@ public class RecVO {
 	
 	@Override
 	public String toString() {
-		return "RecVO [recPk=" + recPk + ", recDatetime=" + recDatetime + ", recFile=" + recFile + ", userPk=" + userPk
-				+ ", prpPk=" + prpPk + ", agentPk=" + agentPk + "]";
-	}
+        return "RecVO [recPk=" + recPk + ", recDatetime=" + recDatetime + ", recFile=" + recFile + ", flrPk=" + flrPk + "]";
+    }
     
 }
