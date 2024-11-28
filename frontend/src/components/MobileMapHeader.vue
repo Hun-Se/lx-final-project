@@ -47,6 +47,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter} from "vue-router";
+import { useMapInstanceStore} from "@/stores/map.js";
+import {storeToRefs} from "pinia";
 import axios from "axios";
 
 const router = useRouter();
@@ -57,6 +59,8 @@ const selectedTransport = ref("");
 const hours = ref("");
 const minutes = ref("");
 const isochrone = ref(null); // 폴리곤 객체
+const mapInstanceStore = useMapInstanceStore();
+const { map } = storeToRefs(mapInstanceStore);
 
 // 컴포넌트가 마운트될 때 localStorage에서 사용자 이름을 가져옴
 onMounted(() => {
@@ -146,7 +150,7 @@ function geocodeAddress(address) {
 
 // 폴리곤 그리기 함수
 function drawIsochrone(data) {
-  if (!window.mapInstance) {
+  if (!map.value) {
     console.error("지도 객체가 초기화되지 않았습니다.");
     return;
   }
@@ -159,7 +163,7 @@ function drawIsochrone(data) {
       (point) => new naver.maps.LatLng(point.lat, point.lng),
   );
   isochrone.value = new naver.maps.Polygon({
-    map: window.mapInstance,
+    map: map.value,
     paths: coords,
     fillColor: "#ff0000",
     fillOpacity: 0.3,
@@ -167,7 +171,7 @@ function drawIsochrone(data) {
     strokeOpacity: 0.6,
     strokeWeight: 3,
   });
-  window.mapInstance.setCenter(coords[0]);
+  map.value.setCenter(coords[0]);
 }
 
 </script>

@@ -91,7 +91,14 @@ onMounted(() => {
     isLoggedIn.value = true;
     username.value = storedUsername;
   }
-});
+
+  if (!window.mapInstance) {
+    window.mapInstance = new naver.maps.Map("map", {
+      center: new naver.maps.LatLng(37.5665, 126.9780), // 초기 좌표 (서울)
+      zoom: 12, // 초기 줌 레벨
+    });
+  }
+});drawIsochrone
 // 검색 및 폴리곤 그리기
 function submit() {
   const totalMinutes =

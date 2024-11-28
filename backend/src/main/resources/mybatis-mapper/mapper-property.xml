@@ -5,18 +5,31 @@
 
     <!-- 모든 매물 가져오기 -->
     <select id="getAllProperties" resultType="com.lx.finalproject.vo.PrpVO">
-        SELECT * FROM prp
+        SELECT *, r.region_si_do,
+			   r.region_si_gun_gu,
+			   r.region_eup_myeon_dong
+        FROM prp p
+				INNER JOIN
+			region r ON p.region_pk = r.region_pk;
     </select>
 
     <!-- 중개사의 모든 매물 가져오기 -->
     <select id="getAllPropertiesByAgent" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
-        SELECT * FROM prp
-        WHERE agent_pk = #{agentPk}
+        SELECT *, r.region_si_do,
+			   r.region_si_gun_gu,
+			   r.region_eup_myeon_dong
+        FROM prp p
+        INNER JOIN region r ON p.region_pk = r.region_pk
+        WHERE agent_pk = #{agentPk};
     </select>
     
     <!-- 특정 매물 가져오기 -->
     <select id="getPropertyById" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
-        SELECT * FROM prp
+        SELECT *, r.region_si_do,
+			   r.region_si_gun_gu,
+			   r.region_eup_myeon_dong
+        FROM prp p
+	 	INNER JOIN region r ON p.region_pk = r.region_pk
         WHERE prp_pk = #{prpPk}
     </select>
     

@@ -1,5 +1,5 @@
 <template>
-  <MobileHeader title="홈페이지"> </MobileHeader>
+  <HomeMobileHeader title="홈페이지"> </HomeMobileHeader>
   <div
     class="container"
     style="flex: 1; margin-top: 40px; margin-bottom: 60px; overflow-y: auto"
@@ -304,10 +304,11 @@
 </template>
 
 <script setup>
-import MobileHeader from "@/components/MobileHeader.vue";
+import MobileHeader from "@/components/HomeMobileHeader.vue";
 import { ref, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
+import HomeMobileHeader from "@/components/HomeMobileHeader.vue";
 
 const router = useRouter();
 const searchByType = ref("time");

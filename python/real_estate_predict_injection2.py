@@ -23,7 +23,7 @@ database = "real_estate"  # PostgreSQL 데이터베이스 이름
 engine2 = create_engine(f"postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}")
 
 # 데이터 불러오기
-df = pd.read_sql("SELECT * FROM transaction_data2", con=engine1)
+df = pd.read_sql("SELECT * FROM real_estate_data2", con=engine1)
 dumy = pd.read_sql("SELECT * FROM prp", con=engine2)
 
 # 전처리 및 범주화 함수

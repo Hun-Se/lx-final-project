@@ -88,7 +88,7 @@
 import MobileHeader from "@/components/MobileHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { ref } from 'vue';
-import { useRouter} from "vue-router"
+import { useRouter, useRoute} from "vue-router"
 
 const categoryData = {
   대분류: {
@@ -175,6 +175,9 @@ const handleFileUpload = (event) => {
   uploadedFiles.value = Array.from(event.target.files);
 };
 
+
+const route = useRoute();
+
 const submitReport = async () => {
   const userPk = sessionStorage.getItem('userPk') || 1;
 
@@ -189,10 +192,11 @@ const submitReport = async () => {
     return;
   }
 
+  const saleId = route.query.saleId;
   // 1. /api/flr/save 호출하여 flr 테이블에 신고 데이터 추가
   try{
     const flrSaveResponse = await axios.post('/api/flr/save', {
-      userPk : 1,
+      userPk : saleId,
       prpPk: 1,
       chatPk: null,
       recPk: null,
@@ -249,6 +253,9 @@ const submitReport = async () => {
     console.error("요청 실패:", error.response || error);
     alert("신고 접수 중 오류가 발생했습니다.");
   }
+
+  const router = useRouter();
+  router.go(-1);
 };
 
 const router = useRouter();

@@ -13,7 +13,7 @@ export const useSaleStore = defineStore("sale", () => {
 
   // 매물 리스트
   const sales = ref([]);
-  const selectedSalesDetails = ref(null);
+  const selectedSalesDetails = ref({});
 
   // 매물 리스트 요청하기
   async function fetchSalesList() {
@@ -39,6 +39,7 @@ export const useSaleStore = defineStore("sale", () => {
 
       // 선택된 매물 정보 업데이트
       selectedSalesDetails.value = response;
+      return response;
     } else {
       console.warn("응답 데이터가 없습니다.");
     }

@@ -40,6 +40,11 @@ public class PrpVO {
     private int predict2023;
     private int predict2024;
     private int predict2025;
+
+	private String regionSiDo;
+	private String regionSiGunGu;
+	private String regionEupMyeonDong;
+
 	public Integer getPrpPk() {
 		return prpPk;
 	}
@@ -262,6 +267,31 @@ public class PrpVO {
 	public void setPredict2025(int predict2025) {
 		this.predict2025 = predict2025;
 	}
+
+	public String getRegionSiDo() {
+		return regionSiDo;
+	}
+
+	public void setRegionSiDo(String regionSiDo) {
+		this.regionSiDo = regionSiDo;
+	}
+
+	public String getRegionSiGunGu() {
+		return regionSiGunGu;
+	}
+
+	public void setRegionSiGunGu(String regionSiGunGu) {
+		this.regionSiGunGu = regionSiGunGu;
+	}
+
+	public String getRegionEupMyeonDong() {
+		return regionEupMyeonDong;
+	}
+
+	public void setRegionEupMyeonDong(String regionEupMyeonDong) {
+		this.regionEupMyeonDong = regionEupMyeonDong;
+	}
+
 	@Override
 	public String toString() {
 		return "PrpVO [prpPk=" + prpPk + ", prpName=" + prpName + ", prpImg=" + prpImg + ", prpType=" + prpType

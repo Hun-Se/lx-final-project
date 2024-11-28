@@ -2,6 +2,8 @@ package com.lx.finalproject.service.report;
 
 import java.util.Collections;
 import java.util.List;
+
+import com.lx.finalproject.dto.report.ReportPrpInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +28,9 @@ public class ReportService {
     
     public ReportDTO getAgentDetailsByFlrPk(int flrPk) {
         return reportDAO.getAgentDetailsByFlrPk(flrPk);
+    }
+
+    public ReportPrpInfoDTO getReportPrpInfoByPrpPk(int prpPk) {
+        return reportDAO.getReportPrpInfoByPrpPk(prpPk);
     }
 }

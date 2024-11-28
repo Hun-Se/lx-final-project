@@ -1,6 +1,7 @@
 package com.lx.finalproject.dao.report;
 
 import com.lx.finalproject.dto.report.ReportDTO;
+import com.lx.finalproject.dto.report.ReportPrpInfoDTO;
 import com.lx.finalproject.vo.FlrVO;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -15,4 +16,6 @@ public interface ReportDAO {
 	FlrVO getReportDetail(@Param("flrPk") int flrPk);
 	
 	ReportDTO getAgentDetailsByFlrPk(int flrPk);
+
+    ReportPrpInfoDTO getReportPrpInfoByPrpPk(int prpPk);
 }

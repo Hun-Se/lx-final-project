@@ -2,6 +2,7 @@ package com.lx.finalproject.controller.report;
 
 import java.io.IOException;
 
+import com.lx.finalproject.dto.report.ReportPrpInfoDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +37,11 @@ public class ReportController {
     public ResponseEntity<ReportDTO> getAgentDetails(@PathVariable("flrPk") int flrPk) {
         ReportDTO agentDetails = reportService.getAgentDetailsByFlrPk(flrPk);
         return ResponseEntity.ok(agentDetails);
+    }
+
+    @GetMapping("/prpInfo/{prpPk}")
+    public ReportPrpInfoDTO getReportPrpInfoByPrpPk(@PathVariable("prpPk") int prpPk) {
+        ReportPrpInfoDTO prpInfo = reportService.getReportPrpInfoByPrpPk(prpPk);
+        return prpInfo;
     }
 }

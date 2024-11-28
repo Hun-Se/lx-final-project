@@ -48,7 +48,10 @@ function onClickNavigate(index) {
   } else if(index === 2) {
     router.push({ path: "/mobile_ai_real_estate" });
   } else if(index === 3) {
-    window.open("http://localhost:5173/report");
+    const currentUrl = window.location.origin; // 예: "http://172.168.10.74:5173"
+    const targetPath = "/report";
+    const targetUrl = `${currentUrl}${targetPath}`;
+    window.open(targetUrl);
   }  else if(index === 4) {
     router.push({ path: "mobile_my_page"})
   }

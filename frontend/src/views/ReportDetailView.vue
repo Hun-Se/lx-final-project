@@ -1,11 +1,13 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import {ref, reactive, onMounted, onUnmounted, watch} from "vue";
 import PdfViewer from "@/components/PdfViewer.vue";
 import PublicLedgerModal from "@/components/PublicLedgerModal.vue";
 import { usePublicLedgerModalStore } from "@/stores/modal.js";
 import { storeToRefs } from "pinia";
 import { useRoute } from "vue-router";
 import axios from "axios";
+
+const selectType = ref(0);
 
 const route = useRoute(); // 현재 라우트 정보 가져오기
 // Reactive 상태 선언
@@ -90,10 +92,12 @@ onUnmounted(() => {
   }
 });
 
+
 let map;
+let marker;
 onMounted(() => {
   const script = document.createElement("script");
-  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=gsnvytbrvz&submodules=geocoder`;
   script.onload = () => {
     initMap();
   };
@@ -108,7 +112,7 @@ async function initMap() {
     mapTypeControl: true,
   });
 
-  var marker = new naver.maps.Marker({
+  marker = new naver.maps.Marker({
     position: new naver.maps.LatLng(37.516042, 127.034881), // 데이터로 변경필요
     map: map,
   });
@@ -130,7 +134,7 @@ function resetMap() {
   if (map) {
     // 초기 위치와 줌 레벨로 지도를 리셋
     map.setCenter(
-      new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng),
+        new naver.maps.LatLng(this.initialCenter.lat, this.initialCenter.lng),
     );
     map.setZoom(this.initialZoom);
   }
@@ -154,6 +158,9 @@ const fetchReportDetail = async () => {
       const data = await response.json();
       reportData.value = data; // 가져온 데이터를 Vue 데이터에 할당
       console.log("Fetched report detail:", reportData.value);
+
+      // 신고내용에 따라 매물 조회
+      fetchPrpInfo(reportData.value.prpPk);
     } else {
       console.error("Failed to fetch report detail:", response.status);
     }
@@ -236,6 +243,45 @@ const fetchChatMessages = async (chatPK) => {
     console.error("Error fetching chat messages:", error);
   }
 };
+
+// 지도와 마커 위치 업데이트 함수
+function updateMapCoordinates(latitude, longitude) {
+  if (map.value && marker.value && latitude && longitude) {
+    // 지도 중심 변경
+    map.value.setCenter(new naver.maps.LatLng(latitude, longitude));
+
+    // 마커 위치 변경
+    marker.value.setPosition(new naver.maps.LatLng(latitude, longitude));
+  }
+}
+
+// 허위매물 정보 불러오기
+const prpInfo = ref('');
+const prpType = ref("");
+const fetchPrpInfo = async (prpPk) => {
+  try {
+    const response = await axios.get(`/api/report/prpInfo/${prpPk}`)
+    prpInfo.value = response.data;
+    const prpTypeNum = response.data.prpType;
+    if (prpTypeNum === 0) {
+      prpType.value = "원룸/투룸"
+    } else if (prpTypeNum === 1) {
+      prpType.value = "아파트"
+    } else if (prpTypeNum === 2) {
+      prpType.value = "주택/빌라"
+    } else if (prpTypeNum === 3) {
+      prpType.value = "오피스텔"
+    } else {
+      prpType.value = "분양"
+    }
+
+    updateMapCoordinates(response.data.latitude, response.data.longitude);
+  } catch(err) {
+    console.err("err " + err);
+  }
+}
+
+
 
 //--------------음성녹음하이라이팅
 // 문제의 스크립트 끌어오는 메서드
@@ -516,6 +562,7 @@ onMounted(async () => {
                         <input
                           class="form-check-input"
                           type="radio"
+                          v-model="selectType" :value="0"
                           name="flexRadioDefault"
                           id="flexRadioDefault1"
                           checked
@@ -532,6 +579,7 @@ onMounted(async () => {
                         <input
                           class="form-check-input"
                           type="radio"
+                          v-model="selectType" :value="1"
                           name="flexRadioDefault"
                           id="flexRadioDefault2"
                         />
@@ -546,7 +594,8 @@ onMounted(async () => {
                     </div>
                   </div>
                 </div>
-                <div>
+                <!--     피신고 대상자 정보 조회          -->
+                <div v-if="selectType === 0">
                   <div class="mt-10 pb-5 content-list">
                     <div class="fw-bold mt-5 mb-3">
                       중개사 번호: <span class="text-gray-600 ms-1">{{ agentData?.agentLicense }}</span>
@@ -565,10 +614,26 @@ onMounted(async () => {
                     </div>
                   </div>
                 </div>
-                <!--end::Title-->
-                <!--begin::Stats-->
+                <div v-if="selectType === 1">
+                  <div class="mt-10 pb-5 content-list">
+                    <div class="fw-bold mt-5 mb-3">
+                      이름: <span class="text-gray-600 ms-1">{{ prpInfo?.prpName }}</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      중개대상물 주소: <span class="ms-1 text-gray-600">{{ prpInfo?.regionSiGunGu +  " " + prpInfo?.regionEupMyeonDong}}</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      중개대상물 타입: <span class="text-gray-600 ms-1">{{ prpType }}</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      중개대상물 거래형태: <span class="text-gray-600 ms-1">{{ prpInfo?.prpTransType }}</span>
+                    </div>
+                    <div class="fw-bold mt-5 mb-3">
+                      중개대상물 금액: <span class="ms-1 text-gray-600">{{ prpInfo?.prpPrice + "만원" }}</span>
+                    </div>
+                  </div>
+                </div>
 
-                <!--end::Stats-->
               </div>
               <!--    지도    -->
               <div class="container-map col-6">

@@ -54,6 +54,7 @@ onMounted(() => {
       .then(function () {
         console.log("모델 로드 완료");
         viewer.zoomTo(model);
+        alert("데이터 모델 로드 완료")
       })
       .catch(function (error) {
         console.error("모델 로드 후 에러:", error);

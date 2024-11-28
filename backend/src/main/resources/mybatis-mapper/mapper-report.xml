@@ -54,4 +54,29 @@
 		WHERE f.flr_pk = #{flrPk}
 	</select>
 
+	<select id="getReportPrpInfoByPrpPk" resultType="com.lx.finalproject.dto.report.ReportPrpInfoDTO">
+		SELECT
+			p.prp_pk,
+			p.prp_name,
+			p.prp_type,
+			p.prp_supp_area,
+			p.prp_trans_type,
+			p.prp_price,
+			p.prp_deposit,
+			p.prp_addr_detail,
+			r.region_si_do,
+			r.region_si_gun_gu,
+			r.region_eup_myeon_dong,
+			ST_X(c.location) AS latitude, -- 위도
+			ST_Y(c.location) AS longitude
+		FROM
+			prp p
+				INNER JOIN
+			region r ON p.region_pk = r.region_pk
+				INNER JOIN
+			coord c ON p.coord_pk = c.coord_pk
+		WHERE
+			p.prp_pk = #{prpPk}
+	</select>
+
 </mapper>

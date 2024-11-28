@@ -13,20 +13,20 @@ export const initializeWebSocket = (userName, store) => {
     }
 
     // WebSocket 연결 초기화
-    webSocket = new WebSocket("ws://172.168.10.40:9000/ws/chat");
-
+    // webSocket = new WebSocket("ws://172.168.10.40:9000/ws/chat");
+    webSocket = new WebSocket("ws://localhost:9000/ws/chat");
     // WebSocket 연결이 열리면 호출
-    webSocket.onopen = () => {
-        console.log("WebSocket connection opened");
-        const enterMessage = {
-            chatmesContent: `${userName}님이 입장하였습니다.`,
-            userPkSender: chatStore.userPk,
-            agentPkSender: null,
-            chatPk: 1,
-        };
-        sendMessage(enterMessage); // 입장 메시지 전송
-        chatStore.messages.push({ ...enterMessage, isOwnMessage: true }); // 본인 메시지
-    };
+    // webSocket.onopen = () => {
+    //     console.log("WebSocket connection opened");
+    //     const enterMessage = {
+    //         chatmesContent: `${userName}님이 입장하였습니다.`,
+    //         userPkSender: chatStore.userPk,
+    //         agentPkSender: null,
+    //         chatPk: 1,
+    //     };
+    //     sendMessage(enterMessage); // 입장 메시지 전송
+    //     chatStore.messages.push({ ...enterMessage, isOwnMessage: true }); // 본인 메시지
+    // };
 
     // WebSocket 메시지 수신
     webSocket.onmessage = (msg) => {

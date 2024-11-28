@@ -18,13 +18,17 @@
 import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 import { useAiChatbotStore } from "@/stores/aiChatbot.js";
+import { useMapInstanceStore } from "@/stores/map.js";
 import {storeToRefs} from "pinia";
 
-const map = ref(null);
+// const map = ref(null);
 const locations = ref([]);
 const markers = ref([]);
 const aiChatbotStore = useAiChatbotStore();
 const { chatBotData } = storeToRefs(aiChatbotStore);
+
+const mapStore = useMapInstanceStore();
+const { map } = storeToRefs(mapStore);
 
 const initMap = async () => {
   map.value = new naver.maps.Map("map", {
@@ -144,7 +148,7 @@ watch(
 // 스크립트 로드 후 지도 초기화
 onMounted(() => {
   const script = document.createElement("script");
-  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=gsnvytbrvz&submodules=geocoder`;
   script.onload = initMap;
   document.head.appendChild(script);
 });

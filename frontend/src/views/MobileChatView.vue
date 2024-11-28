@@ -1,5 +1,5 @@
 <template>
-  <MobileHeader title="채팅"></MobileHeader>
+  <MobileHeader title="채팅페이지"></MobileHeader>
   <div class="mt-15 p-5">
   <!-- 중개사 정보 -->
   <div class="card mb-5 mb-xl-10">
@@ -12,7 +12,7 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
               <div class="d-flex flex-column">
                 <div class="d-flex align-items-center mt-2 mb-2">
-                  <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">김중개</a>
+                  <a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1">하정우</a>
                   <span class="badge badge-light-primary">신고 26회</span>
                 </div>
                 <div class="d-flex flex-wrap fw-semibold fs-6 pe-2">
@@ -26,8 +26,13 @@
                 </div>
               </div>
               <div class="me-0">
-                <button class="btn btn-sm btn-icon btn-light-primary">
-                  <i class="ki-duotone ki-dots-square fs-2"></i>
+                <button class="btn btn-sm btn-light-danger" @click="clickReport" style="width: 50px">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.0016 4V5.5M5.60156 6.6L6.75156 7.74999M18.4016 6.6L17.2516 7.75" stroke="#FF0000" stroke-linecap="square" stroke-linejoin="round"></path>
+                    <rect x="6.5" y="15.5" width="11" height="3" rx="0.5" stroke="#FF0000"></rect>
+                    <path d="M8.5 12C8.5 10.067 10.067 8.5 12 8.5C13.933 8.5 15.5 10.067 15.5 12V15.5H8.5V12Z" stroke="#FF0000"></path>
+                  </svg>
+                  신고
                 </button>
               </div>
             </div>
@@ -38,16 +43,19 @@
 
     <!-- 매물정보 카드 -->
     <div class="card mt-5 mb-5 mb-xl-10">
-      <div class="card-body container-prp-info">
+      <div class="container-prp-info">
         <li class="property-item-mobile">
           <a href="#" class="styled-roomLink">
-            <img src="/assets/img/home.jpg" alt="매물 이미지" class="property-image-mobile" />
+            <img :src="'/assets/img/' + prpData.prpImg" alt="매물 이미지" class="property-image-mobile">
             <div class="styled-RoomDetail">
               <h1 class="styled-price">
-                <span><span class="badge badge-light-primary">월세</span> 70만원 / <span class="badge badge-light-info">보증금</span>500만원</span>
+                <span>
+                  <span class="badge badge-light-primary">{{ prpTransType }}</span> {{ prpPrice}}
+<!--                  <span v-if="prpData.prpDeposit" class="badge badge-light-info">/ 보증금</span>500만원-->
+                </span>
               </h1>
-              <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">원룸</p>
-              <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">서울시 종로구 자하문로36길 16-14</p>
+              <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">{{ prpType }}</p>
+              <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">{{ prpData.regionSiDo }} {{ prpData.regionSiGunGu }} {{ prpData.regionEupMyeonDong }}</p>
               <div class="styled__TagContainer-sc-1b8f2kq-8 jZjxOL"></div>
             </div>
           </a>
@@ -77,8 +85,11 @@
               :key="index"
               class="chat-message mb-2"
             >
+              <div class="d-flex" :class="msg.userPkSender === userStore.user?.userPk ? 'justify-content-end' : 'justify-content-start'">
+                <strong class="">{{ msg.userPkSender === userStore.user?.userPk ? userStore.user?.userName : msg.userName || '시스템' }}</strong>
+              </div>
               <div
-                class="d-flex"
+                class="d-flex mt-3"
                 :class="msg.userPkSender === userStore.user?.userPk ? 'justify-content-end' : 'justify-content-start'"
               >
                 <div
@@ -86,7 +97,6 @@
                   :class="msg.userPkSender === userStore.user?.userPk ? 'bg-light-primary text-gray-900' : 'bg-light-info text-gray-900'"
                 >
                   <!-- 사용자 이름 안전하게 표시 -->
-                  <strong>{{ msg.userPkSender === userStore.user?.userPk ? userStore.user?.userName : msg.userName || '시스템' }}</strong>:
                   {{ msg.chatmesContent }}
                 </div>
               </div>
@@ -102,7 +112,46 @@
             placeholder="채팅내용 입력"
             @keyup.enter="submitMessage"
           ></textarea>
-          <button class="btn btn-primary btn-message" @click="submitMessage">전송</button>
+<!--          <button class="btn btn-primary btn-message" @click="submitMessage">전송</button>-->
+          <div class="d-flex flex-stack">
+            <!--begin::Actions-->
+            <div class="d-flex align-items-center me-2">
+              <button
+                  class="btn btn-sm btn-icon btn-light-primary me-1"
+                  type="button"
+                  data-bs-toggle="tooltip"
+                  aria-label="Coming soon"
+                  data-bs-original-title="Coming soon"
+                  data-kt-initialized="1"
+              >
+                <i class="ki-duotone ki-paper-clip fs-3"></i>
+              </button>
+              <button
+                  class="btn btn-sm btn-icon btn-light-primary me-1"
+                  type="button"
+                  data-bs-toggle="tooltip"
+                  aria-label="Coming soon"
+                  data-bs-original-title="Coming soon"
+                  data-kt-initialized="1"
+              >
+                <i class="ki-duotone ki-exit-up fs-3">
+                  <span class="path1"></span>
+                  <span class="path2"></span>
+                </i>
+              </button>
+            </div>
+            <!--end::Actions-->
+            <!--begin::Send-->
+            <button
+                class="btn btn-primary btn-message"
+                @click="submitMessage"
+                type="button"
+                data-kt-element="send"
+            >
+              <i class="bi bi-send"></i>
+            </button>
+            <!--end::Send-->
+          </div>
         </div>
       </div>
     </div>
@@ -117,27 +166,33 @@ import { initializeWebSocket, sendMessage } from "@/api/chat";
 import Header from "@/components/Header.vue";
 import MobileHeader from "@/components/MobileHeader.vue";
 import { useMobileStore } from "@/stores/mobile";
-import { useRouter } from "vue-router";
+import { useSaleStore } from "@/stores/property.js";
+import {storeToRefs} from "pinia";
+import { useRouter, useRoute } from "vue-router";
 
 // 모바일 환경 설정
 const store = useMobileStore();
 const { isMobile } = store;
 
-// Header 렌더링 함수
-const renderHeader = () => (isMobile.value ? MobileHeader : Header);
-
 // Pinia 스토어에서 사용자 정보 가져오기
 const userStore = useUserStore();
 const user = userStore.user; // storeToRefs 대신 직접 참조
-
-// Vue Router 인스턴스
-const router = useRouter();
 
 // WebSocket 관련 설정
 const chatStore = useChatStore();
 const newMessage = ref("");
 
-onMounted(() => {
+// 선택했던 매물
+const saleStore = useSaleStore();
+const prpData = ref({});
+const prpType = ref("");
+const prpPrice = ref("");
+const prpTransType = ref("");
+
+const route = useRoute();
+const router = useRouter();
+
+onMounted(async () => {
   userStore.initializeUser?.(); // Pinia 상태 초기화
 
   console.log("Debug: userStore.user:", userStore.user);
@@ -150,7 +205,40 @@ onMounted(() => {
 
   console.log("User is valid. Initializing WebSocket.");
   initializeWebSocket(userStore.user.userName, chatStore);
+  const  route = useRoute();
+  const saleId = route.query.saleId; // 현재 saleId 가져오기
+  const response = await saleStore.fetchSalesDetails(saleId);
+  prpData.value = response;
+
+  if (response.prpTransType === 1) {
+    prpTransType.value = "매매";
+  } else if (response.prpTransType === 2) {
+    prpTransType.value = "전세";
+  } else {
+    prpTransType.value = "월세";
+  }
+
+  if (response.prpType === 1) {
+    prpType.value = "아파트";
+  } else if (response.prpType === 2) {
+    prpType.value = "주택/빌라";
+  } else if ((response.prpType === 3)){
+    prpType.value = "오피스텔";
+  } else if ((response.prpType === 4)){
+    prpType.value = "분양";
+  }
+
+   prpPrice.value = formatCurrency(response.prpPrice);
 });
+
+function formatCurrency(value) {
+  if (value >= 10000) {
+    const billions = Math.floor(value / 10000); // 억 단위
+    const millions = value % 10000; // 나머지 만원 단위
+    return `${billions}억 ${millions > 0 ? `${millions}만` : ""}원`;
+  }
+  return `${value}만 원`; // 만원 이하인 경우
+}
 
 const submitMessage = () => {
   if (!newMessage.value.trim()) return;
@@ -169,8 +257,149 @@ const submitMessage = () => {
   chatStore.messages.push(messageData);
   newMessage.value = "";
 };
+
+const clickReport = () => {
+  const saleId = route.query.saleId;
+  const chatPk = 1;
+router.push({ path: "/mobile_prp_report", query: { saleId, chatPk } });
+}
 </script>
 
 <style scoped>
 /* 기존 스타일 유지 */
+#conversation {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 180ex;
+  margin: 0 auto;
+  max-width: 100%;
+}
+#response {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+.chat-message {
+  margin-bottom: 5px;
+  padding: 8px;
+  border-radius: 5px;
+}
+.my-message {
+  background-color: #e7f4fe;
+  align-self: flex-end;
+  /* 사용자 메시지 오른쪽 정렬 */
+  text-align: right;
+  /* 사용자 메시지 오른쪽 정렬 */
+}
+.other-message {
+  background-color: #fdecf8;
+  align-self: flex-start;
+  /* 상대방 메시지 왼쪽 정렬 */
+  text-align: left;
+  /* 상대방 메시지 왼쪽 정렬 */
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+button {
+  padding: 10px 20px;
+  background-color: var(--color-bg-second);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
+.btn-message {
+  background-color: var(--color-bg-blue1);
+}
+/* 모바일 매물 리스트 */
+.property-item-mobile {
+  display: flex;
+}
+.property-item-mobile a{
+  display: flex;
+}
+.styled-RoomDetail {
+  display: flex;
+  flex-direction: column;
+  width: 15rem;
+}
+.styled-price {
+  flex: 0 0 auto;
+  color: rgb(34, 34, 34);
+  font-size: 1.1rem;
+  line-height: 26px;
+}
+
+.XdHPA {
+  flex: 0 0 auto;
+  color: rgb(101, 101, 101);
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.iDAcJ {
+  flex: 0 0 auto;
+  color: rgb(101, 101, 101);
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.hVDije {
+  flex: 0 0 auto;
+  color: rgb(151, 151, 151);
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.jZjxOL {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 8px;
+  align-items: center;
+  color: gold;
+}
+
+.property-image-mobile {
+  width: 30%;
+  height: 100%;
+}
+
+.styled-roomLink {
+  display: grid;
+  grid-template-columns: 153px minmax(0px, 1fr);
+  column-gap: 14px;
+}
+
+.card-body {
+  padding: 1rem 1rem;
+}
 </style>

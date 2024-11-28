@@ -205,18 +205,12 @@ function moveToDetail(flrPk) {
             <div class="d-flex flex-column my-7">
               <!--begin::Number-->
               <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2"
-                >327</span
+                >5</span
               >
-              <!--end::Number-->
-              <!--begin::Follower-->
               <div class="m-0">
                 <span class="fw-semibold fs-6 text-gray-500">접수내역</span>
               </div>
-              <!--end::Follower-->
             </div>
-            <!--end::Section-->
-            <!--begin::Badge-->
-            <!--end::Badge-->
           </div>
           <!--end::Body-->
         </div>
@@ -263,42 +257,25 @@ function moveToDetail(flrPk) {
         </div>
         <!--end::Card widget 2-->
       </div>
-      <!--end::Col-->
-      <!--begin::Col-->
       <div class="col-sm-6 col-xl-2 mb-xl-10">
-        <!--begin::Card widget 2-->
         <div class="card h-lg-80">
-          <!--begin::Body-->
           <div
             class="card-body d-flex justify-content-between align-items-start flex-column"
           >
-            <!--begin::Icon-->
             <div class="m-0">
               <i class="ki-duotone ki-abstract-39 fs-2hx text-primary">
                 <span class="path1"></span>
                 <span class="path2"></span>
               </i>
             </div>
-            <!--end::Icon-->
-            <!--begin::Section-->
             <div class="d-flex flex-column my-7">
-              <!--begin::Number-->
               <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">89</span>
-              <!--end::Number-->
-              <!--begin::Follower-->
               <div class="m-0">
                 <span class="fw-semibold fs-6 text-gray-500">결제 대기중</span>
               </div>
-              <!--end::Follower-->
             </div>
-            <!--end::Section-->
-            <!--begin::Badge-->
-
-            <!--end::Badge-->
           </div>
-          <!--end::Body-->
         </div>
-        <!--end::Card widget 2-->
       </div>
       <div class="col-sm-6 col-xl-2 mb-xl-10">
         <!--begin::Card widget 2-->
@@ -370,10 +347,7 @@ function moveToDetail(flrPk) {
           <div class="card-title flex-column">
             <h3 class="fw-bold mb-1">허위매물 신고내역</h3>
           </div>
-          <!--begin::Card title-->
-          <!--begin::Card toolbar-->
           <div class="card-toolbar my-1">
-            <!--begin::Select-->
             <div class="me-6 my-1">
               <select
                 id="kt_filter_year"
