@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.lx.finalproject.dao.realcost.RealcostDAO">
 
- <!-- 모든 실거래가 데이터 조회 -->
-    <select id="getAllRealCost" resultType="com.lx.finalproject.vo.RealcostVO">
-        SELECT 
-            real_cost,
-            ST_AsGeoJSON(geom_wgs84) AS geom_wgs84
-        FROM real_cost
-    </select>
     
+    <select id="getAllRealCostWithCoordinates" resultType="com.lx.finalproject.vo.RealcostVO">
+	    SELECT 
+		    real_cost,
+		    COALESCE(ST_AsGeoJSON(geom), '') AS geom,
+		    CONCAT(real_cost, ' ', COALESCE(ST_AsGeoJSON(geom), '')) 
+		FROM 
+		    public.real_cost
+		WHERE 
+		    real_cost IS NOT NULL;
+	    </select>
+   
+
 </mapper>

@@ -6,7 +6,6 @@ import com.lx.finalproject.vo.RealcostVO;
 
 @Mapper
 public interface RealcostDAO {
-
-    // 모든 real_cost 데이터를 가져오는 메서드
-    List<RealcostVO> getAllRealCost();
+    List<RealcostVO> getAllRealCostGeoJSON();
+    List<RealcostVO> getAllRealCostWithCoordinates(); // GeoJSON을 포함한 실거래가 데이터 조회
 }

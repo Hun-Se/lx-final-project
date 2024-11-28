@@ -1,3 +1,4 @@
+최종
 <template>
   <div class="map-container">
     <div id="map"></div>
@@ -216,5 +217,28 @@ onMounted(() => {
   .zoom-button:hover {
     background-color: var(--color-bg-third);
   }
+}
+
+.price-label {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 5px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #000;
+}
+
+/* 실거래가 버튼 스타일 */
+.realcost-button {
+  background-color: var(--color-bg-third);
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin-top: 1ex;
+  border-radius: 1ex;
+}
+
+.realcost-button:hover {
+  background-color: var(--color-bg-third);
 }
 </style>
