@@ -12,7 +12,9 @@
                 <div>
                   <div class="func">
                     <i
-                        class="bi bi-heart-fill heart-icon"
+                      class="bi heart-icon"
+                      :class="isFavorite ? 'bi-heart-fill text-danger' : 'bi-heart'"
+                      @click="toggleFavorite"
                     ></i>
                   </div>
                 </div>
@@ -236,47 +238,87 @@ import { useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { useSaleStore } from "@/stores/property.js";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
+import { requestMyInterestPrp, addInterestPrp, deleteInterestPrp } from "@/api/property.js";
+import { useUserStore } from "@/stores/user";
 
 const prpTransType = ref("");
 const prpType = ref("");
+const userStore = useUserStore();
 
-
-onMounted(async () => {
-  const salesId = route.query.id;
-  // if (salesId) {
-  const response = await store.fetchSalesDetails(salesId); // 매물 상세 정보 요청
-  if (response.prpTransType === 1) {
-    prpTransType.value = "매매";
-  } else if (response.prpTransType === 2) {
-    prpTransType.value = "전세";
-  } else {
-    prpTransType.value = "월세";
-  }
-
-  if (response.prpType === 1) {
-    prpType.value = "아파트";
-  } else if (response.prpType === 2) {
-    prpType.value = "주택/빌라";
-  } else if ((response.prpType === 3)){
-    prpType.value = "오피스텔";
-  } else if ((response.prpType === 4)){
-    prpType.value = "분양";
-  }
-  // }
-});
-
-// Pinia 스토어와 라우터 가져오기
 const store = useSaleStore();
 const { selectedSalesDetails } = storeToRefs(store);
 const router = useRouter();
 const route = useRoute();
+const isFavorite = ref(false);
+const prpPk = ref(null);
+
+// 매물 상세 데이터 로드
+onMounted(async () => {
+  const salesId = route.query.id;
+  if (salesId) {
+    const response = await store.fetchSalesDetails(salesId);
+    if (response) {
+      prpPk.value = response.prpPk; // prpPk를 response에서 추출하여 ref에 저장
+      console.log("매물 prpPk:", prpPk);
+      setPrpType(response.prpType);
+      initializeFavoriteState();
+    }
+  }
+});
 
 
-function clickChat() {
-  const saleId = route.query.id; // 현재 saleId 가져오기
-  router.push({ path: "/mobile_chat", query: { saleId } });
+// 매물 유형 설정
+function setPrpType(type) {
+  const types = ["", "아파트", "주택/빌라", "오피스텔", "분양"];
+  prpType.value = types[type] || "기타";
 }
 
+// 관심 상태 초기화
+async function initializeFavoriteState() {
+  if (!prpPk.value) return; // prpPk가 없으면 함수 종료
+
+  try {
+    const response = await requestMyInterestPrp(userStore.user?.userPk);
+    isFavorite.value = response.some((item) => item.prpPk === prpPk.value); // prpPk.value 사용
+  } catch (error) {
+    console.error("초기 관심 상태 설정 실패:", error);
+  }
+}
+
+
+// 관심 매물 추가/삭제
+async function toggleFavorite() {
+  if (!prpPk.value) {
+    console.warn("매물 정보가 아직 로드되지 않았습니다.");
+    return;
+  }
+
+  try {
+    if (!isFavorite.value) {
+      // 관심 매물 추가
+      const response = await addInterestPrp({
+        userPk: userStore.user?.userPk,
+        prpPk: prpPk.value,
+      });
+      isFavorite.value = true;
+      console.log("관심 매물 추가 성공:", response);
+    } else {
+      // 관심 매물 삭제
+      const response = await deleteInterestPrp(prpPk.value); // prpPk.value 사용
+      isFavorite.value = false;
+      console.log("관심 매물 삭제 성공:", response);
+    }
+  } catch (error) {
+    console.error("관심 매물 처리 실패:", error);
+  }
+}
+
+
+// 채팅 버튼 클릭
+function clickChat() {
+  const saleId = route.query.id;
+  router.push({ path: "/mobile_chat", query: { saleId } });
+}
 </script>
 
 <style scoped>
