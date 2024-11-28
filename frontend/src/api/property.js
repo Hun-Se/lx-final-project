@@ -49,7 +49,7 @@ export const createProperty = async (data) => {
 }
 
 export const requestMyInterestPrp = async (userPk) => {
-  const url = `api/properties/interest?userPk=` + Number(userPk);
+  const url = `api/favprp/${Number(userPk)}`;
   try {
     const response = await api.get(url);
     return response.data;
@@ -59,16 +59,25 @@ export const requestMyInterestPrp = async (userPk) => {
   }
 };
 
-export const deleteInterestPrp = async (prpPk) => {
-  const url = `api/properties/interest/delete`;
-  const data = {
-    prpPk: prpPk,
-  };
+export const addInterestPrp = async (data) => {
+  const url = "api/favprp/add";
   try {
-    const response = await api.delete(url, { data: data });
+    const response = await api.post(url, data);
     return response.data;
   } catch (err) {
     console.error(`서버 요청 시 에러 : ${err}`);
+    return null;
+  }
+};
+
+// 관심 매물 삭제
+export const deleteInterestPrp = async (prpPk) => {
+  const url = `api/favprp/delete`;
+  try {
+    const response = await api.delete(url, { data: { prpPk } });
+    return response.data;
+  } catch (err) {
+    console.error(`관심 매물 삭제 에러 : ${err}`);
     return null;
   }
 };
