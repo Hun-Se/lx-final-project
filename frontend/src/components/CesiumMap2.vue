@@ -28,7 +28,7 @@ onMounted(() => {
   const buildingTileset = viewer.scene.primitives.add(Cesium.createOsmBuildings());
 
   viewer.camera.flyTo({
-    destination: Cesium.Cartesian3.fromDegrees(127.0016, 37.584, 1000), // 카메라 고도와 모델 위치 조정
+    destination: Cesium.Cartesian3.fromDegrees(126.968429762772, 37.5746716527447, 1000), // 카메라 고도와 모델 위치 조정
     orientation: {
       heading: Cesium.Math.toRadians(0.0),
       pitch: Cesium.Math.toRadians(-25.0),
@@ -38,7 +38,7 @@ onMounted(() => {
   });
 
   const scene = viewer.scene;
-  const position = Cesium.Cartesian3.fromDegrees(127.0016, 37.584, 20);
+  const position = Cesium.Cartesian3.fromDegrees(126.968429762772, 37.5746716527447, 20);
   const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(position);
 
   try {

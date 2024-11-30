@@ -1,19 +1,53 @@
 <template>
-  <div class="spinner"></div>
+  <div class="wrapper-spinner">
+    <div class="spinner"></div>
+    <div class="mt-5 ms-2 text-muted">처리중...</div>
+  </div>
 </template>
 
 <style scoped>
-.spinner {
-  width: 11.2px;
-  height: 11.2px;
-  border-radius: 11.2px;
-  box-shadow: 28px 0px 0 0 rgba(71,75,255,0.2), 22.7px 16.5px 0 0 rgba(71,75,255,0.4), 8.68px 26.6px 0 0 rgba(71,75,255,0.6), -8.68px 26.6px 0 0 rgba(71,75,255,0.8), -22.7px 16.5px 0 0 #474bff;
-  animation: spinner-b87k6z 1s infinite linear;
+.wrapper-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
 }
 
-@keyframes spinner-b87k6z {
-  to {
-    transform: rotate(360deg);
+.spinner {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  border: 4.5px solid #0000;
+  border-radius: 50%;
+  border-color: #dbdcef #0000;
+  animation: spinner-e04l1k 1s infinite linear;
+}
+
+.spinner::before,
+.spinner::after {
+  content: "";
+  grid-area: 1/1;
+  margin: 2.2px;
+  border: inherit;
+  border-radius: 50%;
+}
+
+.spinner::before {
+  border-color: #474bff #0000;
+  animation: inherit;
+  animation-duration: 0.5s;
+  animation-direction: reverse;
+}
+
+.spinner::after {
+  margin: 8.9px;
+}
+
+@keyframes spinner-e04l1k {
+  100% {
+    transform: rotate(1turn);
   }
 }
 </style>

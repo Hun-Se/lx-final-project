@@ -14,6 +14,7 @@ export const initializeWebSocket = (userName, store) => {
 
     // WebSocket 연결 초기화
     // webSocket = new WebSocket("ws://172.168.10.40:9000/ws/chat");
+    // webSocket = new WebSocket("ws://172.168.10.40:9000/ws/chat");
     webSocket = new WebSocket("ws://localhost:9000/ws/chat");
     // WebSocket 연결이 열리면 호출
     // webSocket.onopen = () => {
@@ -69,6 +70,16 @@ export const initializeWebSocket = (userName, store) => {
             agentPkSender: null,
             chatPk: 1,
         });
+    };
+
+    const reconnectWebSocket = () => {
+        console.log("Attempting to reconnect...");
+        initializeWebSocket(userName, chatStore);
+    };
+
+    webSocket.onclose = () => {
+        console.log("WebSocket connection closed");
+        setTimeout(reconnectWebSocket, 1000); // 5초 후 재연결
     };
 
     // WebSocket에서 오류가 발생할 때 호출

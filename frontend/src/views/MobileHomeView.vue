@@ -6,7 +6,7 @@
   >
     <!-- 검색 바-->
     <div>
-      <div class="mt-5" style="display: flex; align-items: center">
+      <div class="mt-12 ms-2" style="display: flex; align-items: center">
         <input
           v-model="searchByType"
           class="form-check-input"
@@ -26,7 +26,7 @@
           id="flexRadioDefault2"
           value="keyWord"
         />
-        <label class="form-check-label lh-base ms-3" for="flexRadioDefault2">
+        <label class="form-check-label lh-base ms-3" for="flexRadioDefault2" style="">
           <div>키워드 검색</div>
         </label>
       </div>
@@ -35,40 +35,42 @@
       <div v-if="searchByType === 'time'">
         <div class="mt-3 d-flex justify-content-around">
           <div class="">
-            <div>
-              <input class="text-center" placeholder="위치를 입력해주세요" />
-              에서
+            <div class="d-flex align-items-center">
+              <input class="text-center form-check-input" style="width: 180px" placeholder="위치를 입력해주세요" />
+              <span class="ms-2 me-2">에서</span>
 
-              <select style="">
+              <select class="form-check-input" style="width: 50px">
                 <option disabled selected>이동수단</option>
                 <option value="walking">도보</option>
                 <option value="driving">자차</option>
                 <option value="public_transport">대중교통</option></select
-              >로
+              >
+              <span class="ms-2 me-2">로</span>
             </div>
             <div class="mt-3">
               <input
-                class="text-center"
+                class="text-center form-check-input"
                 type="number"
                 placeholder="0"
                 min="0"
-                style="width: 100px"
+                style="width: 50px"
               />
               시간
 
               <input
-                class="text-center"
+                class="text-center form-check-input"
                 type="number"
                 placeholder="0"
                 min="0"
                 max="59"
+                style="width: 50px"
               />
               분
               <span>내에 있는 매물</span>
             </div>
           </div>
           <div class="d-flex align-items-center">
-            <button type="button" class="btn btn-primary btn-sm">검색</button>
+            <button type="button" class="btn btn-primary btn-sm custom-btn">검색</button>
           </div>
         </div>
       </div>
@@ -288,8 +290,8 @@
               <img src="/assets/img/decrease_graph.png" style="width: 50px" />
               <button
                 type="button"
-                class="btn btn-primary btn-sm"
-                style="margin: auto"
+                class="btn btn-sm custom-btn"
+                style="margin: auto; color:white"
               >
                 AI 집값 예측 바로가기
               </button>
@@ -323,5 +325,19 @@ function goToMap() {
 .move-page-cards .card {
   height: 120px;
   overflow: hidden;
+}
+
+.form-check-input:checked {
+  background-color: var(--color-bg-blue1);
+}
+
+.custom-btn {
+  background-color: #373773;
+  border-color: #373773;
+}
+
+.custom-btn:hover {
+  background-color: #fa7000 !important;
+  border-color: #fa7000 !important;
 }
 </style>

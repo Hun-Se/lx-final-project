@@ -31,36 +31,36 @@ public class RecController {
 	private RecService recService;
 
 	// 파일 저장 경로 지정
-	private static final String UPLOAD_DIR = "C:/lx-final-project/frontend/public/assets/record";
+	private static final String UPLOAD_DIR = "/Users/sehun/Desktop/lx-final-project/frontend/public/assets/record";
 
 	@PostMapping("/upload")
-	public ResponseEntity<String> uploadAudioFile(@RequestParam("file") MultipartFile file,
+	public ResponseEntity<String> uploadAudioFile(
+			@RequestParam(value = "file", required = false) MultipartFile file, // 파일 필수가 아님
 			@RequestParam("flr_pk") int flrPk) {
-		if (file.isEmpty()) {
-			return ResponseEntity.badRequest().body("File is required");
-		}
-
 		try {
-			// 이름 맞춰서 경로에 녹취파일 저장
-			Path filePath = Paths.get(UPLOAD_DIR, "record_" + flrPk + ".mp3");
-			File destFile = new File(filePath.toString());
-			file.transferTo(destFile);
+			if (file != null && !file.isEmpty()) {
+				// 이름 맞춰서 경로에 녹취파일 저장
+				Path filePath = Paths.get(UPLOAD_DIR, "record_" + flrPk + ".mp3");
+				File destFile = new File(filePath.toString());
+				file.transferTo(destFile);
 
-			// 파일 경로와 함께 데이터 저장
-			recService.saveRec(filePath.toString(), flrPk);
+				// 파일 경로와 함께 데이터 저장
+				recService.saveRec(filePath.toString(), flrPk);
 
-			// Flask 서버 호출
-			String flaskUrl = "http://localhost:5000/record/flr/" + flrPk;
-			RestTemplate restTemplate = new RestTemplate();
-			String flaskResponse = restTemplate.getForObject(flaskUrl, String.class);
-			System.out.println("Flask 서버 응답: " + flaskResponse);
+				// Flask 서버 호출
+				String flaskUrl = "http://localhost:5000/record/flr/" + flrPk;
+				RestTemplate restTemplate = new RestTemplate();
+				String flaskResponse = restTemplate.getForObject(flaskUrl, String.class);
+				System.out.println("Flask 서버 응답: " + flaskResponse);
+			} else {
+				System.out.println("파일이 첨부되지 않았으므로 파일 저장 및 Flask 호출은 생략합니다.");
+			}
 
-			return ResponseEntity.ok("File uploaded and saved to database successfully");
+			return ResponseEntity.ok("Request processed successfully");
 		} catch (IOException e) {
-			return ResponseEntity.status(500).body("Failed to save file: " + e.getMessage());
+			return ResponseEntity.status(500).body("Failed to process file: " + e.getMessage());
 		}
 	}
-
 	// FLR PK(flrPk)를 기반으로 관련된 채팅 PK(recPk)를 조회하는 엔드포인트입
 	@GetMapping("/flr/{flrPk}/recPk")
 	public ResponseEntity<Integer> getRecPkByFlrPk(@PathVariable int flrPk) {

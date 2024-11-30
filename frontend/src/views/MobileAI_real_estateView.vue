@@ -2,7 +2,7 @@
   <!-- renderHeader를 호출하지 않고 그대로 사용 -->
   <MobileHeader title="매물 가격 예측 비교"></MobileHeader>
   
-  <div class="mt-18 fs-2x">
+  <div class=" fs-2x" style="margin-top: 5rem; overflow-y: scroll">
     <!-- 전체 컨테이너 -->
     <div class="favorites-container">
       <h3 class="card-title text-gray-900 fs-3 fw-bold mb-3">가격 예측 그래프</h3>
@@ -33,7 +33,7 @@
       <!-- 선택된 매물 정보 -->
 
       <!-- 가격 예측 차트 -->
-      <div class="chart-wrapper">
+      <div class="chart-wrapper mt-2">
       <!--  선택된 매물 정보      -->
         <div v-if="selectedApartments.length === 0" class="text-muted fw-semibold fs-6" >찜한 매물 목록에서 매물을 선택해주세요.</div>
         <div v-for="(apartment, index) in selectedApartments" :key="index" class="d-flex fw-semibold align-items-center mb-3">
@@ -238,7 +238,7 @@ onMounted(async () => {
 
 .chart-wrapper {
   width: 100%;
-  height: 310px;
+  height: 400px;
   background-color: #ffffff;
   padding: 15px;
   border-radius: 10px;

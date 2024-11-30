@@ -35,7 +35,8 @@ onMounted(() => {
       document.querySelector(".select_menu").classList.remove("select_menu");
       linkItem.classList.add("select_menu");
       const indicator = document.querySelector(".indicator");
-      indicator.style.left = `${index * 64 + 32}px`;
+      indicator.style.left = `${index * 72 + 40}px`;
+      // 돈진 화면 수정 필요함
     });
   });
 });
@@ -90,6 +91,7 @@ nav {
   align-items: center;
   list-style: none;
   position: relative;
+  justify-content: space-between;
 }
 
 .link-item {
@@ -99,6 +101,7 @@ nav {
   flex-direction: column;
   height: 50px;
   width: 64px;
+  margin-left: 8px; /*돈진 화면에 맞춰야함*/
   text-decoration: none;
   transform: translateY(-8px);
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -132,7 +135,7 @@ nav {
 .indicator {
   position: absolute;
   top: -12px;
-  left: 34px;
+  left: 40px;
   height: 24px;
   width: 24px;
   background-color: var(--color-bg-third);

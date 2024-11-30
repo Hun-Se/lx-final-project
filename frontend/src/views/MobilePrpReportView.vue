@@ -1,6 +1,9 @@
 <template>
   <MobileHeader title="신고페이지"></MobileHeader>
-  <div class="container mt-20">
+  <div v-if="isSpinner" class="" style="transform: translateX(-35px) translateY(320px); z-index: 99999">
+    <Spinner></Spinner>
+  </div>
+    <div class="container mt-20">
     <label class="fs-4 fw-semibold form-label mt-3">
       <span class="required">신고 분류 선택</span>
     </label>
@@ -88,7 +91,8 @@
 import MobileHeader from "@/components/MobileHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import { ref } from 'vue';
-import { useRouter, useRoute} from "vue-router"
+import { useRouter, useRoute} from "vue-router";
+import Spinner from "@/components/Spiner.vue";
 
 const categoryData = {
   대분류: {
@@ -144,6 +148,7 @@ const proofOptions = ref(["광고화면", "녹취", "문자내용", "기타자�
 const selectedProofOptions = ref([]);
 const reportContent = ref("");
 const uploadedFiles = ref([]);
+const isSpinner = ref(false);
 
 const toggleMenu = (index) => {
   menus.value = menus.value.map((menu, menuIndex) => ({
@@ -180,6 +185,7 @@ const route = useRoute();
 
 const submitReport = async () => {
   const userPk = sessionStorage.getItem('userPk') || 1;
+  isSpinner.value = true;
 
   // 필수 값 확인
   if (!menus.value.every((menu) => menu.selected)) {
@@ -193,12 +199,14 @@ const submitReport = async () => {
   }
 
   const saleId = route.query.saleId;
+  const isTextSelected = selectedProofOptions.value.includes("문자내용");
+  const textValue = isTextSelected ? 1 : null;
   // 1. /api/flr/save 호출하여 flr 테이블에 신고 데이터 추가
   try{
     const flrSaveResponse = await axios.post('/api/flr/save', {
-      userPk : saleId,
-      prpPk: 1,
-      chatPk: null,
+      userPk : 1,
+      prpPk: Number(saleId),
+      chatPk: textValue,
       recPk: null,
       flrCateUpper: menus.value[0].selected,
       flrCateMiddle: menus.value[1].selected,
@@ -231,9 +239,6 @@ const submitReport = async () => {
         return;
       }
       formData.append("file", uploadedFiles.value[0]); // 단일 파일 업로드 처리
-    } else {
-      alert("파일을 업로드해야 합니다.");
-      return;
     }
 
     // 디버깅: formData 내용 확인
@@ -252,6 +257,8 @@ const submitReport = async () => {
   } catch (error){
     console.error("요청 실패:", error.response || error);
     alert("신고 접수 중 오류가 발생했습니다.");
+  } finally {
+    isSpinner.value = false;
   }
 
   const router = useRouter();

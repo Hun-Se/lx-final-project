@@ -21,6 +21,9 @@ import axios from "axios";
 import { useAiChatbotStore } from "@/stores/aiChatbot.js";
 import { useMapInstanceStore } from "@/stores/map.js";
 import {storeToRefs} from "pinia";
+import Wkt from "terraformer-wkt-parser";
+import proj4 from "proj4";
+
 
 // const map = ref(null);
 const locations = ref([]);
@@ -30,6 +33,7 @@ const { chatBotData } = storeToRefs(aiChatbotStore);
 
 const mapStore = useMapInstanceStore();
 const { map } = storeToRefs(mapStore);
+const polygons = ref([]);
 
 const initMap = async () => {
   map.value = new naver.maps.Map("map", {
@@ -93,8 +97,10 @@ const updateMarkersAndCenter = () => {
           <p>${location.name}</p>
           <p>${
         location.price >= 100000000
-            ? `${(location.price / 100000000).toFixed(1)}억`
-            : `${Math.floor(location.price / 10000)}만원`
+            ? `${Math.floor(location.price / 100000000)}억 ${Math.floor((location.price % 100000000) / 10000)}만`
+            : location.price >= 10000
+                ? `${Math.floor(location.price / 10000)}억 ${location.price % 10000} 만원`
+                : `${location.price}만원`
     }</p>
         </div>
         <span style="position: absolute; border-style: solid; border-width: 1.2rem 1rem 0 1rem; border-color: #ffffff transparent; display: block; width: 0; z-index: 1; top: 2.5rem; left: 2.0rem;"></span>
@@ -135,6 +141,131 @@ const zoomOut = () => {
     map.value.setZoom(map.value.getZoom() - 1);
   }
 };
+
+const fetchRealCost = async () => {
+  try {
+    polygons.value = []; // 초기화
+
+    const response = await fetch("/api/realcost/coordinates");
+
+    if (!response.ok) {
+      throw new Error("서버 오류 발생");
+    }
+
+    const data = await response.json();
+    console.log("응답 데이터:", data);
+
+    const cleanedData = data.map((item) => {
+      if (typeof item.realCost === "number" && item.realCost % 1 === 0) {
+        item.realCost = item.realCost.toString().replace(/\.0$/, "");
+      }
+      return item;
+    });
+
+    const sourceProjection =
+        "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=GRS80 +units=m +no_defs";
+    const targetProjection = "EPSG:4326";
+
+    cleanedData.forEach((item) => {
+      const geoJsonString = item.geom;
+
+      if (geoJsonString) {
+        const parsedGeoJson = JSON.parse(geoJsonString);
+
+        if (parsedGeoJson.type === "MultiPolygon" && parsedGeoJson.coordinates) {
+          parsedGeoJson.coordinates.forEach((polygonCoords) => {
+            const paths = polygonCoords.map((polygon) =>
+                polygon.map((coord) => {
+                  let convertedCoord = proj4(
+                      sourceProjection,
+                      targetProjection,
+                      coord
+                  );
+
+                  convertedCoord[1] = convertedCoord[1] - 0.90091;
+                  convertedCoord[0] = convertedCoord[0] + 0.00037;
+
+                  return new naver.maps.LatLng(convertedCoord[1], convertedCoord[0]);
+                })
+            );
+
+            paths.forEach((path) => {
+              const latLngPath = path.map(
+                  (coord) =>
+                      coord instanceof naver.maps.LatLng
+                          ? coord
+                          : new naver.maps.LatLng(coord[1], coord[0])
+              );
+
+              map.value.setCenter(latLngPath[0]);
+              map.value.setZoom(12);
+
+              const polygon = new naver.maps.Polygon({
+                map: map.value,
+                paths: latLngPath,
+                fillColor: "#FF0000",
+                fillOpacity: 0.3,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1,
+                strokeWeight: 3,
+                clickable: true,
+              });
+
+              polygons.value.push(polygon);
+
+              naver.maps.Event.addListener(polygon, "click", () => {
+                const center = getPolygonCenter(latLngPath);
+                createMarker(center, item.realCost);
+              });
+            });
+          });
+        }
+      }
+    });
+  } catch (error) {
+    console.error("실거래가 데이터 가져오기 오류:", error);
+  }
+};
+
+const getPolygonCenter = (latLngPath) => {
+  let latSum = 0;
+  let lngSum = 0;
+  latLngPath.forEach((latLng) => {
+    latSum += latLng.lat();
+    lngSum += latLng.lng();
+  });
+  return new naver.maps.LatLng(latSum / latLngPath.length, lngSum / latLngPath.length);
+};
+
+const createMarker = (center, realCost) => {
+  const marker = new naver.maps.Marker({
+    position: center,
+    map: map.value,
+    icon: {
+      content: `<div style="background-color: white; padding: 10px; border-radius: 5px; border: 1px solid #FF0000;">
+                  <p>실거래가: ${realCost}만원</p>
+                </div>`,
+      size: new naver.maps.Size(100, 50),
+      anchor: new naver.maps.Point(50, 50),
+    },
+  });
+
+  markers.value.push(marker);
+};
+
+const removeAllMarkers = () => {
+  markers.value.forEach((marker) => marker.setMap(null));
+  markers.value = [];
+};
+
+onMounted(() => {
+  const script = document.createElement("script");
+  script.src = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=yi1l80sw0i&submodules=geocoder`;
+  script.onload = () => {
+    initMap();
+  };
+  document.head.appendChild(script);
+});
 
 // watch로 chatBotData 변경 감지
 watch(

@@ -4,8 +4,11 @@ import PdfViewer from "@/components/PdfViewer.vue";
 import PublicLedgerModal from "@/components/PublicLedgerModal.vue";
 import { usePublicLedgerModalStore } from "@/stores/modal.js";
 import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
+import Spiner from "@/components/Spiner.vue";
+
+const isSpinner = ref(false);
 
 const selectType = ref(0);
 
@@ -200,6 +203,7 @@ const recScript = ref([]);
 
 // 플라스크 이용해서 문제의 대화 끌어오는 메서드
 const fetchChatPk = async () => {
+  isSpinner.value = true;
   try {
     console.log("Fetching chatPk for flrPk:", flrPk.value);
     const response = await axios.get(`/api/chat/flr/${flrPk.value}`);
@@ -229,6 +233,8 @@ const fetchChatPk = async () => {
     }
   } catch (error) {
     console.error("Error fetching chatPk:", error);
+  } finally {
+    isSpinner.value = false;
   }
 };
 
@@ -408,10 +414,17 @@ onMounted(async () => {
   }
 });
 
+function movetoReportList() {
+  const router = useRouter();
+  router.push(`/report`);
+}
 </script>
 
 <template>
-  <nav>
+  <div v-if="isSpinner">
+    <Spiner></Spiner>
+  </div>
+    <nav>
     <div>
       <div class="logo"></div>
       <div class="sidebar">
@@ -425,7 +438,7 @@ onMounted(async () => {
         </div>
         <div class="sidebar-content">
           <ul class="lists">
-            <li class="list">
+            <li class="list" @click="movetoReportList">
               <a href="#" class="nav-link">
                 <i class="bx bx-home-alt icon"></i>
                 <span class="link">대시보드</span>

@@ -80,7 +80,7 @@ const goToLogin = () => {
 
 // 홈으로 이동 함수
 const goToHome = () => {
-  router.push("/");
+  router.push("/mobile_home");
 };
 
 // Pinia 상태 초기화

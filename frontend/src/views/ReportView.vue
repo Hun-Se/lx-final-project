@@ -31,7 +31,7 @@ fetch('/api/report/reports')
 
             // 순번
             const orderCell = document.createElement('td');
-            orderCell.textContent = index + 1; // 순번은 1부터 시작
+            orderCell.textContent = data.length-index; // 순번은 1부터 시작
             row.appendChild(orderCell);
 
             // 신고일자
@@ -44,21 +44,21 @@ fetch('/api/report/reports')
 
             // 신고접수번호
             const pkCell = document.createElement('td');
-            pkCell.innerHTML = `<span class="badge fw-bold px-4 py-3">${report.flrPk || 'N/A'}</span>`;
+            pkCell.innerHTML = `<span class="badge fw-bold px-4 py-3">${report.flrPk || ''}</span>`;
             row.appendChild(pkCell);
 
             // 신고사유 (대분류, 중분류, 소분류)
             const reasonCell = document.createElement('td');
             reasonCell.innerHTML = `
                 <div class="row">
-                    <div class="col-4">
-                        <span class="badge badge-light-danger fw-bold px-4 py-3">${report.flrCateUpper || 'N/A'}</span>
+                    <div class="col-4" style="overflow: auto">
+                        <span class="badge badge-light-danger fw-bold px-4 py-3">${report.flrCateUpper || ''}</span>
                     </div>
-                    <div class="col-4">
-                        <span class="badge badge-light-warning fw-bold px-4 py-3">${report.flrCateMiddle || 'N/A'}</span>
+                    <div class="col-4" style="overflow: auto">
+                        <span class="badge badge-light-warning fw-bold px-4 py-3">${report.flrCateMiddle || ''}</span>
                     </div>
-                    <div class="col-4">
-                        <span class="badge badge-light-success fw-bold px-4 py-3">${report.flrCateLower || 'N/A'}</span>
+                    <div class="col-4" style="overflow: auto">
+                        <span class="badge badge-light-success fw-bold px-4 py-3">${report.flrCateLower || ''}</span>
                     </div>
                 </div>`;
             row.appendChild(reasonCell);
@@ -100,6 +100,13 @@ function moveToDetail(flrPk) {
     });
 }
 
+function movetoReportList() {
+  console.log("move");
+    router.push({
+      path: `/report`
+    });
+}
+
 </script>
 
 <template>
@@ -119,14 +126,14 @@ function moveToDetail(flrPk) {
         </div>
         <div class="sidebar-content">
           <ul class="lists">
-            <li class="list">
+            <li class="list" @click="movetoReportList">
               <a href="#" class="nav-link">
                 <i class="bx bx-home-alt icon"></i>
                 <span class="link">대시보드</span>
               </a>
             </li>
             <li class="list">
-              <a href="#" class="nav-link">
+              <a href="#" class="nav-link" @click="movetoReportList">
                 <i class="bx bx-bar-chart-alt-2 icon"></i>
                 <span class="link">신고접수내역</span>
               </a>
@@ -239,7 +246,7 @@ function moveToDetail(flrPk) {
             <div class="d-flex flex-column my-7">
               <!--begin::Number-->
               <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2"
-                >121</span
+                >1</span
               >
               <!--end::Number-->
               <!--begin::Follower-->
@@ -269,7 +276,7 @@ function moveToDetail(flrPk) {
               </i>
             </div>
             <div class="d-flex flex-column my-7">
-              <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">89</span>
+              <span class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2">5</span>
               <div class="m-0">
                 <span class="fw-semibold fs-6 text-gray-500">결제 대기중</span>
               </div>
@@ -294,7 +301,7 @@ function moveToDetail(flrPk) {
             <div class="d-flex flex-column my-7">
               <!--begin::Number--><span
                 class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2"
-                >89</span
+                >2</span
               ><!--end::Number--><!--begin::Follower-->
               <div class="m-0">
                 <span class="fw-semibold fs-6 text-gray-500">반려 처리</span>
@@ -324,7 +331,7 @@ function moveToDetail(flrPk) {
             <div class="d-flex flex-column my-7">
               <!--begin::Number--><span
                 class="fw-semibold fs-3x text-gray-800 lh-1 ls-n2"
-                >89</span
+                >0</span
               ><!--end::Number--><!--begin::Follower-->
               <div class="m-0">
                 <span class="fw-semibold fs-6 text-gray-500">처리완료</span>

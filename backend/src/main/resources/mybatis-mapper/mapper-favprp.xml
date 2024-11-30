@@ -37,7 +37,7 @@
 		    prp.region_pk AS regionPk,
 		    prp.user_pk AS userPk,
 		    prp.agent_pk AS agentPk,
-		    prp.substn_pk AS substnPk,
+-- 		    prp.substn_pk AS substnPk,
 		    prp.coord_pk AS coordPk,
 		    prp.PRP_PREDICT_2022 AS predict2022,
 		    prp.PRP_PREDICT_2023 AS predict2023,

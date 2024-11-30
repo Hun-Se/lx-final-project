@@ -1,6 +1,9 @@
 <template>
   <MobileMapHeader></MobileMapHeader>
-  <div id="mainPage">
+  <div v-if="isSpinner" style="transform: translateX(-35px) translateY(600px); z-index: 99999">
+    <Spiner></Spiner>
+  </div>
+    <div id="mainPage">
     <div class="fab-wrapper">
       <input id="fabCheckbox" type="checkbox" class="fab-checkbox" />
       <label class="fab" for="fabCheckbox">
@@ -18,7 +21,7 @@
         <a class="fab-action fab-action-3">
           <i class="bi bi-funnel"></i>
         </a>
-        <a class="fab-action fab-action-4 fs-8" @click="toggleMap"> 히트맵 </a>
+        <a class="fab-action fab-action-4 fs-8" @click="toggleHeatMap"> 히트맵 </a>
       </div>
     </div>
     <section
@@ -146,7 +149,7 @@
                 class="btn btn custom-btn"
                 style="width: 10ex; margin-left: 1ex; color: white"
               >
-                문의
+                검색
               </button>
             </div>
           </div>
@@ -207,18 +210,33 @@
                 v-for="(item, index) in chatBotData[chatBotData.length - 1].result.result_data"
                 :key="item.prp_pk"
                 class="property-item-mobile"
-                @click="toggleSalesDetail(item.prp_pk)"
             >
               <a href="#" class="styled-roomLink">
                 <img
                     :src="'/assets/img/' + item.prp_img"
                     alt="매물 이미지"
                     class="property-image-mobile"
+                    @click="toggleSalesDetail(item.prp_pk)"
                 />
                 <div class="styled-RoomDetail">
                   <h1 class="styled-price">
                     <!--                  가격 <span>{{ item.prpPrice }}</span>-->
                     <span>{{item.prp_price/10000}}억 원</span>
+                    <button
+                        class="btn btn custom-btn"
+                        style="
+                        width: 10ex;
+                        height: 3ex;
+                        color: white;
+                        background-color: var(--color-bg-blue1);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                      "
+                        @click="goToCesium"
+                    >
+                      3D 뷰
+                    </button>
                   </h1>
                   <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">{{ item.prp_name }}</p>
                   <p class="styled__RoomType-sc-1b8f2kq-5 XdHPA">지역(코드) : {{item.region_pk}}</p>
@@ -247,7 +265,7 @@
       <CesiumMap2 />
     </div>
 
-    <div id="modalBackground" v-else-if="mapType === '히트맵'">
+    <div id="modalBackground" v-if="isHeatMap">
       <!-- 히트맵을 렌더링 -->
       <CesiumHeatmap />
     </div>
@@ -263,22 +281,19 @@ import { useAiChatbotStore } from "@/stores/aiChatbot.js";
 import NaverMap from "@/components/NaverMap.vue";
 import { storeToRefs } from "pinia";
 import Header2 from "@/components/Header2.vue";
+import Spiner from "@/components/Spiner.vue";
 import MobileMapHeader from "@/components/MobileMapHeader.vue";
 import MobileBottomTapBar from "@/components/MobileBottomTapBar.vue";
 import CesiumHeatmap from "@/components/CesiumHeatmap.vue";
 import CesiumMap2 from "@/components/CesiumMap2.vue";
 
 const mapType = ref("네이버");
+const isHeatMap = ref(false);
 
-// 지도 타입 순환 전환 로직
-const mapTypes = ["네이버", "Cesium", "히트맵"];
-let currentIndex = 0;
-
-function toggleMap() {
-  // 현재 mapType의 인덱스를 순환하며 전환
-  currentIndex = (currentIndex + 1) % mapTypes.length;
-  mapType.value = mapTypes[currentIndex];
+function toggleHeatMap() {
+  isHeatMap.value = !isHeatMap.value
 }
+
 
 // 3D 뷰 버튼 클릭 시 지도 타입을 순환
 function goToCesium() {
@@ -295,7 +310,7 @@ const aiChatbotStore = useAiChatbotStore();
 const chatQuestion = ref("");
 const { chatBotData, chatBotBody } = storeToRefs(aiChatbotStore);
 const chatList = ref([]);
-
+const isSpinner = ref(false);
 
 const isChatViewActive = ref(false); // 상태 관리
 // AI GPT 제출
@@ -305,8 +320,14 @@ const submitAiGPT = async () => {
   }
   chatList.value.push(chatQuestion.value);
   chatQuestion.value = "";
+  try {
+    isSpinner.value = true;
   await aiChatbotStore.fetchAiChatbot();
-
+  } catch(err) {
+    console.log(err);
+  } finally {
+    isSpinner.value= false;
+  }
 };
 
 // Format Friendly Response
@@ -341,7 +362,7 @@ const formattedResponse = (index) => {
 };
 
 // 버튼 텍스트에 대한 반응형 값 계산
-const buttonText = computed(() => (isChatViewActive.value ? "AI 공인중개사" : "매물"));
+const buttonText = computed(() => (isChatViewActive.value ? "AI 챗봇" : "매물"));
 
 // 채팅 보기 토글
 const toggleChatView = () => {
