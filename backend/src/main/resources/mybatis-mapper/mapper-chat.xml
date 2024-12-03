@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.websocketchat.WebsocketDAO">
+    <!-- 채팅 메시지 저장 -->
+    <insert id="insertChatMessage" parameterType="com.lx.finalproject.vo.ChatmesVO">
+        INSERT INTO chatmes (chatmes_content, chatmes_datetime, user_pk_sender, agent_pk_sender, chat_pk)
+        VALUES (#{chatmesContent}, #{chatmesDatetime}, #{userPkSender}, #{agentPkSender}, #{chatPk});
+    </insert>
+
+    <!-- userPk로 agent 정보 조회 -->
+    <select id="findAgentByUserPk" parameterType="int" resultType="int">
+        SELECT agent_pk
+        FROM agent 
+        WHERE user_pk = #{userPk}
+    </select>
+</mapper>

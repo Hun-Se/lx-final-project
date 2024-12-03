@@ -1,7 +1,7 @@
 // 웹서버의 주소
 // 모바일 연결 시 사용할 예정 - 김세훈
 const host = "172.168.10.126";
-const port = 9000;
+const port = 5173;
 
 export const requestConfig = {
   baseUrl: `http://${host}:${port}`,

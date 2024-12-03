@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.favprp.FavPrpDAO">
+
+    <!-- 관심 매물 AI로 가져오기 -->
+    <select id="getFavprpByUserPk" parameterType="int" resultType="com.lx.finalproject.vo.PrpVO">
+		SELECT 
+		    prp.prp_pk AS prpPk,
+		    prp.prp_name AS prpName,
+		    prp.prp_img AS prpImg,
+		    prp.prp_type AS prpType,
+		    prp.prp_supp_area AS prpSuppArea,
+		    prp.prp_excl_area AS prpExclArea,
+		    prp.prp_trans_type AS prpTransType,
+		    prp.prp_deposit AS prpDeposit,
+		    prp.prp_price AS prpPrice,
+		    prp.prp_maint_fee AS prpMaintFee,
+		    prp.prp_constr AS prpConstr,
+		    prp.prp_constr_year AS prpConstrYear,
+		    prp.prp_block AS prpBlock,
+		    prp.prp_floor AS prpFloor,
+		    prp.prp_unit AS prpUnit,
+		    prp.prp_addr_detail AS prpAddrDetail,
+		    prp.prp_num_rooms AS prpNumRooms,
+		    prp.prp_num_baths AS prpNumBaths,
+		    prp.prp_ori AS prpOri,
+		    prp.prp_parking_avail AS prpParkingAvail,
+		    prp.prp_total_block AS prpTotalBlock,
+		    prp.prp_total_floor AS prpTotalFloor,
+		    prp.prp_desc AS prpDesc,
+		    prp.prp_near_school AS prpNearSchool,
+		    prp.prp_near_sub AS prpNearSub,
+		    prp.prp_reg_time AS prpRegTime,
+		    prp.prp_near_sub_dist AS prpNearSubDist,
+		    prp.prp_near_school_dist AS prpNearSchoolDist,
+		    prp.region_pk AS regionPk,
+		    prp.user_pk AS userPk,
+		    prp.agent_pk AS agentPk,
+-- 		    prp.substn_pk AS substnPk,
+		    prp.coord_pk AS coordPk,
+		    prp.PRP_PREDICT_2022 AS predict2022,
+		    prp.PRP_PREDICT_2023 AS predict2023,
+		    prp.PRP_PREDICT_2024 AS predict2024,
+		    prp.PRP_PREDICT_2025 AS predict2025
+		FROM 
+		    prp 
+		INNER JOIN 
+		    favprp 
+		ON 
+		    prp.prp_pk = favprp.prp_pk
+		WHERE 
+		    favprp.user_pk = #{userPk};
+    </select>
+    
+    <!-- 관심 매물 호출 -->
+    <select id="getHeartFavprpByUserPk" parameterType="int" resultType="com.lx.finalproject.vo.FavPrpVO">
+		SELECT
+			*
+		FROM
+			favprp
+    </select>
+    
+    <!-- 관심 매물 추가 -->
+    <insert id="addFavprp" parameterType="com.lx.finalproject.vo.FavPrpVO">
+        INSERT INTO favprp (user_pk, prp_pk) 
+        VALUES (#{userPk}, #{prpPk});
+    </insert>
+
+    <!-- 관심 매물 삭제 -->
+    <delete id="deleteFavprp" parameterType="com.lx.finalproject.vo.FavPrpVO">
+        DELETE FROM favprp 
+        WHERE user_pk = #{userPk} AND prp_pk = #{prpPk};
+    </delete>
+
+</mapper>

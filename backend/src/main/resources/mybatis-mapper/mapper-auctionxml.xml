@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.auction.AuctionDAO">
+
+	<!-- 경매 데이터를 저장 -->
+	<insert id="saveAuction"
+		parameterType="com.lx.finalproject.vo.AuctionVO">
+		INSERT INTO auction (auction_comm, auction_start,
+		auction_end,
+		auction_status, agent_pk, user_pk, prp_pk, insp_req_pk)
+		VALUES (#{auctionComm}, #{auctionStart}, #{auctionEnd},
+		#{auctionStatus},
+		#{agentPk}, #{userPk}, #{prpPk}, #{inspReqPk});
+	</insert>
+
+	<!-- 경매 ID로 경매 데이터를 가져옴 -->
+	<select id="getAuctionById" parameterType="int"
+		resultType="com.lx.finalproject.vo.AuctionVO">
+		SELECT auction_pk AS auctionPk, auction_comm AS
+		auctionComm, auction_start
+		AS auctionStart, auction_end AS auctionEnd,
+		auction_status AS auctionStatus, agent_pk AS agentPk, user_pk AS
+		userPk, prp_pk AS
+		prpPk, insp_req_pk AS inspReqPk
+		FROM auction
+		WHERE
+		auction_pk = #{auctionPk};
+	</select>
+
+	<!-- 중개수수료 데이터를 저장 -->
+	<insert id="saveAuctionFee"
+		parameterType="com.lx.finalproject.dto.auction.AuctionFeeDTO">
+		INSERT INTO auction_fee (auction_pk, brokerage_fee, vat,
+		total_fee)
+		VALUES (#{auctionPk}, #{brokerageFee}, #{vat}, #{totalFee});
+	</insert>
+
+	<!-- 경매 ID로 중개수수료 데이터를 가져옴 -->
+	<select id="getAuctionFeeById" parameterType="int"
+		resultType="com.lx.finalproject.dto.auction.AuctionFeeDTO">
+		SELECT auction_pk AS auctionPk, brokerage_fee AS
+		brokerageFee, vat,
+		total_fee AS totalFee
+		FROM auction_fee
+		WHERE
+		auction_pk = #{auctionPk};
+	</select>
+
+	<!-- 특정 user_pk로 중개인(agent)의 agent_pk를 찾고, 그 agent_pk로 관련된 경매 입찰 데이터(bid)를 
+		가져오며, 매물(prp)의 가격 정보를 포함하는 SQL 쿼리 -->
+	<select id="getAuctionsWithPropertyByUserPk" parameterType="int"
+		resultType="com.lx.finalproject.dto.auction.AuctionAgentDTO">
+		SELECT
+		a.auction_pk AS auctionPk,
+		a.auction_comm AS
+		auctionComm,
+		a.auction_start AS auctionStart,
+		a.auction_end AS
+		auctionEnd,
+		a.auction_status AS auctionStatus,
+		a.user_pk AS userPk,
+		a.prp_pk AS prpPk,
+		a.inspreq_pk AS inspReqPk,
+		p.prp_name AS prpName,
+		p.prp_price AS prpPrice,
+		b.agent_pk AS agentPk
+		FROM
+		bid b
+		INNER JOIN
+		auction a ON b.auction_pk = a.auction_pk
+		INNER JOIN agent ag ON
+		b.agent_pk = ag.agent_pk
+		INNER JOIN prp p ON a.prp_pk = p.prp_pk
+		WHERE
+		ag.user_pk = #{userPk};
+	</select>
+
+	<!-- 특정 중개인이 임장 요청한 경매 중 아직 입찰되지 않은 매물만 조회 -->
+	<select id="getInspectedAuctionsByAgent" parameterType="int"
+		resultType="com.lx.finalproject.dto.auction.AuctionAgentDTO">
+		SELECT
+		p.prp_pk,
+		p.prp_name,
+		p.prp_price,
+		p.prp_trans_type,
+		a.auction_pk,
+		a.auction_start,
+		a.auction_end,
+		a.auction_status,
+		ir.inspreq_pk,
+		ir.inspreq_date
+		FROM
+		agent ag
+		INNER JOIN inspapp ia ON ag.agent_pk = ia.agent_pk
+		INNER JOIN inspreq ir ON ia.inspreq_pk = ir.inspreq_pk
+		INNER JOIN prp p ON ir.prp_pk = p.prp_pk
+		INNER JOIN auction a ON a.prp_pk = p.prp_pk
+		LEFT JOIN bid b ON a.auction_pk = b.auction_pk AND b.agent_pk =
+		ag.agent_pk
+		WHERE
+		ag.user_pk = #{userPk}
+		AND b.bid_pk IS NULL -- 입찰하지 않은 매물만 조회
+		AND a.auction_status IS NOT NULL; -- 경매가 진행된 매물만 선택
+	</select>
+
+
+</mapper>

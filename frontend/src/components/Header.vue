@@ -1,19 +1,16 @@
 <template>
   <header class="header">
     <div class="logo cursor-pointer" @click="goToHome">
-      <h1>내매물받아줘</h1>
+      <h1>믿음집</h1>
     </div>
 
     <nav class="navigation">
       <ul class="nav-center">
-        <li><a @click="goToBurgerGame" class="cursor-pointer">부동산</a></li>
+        <li><a @click="goToMap()" class="cursor-pointer">부동산</a></li>
         <li>
-          <a @click="goToBurgerking" class="cursor-pointer">AI가격예측</a>
+          <a @click="goToAiRealEstate()" class="cursor-pointer">AI가격예측</a>
         </li>
-        <li>
-          <a @click="goToBoard" class="cursor-pointer">중개수수료 경매</a>
-        </li>
-        <li><a @click="goToBoard" class="cursor-pointer">지역게시판</a></li>
+        <li><a @click="goToBoard()" class="cursor-pointer">지역게시판</a></li>
         <li><a @click="goToMypage" class="cursor-pointer">마이페이지</a></li>
       </ul>
       <ul class="nav-right cursor-pointer">
@@ -31,7 +28,9 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const isLoggedIn = ref(false);
 const username = ref("");
 
@@ -65,6 +64,21 @@ function goToHome() {
   router.replace({ path: "/" });
 }
 
+// AI 가격 예측 페이지로 이동
+function goToAiRealEstate() {
+  router.replace({ path: "/ai_real_estate" });
+}
+
+// 매물지도 페이지로 이동
+function goToMap() {
+  router.replace({ path: "/map" });
+}
+
+// 중개 수수료 경매 페이지로 이동
+function goToAuction() {
+  router.replace({ path: "/user_auction" });
+}
+
 // 로그인 페이지로 이동 함수
 function goToLoginpage() {
   router.replace({ path: "/login" });
@@ -72,8 +86,9 @@ function goToLoginpage() {
 
 // 마이페이지로 이동 함수
 function goToMypage() {
-  if (isLoggedIn.value) {
-    router.replace({ path: "/mypage" });
+  const userPk = sessionStorage.getItem("userPk");
+  if (userPk) {
+    router.push({ path: "/my_page" });
   } else {
     alert("로그인이 필요합니다.");
     goToLoginpage(); // 로그인 안 된 상태에서 마이페이지 접근 시 로그인 페이지로 이동
@@ -102,9 +117,9 @@ function goToBurgerGame() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
+  padding: 2rem;
 }
 
 .logo h1 {

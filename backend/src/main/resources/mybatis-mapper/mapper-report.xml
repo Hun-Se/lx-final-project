@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lx.finalproject.dao.report.ReportDAO">
+
+	<select id="getAllReports"
+		resultType="com.lx.finalproject.vo.FlrVO">
+		SELECT
+		flr_pk,
+		flr_cate_upper,
+		flr_cate_middle,
+		flr_cate_lower,
+		flr_datetime,
+		rec_pk,
+		chat_pk
+		FROM
+		flr
+		ORDER BY
+		flr_pk DESC;
+	</select>
+
+	<!-- 신고 상세 정보 조회 -->
+	<select id="getReportDetail" parameterType="int"
+		resultType="com.lx.finalproject.vo.FlrVO">
+		SELECT
+		flr_pk AS flrPk,
+		flr_cate_upper,
+		flr_cate_middle,
+		flr_cate_lower,
+		flr_content,
+		flr_datetime,
+		rec_pk,
+		chat_pk,
+		user_pk,
+		prp_pk
+		FROM flr
+		WHERE flr_pk = #{flrPk}
+	</select>
+
+	<select id="getAgentDetailsByFlrPk"
+		resultType="com.lx.finalproject.dto.report.ReportDTO">
+		SELECT
+		a.agent_license,
+		ag.agency_location,
+		ag.agency_name,
+		ag.agency_mobile,
+		ag.agency_license,
+		u.user_name -- 사용자 이름 추가
+		FROM flr f
+		JOIN prp p ON f.prp_pk = p.prp_pk
+		JOIN agent a ON p.agent_pk = a.agent_pk
+		JOIN users u ON a.user_pk = u.user_pk
+		JOIN agency ag ON ag.agency_pk = a.agency_pk
+		WHERE f.flr_pk = #{flrPk}
+	</select>
+
+	<select id="getReportPrpInfoByPrpPk" resultType="com.lx.finalproject.dto.report.ReportPrpInfoDTO">
+		SELECT
+			p.prp_pk,
+			p.prp_name,
+			p.prp_type,
+			p.prp_supp_area,
+			p.prp_trans_type,
+			p.prp_price,
+			p.prp_deposit,
+			p.prp_addr_detail,
+			r.region_si_do,
+			r.region_si_gun_gu,
+			r.region_eup_myeon_dong,
+			ST_X(c.location) AS latitude, -- 위도
+			ST_Y(c.location) AS longitude
+		FROM
+			prp p
+				INNER JOIN
+			region r ON p.region_pk = r.region_pk
+				INNER JOIN
+			coord c ON p.coord_pk = c.coord_pk
+		WHERE
+			p.prp_pk = #{prpPk}
+	</select>
+
+</mapper>
